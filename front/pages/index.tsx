@@ -17,7 +17,6 @@ export default function Home() {
             <main className={styles.main}>
                 <h1 className={styles.title}>DHU portal to Google Calendar</h1>
                 <p>デジキャンから時間割を読み取り、googleカレンダーにイベントを追加します。</p>
-                <p>機能を利用するにはgoogleでログインする必要があります。</p>
                 <FormGroup>
                     <FormControlLabel control={<Checkbox />} label="1Q" />
                     <FormControlLabel control={<Checkbox />} label="2Q" />

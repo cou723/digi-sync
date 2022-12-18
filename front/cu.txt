@@ -1,0 +1,7 @@
+http://localhost:3000/auth_code#
+access_token=ya29.a0AX9GBdUCELWNv-R7iUOmUUDQ0fC-Ecs7ZugGRIp7_xMqHx4ZU3C2X3izjM-qTzueuHH1eku045FFFMoC6aHV6wR6LvgjkXjZIxVSNVTpx6Xe8aRkGXbHv14vsFRk553xPwl1GNaZhAGNZ5ohV4VFsTKEKoYraCgYKATsSARESFQHUCsbCJfzE_5mPMGX9uMxUgRnprw0163
+&token_type=Bearer
+&expires_in=3599
+&scope=https://www.googleapis.com/auth/calendar
+
+https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=ya29.a0AX9GBdUCELWNv-R7iUOmUUDQ0fC-Ecs7ZugGRIp7_xMqHx4ZU3C2X3izjM-qTzueuHH1eku045FFFMoC6aHV6wR6LvgjkXjZIxVSNVTpx6Xe8aRkGXbHv14vsFRk553xPwl1GNaZhAGNZ5ohV4VFsTKEKoYraCgYKATsSARESFQHUCsbCJfzE_5mPMGX9uMxUgRnprw0163

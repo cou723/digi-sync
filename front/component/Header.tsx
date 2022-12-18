@@ -17,12 +17,4 @@ export default function Header() {
             </AppBar>
         </Box>
     );
-
-    function onLogin() {
-        console.log("login");
-    }
-
-    function onLogout() {
-        console.log("logout");
-    }
 }

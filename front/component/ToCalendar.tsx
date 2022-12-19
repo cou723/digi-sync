@@ -4,33 +4,46 @@ import ApiCalendar from "react-google-calendar-api";
 import SigninBtns from "./SigninBtns";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 export default function ToCalendar({apiCalendar}: {apiCalendar: ApiCalendar}) {
-    let [res, setRes] = useState(null);
+    let [calendarList, setCalendarList] = useState<any>();
     let [isSignedIn, setIsSignedIn] = useState(apiCalendar.sign);
+
     apiCalendar.onLoadCallback = () => {
+        console.log("loading");
         apiCalendar.tokenClient.callback = (isSigned: boolean) => {
             setIsSignedIn(isSigned);
         };
+        console.log("set use effect");
+        useEffect(() => {
+            async function fetchData() {
+                console.log("fetch");
+                let response = await apiCalendar.listCalendars();
+                setCalendarList(response.result.item);
+            }
+            fetchData();
+        }, []);
     };
+
     if (!isSignedIn) return <SigninBtns apiCalendar={apiCalendar}></SigninBtns>;
-    setRes(apiCalendar.listCalendars()).then((res) => {
-        console.log(res);
-        setIsLoading(false);
+    else
         return (
-            <Select>
-                {res.result.items.map((calendar: any) => {
-                    return (
-                        <MenuItem value={calendar.id} key={calendar.id}>
-                            {calendar.summary}
-                        </MenuItem>
-                    );
-                })}
-            </Select>
+            <FormControl>
+                <FormLabel>読み込むカレンダー</FormLabel>
+                <Select>
+                    {calendarList ? (
+                        calendarList.map((calendar: any) => {
+                            return (
+                                <MenuItem value={calendar.id} key={calendar.id}>
+                                    {calendar.summary}
+                                </MenuItem>
+                            );
+                        })
+                    ) : (
+                        <p>is loading</p>
+                    )}
+                </Select>
+            </FormControl>
         );
-    });
-    return (
-        <p>dummy</p>
-    )
 }

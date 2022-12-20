@@ -1,4 +1,4 @@
-import {FormControl, TextField, MenuItem, InputLabel} from "@mui/material";
+import {FormControl, TextField} from "@mui/material";
 
 export default function DHUPortalData() {
     return (

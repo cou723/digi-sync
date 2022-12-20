@@ -8,10 +8,10 @@ type Calendar = {
 };
 
 const Fetch = () => {
-    const [calendars, setCalendars] = useState<Array<Calendar>>([{id: "0", summury: "Googleでログインしてください"}]);
+    const [calendars, setCalendars] = useState<Array<Calendar>>([{id: "0", summary: "Googleでログインしてください"}]);
     const {data: session} = useSession();
 
-    useEffect(() => {z
+    useEffect(() => {
         if (!session) return;
         fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
             method: "GET",
@@ -27,8 +27,8 @@ const Fetch = () => {
 
     return (
         <FormControl fullWidth>
-            <InputLabel id="to-calendar-list-label">to calendar</InputLabel>
-            <Select labelId="to-calendar-list-label" label="to calendar" margin="dense">
+            <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
+            <Select labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar: Calendar) => (
                     <MenuItem value={calendar.summary} key={calendar.id}>
                         {calendar.summary}

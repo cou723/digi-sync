@@ -1,0 +1,9 @@
+https://stackoverflow.com/questions/27785375/testing-flask-oauthlib-locally-without-https
+https://awesome03.com/2021/01/10/pydrive%E3%81%A7%E3%80%8C%E3%82%A8%E3%83%A9%E3%83%BC-400-redirect_uri_mismatch%E3%80%8D/
+https://www.abc.osaka/flask-and-nextjs
+https://developers.google.com/discovery/v1/getting_started#REST
+https://developers.google.com/calendar/api/v3/reference/events/list
+https://iij.github.io/bootcamp/server-app/fastapi/#fastapi%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%83%BB%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D
+https://developers.google.com/identity/gsi/web/guides/client-library
+https://ja.reactjs.org/docs/hooks-effect.html
+https://zenn.dev/seiichi1101/articles/google-oauth2-react-spa

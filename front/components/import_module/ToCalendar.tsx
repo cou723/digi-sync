@@ -26,7 +26,8 @@ const Fetch = () => {
     }, [session]);
 
     return (
-        <FormControl fullWidth>
+        <>
+            {/* <FormControl fullWidth> */}
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
             <Select name="to_calendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar: Calendar) => (
@@ -35,7 +36,8 @@ const Fetch = () => {
                     </MenuItem>
                 ))}
             </Select>
-        </FormControl>
+            {/* </FormControl> */}
+        </>
     );
 };
 

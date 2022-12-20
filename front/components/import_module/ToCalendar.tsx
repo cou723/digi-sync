@@ -28,9 +28,9 @@ const Fetch = () => {
     return (
         <FormControl fullWidth>
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
-            <Select labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
+            <Select name="to_calendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar: Calendar) => (
-                    <MenuItem value={calendar.summary} key={calendar.id}>
+                    <MenuItem value={calendar.id} key={calendar.id}>
                         {calendar.summary}
                     </MenuItem>
                 ))}

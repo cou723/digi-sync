@@ -2,7 +2,7 @@ import {Checkbox, FormControlLabel, MenuItem, FormControl, InputLabel} from "@mu
 export default function ImportOptions() {
     return (
         <>
-            <FormControlLabel control={<Checkbox defaultChecked />} label="授業以外もインポートする(イベントなど)" />
+            <FormControlLabel control={<Checkbox defaultChecked />} label="授業以外をインポートしない" />
         </>
     );
 }

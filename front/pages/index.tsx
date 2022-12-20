@@ -1,15 +1,10 @@
-import Head from "next/head";
-import Image from "next/image";
 import {Inter} from "@next/font/google";
-import styles from "../styles/Home.module.css";
-import LoginBtn from "../components/LoginBtn";
 import Header from "../components/Header";
-import ImportRange from "../components/ImportRange";
-import DHUPortalData from "../components/DHUPortalData";
-import ImportOptions from "../components/ImportOptions";
-import Box from "@mui/material/Box";
-import {Container} from "@mui/material";
-import Fetch from "../components/ToCalendar";
+import ImportRange from "../components/import_module/ImportRange";
+import DHUPortalData from "../components/import_module/DHUPortalData";
+import ImportOptions from "../components/import_module/ImportOptions";
+import Fetch from "../components/import_module/ToCalendar";
+import {Container, Box} from "@mui/material";
 
 const inter = Inter({subsets: ["latin"]});
 

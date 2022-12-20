@@ -1,3 +1,10 @@
+import {FormControl, TextField, MenuItem, InputLabel} from "@mui/material";
+
 export default function DHUPortalData() {
-    return <p>DHU Portal Data</p>;
+    return (
+        <FormControl fullWidth margin="dense">
+            <TextField id="standard-basic" label="デジキャン ユーザーネーム" variant="standard" />
+            <TextField id="standard-basic" label="デジキャン パスワード" variant="standard" />
+        </FormControl>
+    );
 }

@@ -7,8 +7,9 @@ import Header from "../components/Header";
 import ImportRange from "../components/ImportRange";
 import DHUPortalData from "../components/DHUPortalData";
 import ImportOptions from "../components/ImportOptions";
+import Box from "@mui/material/Box";
 import {Container} from "@mui/material";
-import Fetch from "../components/Fetch";
+import Fetch from "../components/ToCalendar";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -18,10 +19,12 @@ export default function Home() {
             <Header />
 
             <Container maxWidth="sm">
-                <ImportRange />
-                <Fetch />
-                <DHUPortalData />
-                <ImportOptions />
+                <Box component="form">
+                    <ImportRange />
+                    <Fetch />
+                    <DHUPortalData />
+                    <ImportOptions />
+                </Box>
             </Container>
         </>
     );

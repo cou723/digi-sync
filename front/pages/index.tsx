@@ -31,7 +31,6 @@ type ClassEvent = {
 export default function Home() {
     let [state, setState] = useState<Inputs>({importRange: "", username: "", password: "", ignoreOtherEvents: true, toCalendar: ""} as Inputs);
     let [accessToken, setAccessToken] = useState<string>("");
-    const {data: session} = useSession();
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -52,28 +51,27 @@ export default function Home() {
         console.log("submit");
     };
 
-    const onImportClick = () => {
-        console.log(state, accessToken);
+    const onImportClick = async () => {
         axios.defaults.baseURL = "http://localhost:3000";
-        axios.get("http://localhost:8000/get_dhu_event_list", {params: {importRange: state.importRange, username: state.username, password: state.password}}).then((res) => {
-            console.log(res);
-            let class_events: ClassEvent[] = res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1);
-            for (let event of class_events) {
-                axios.post(
-                    `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
-                    {
-                        start: {dateTime: event.start},
-                        end: {dateTime: event.end},
-                        summary: event.title,
-                        description: "#created_by_dp2gc",
-                    },
-                    {
-                        headers: {Authorization: `Bearer ${accessToken}`,'Content-Type': 'application/json'},
-                    }
-                );
-            }
-            if (!session) return;
-        });
+        let res = await axios.get("http://localhost:8000/get_dhu_event_list", {params: {importRange: state.importRange, username: state.username, password: state.password}});
+        let class_events: ClassEvent[];
+        if (state.ignoreOtherEvents) class_events = res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1);
+        else class_events = res.data.events;
+        for (let event of class_events) {
+            await axios.post(
+                `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
+                {
+                    start: {dateTime: event.start},
+                    end: {dateTime: event.end},
+                    summary: event.title,
+                    description: "#created_by_dp2gc",
+                },
+                {
+                    headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"},
+                }
+            );
+            await new Promise((s) => setTimeout(s, 100));
+        }
     };
 
     return (

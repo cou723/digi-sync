@@ -1,0 +1,16 @@
+lockfileVersion: 5.4
+
+specifiers:
+  react-hook-form: ^7.41.0
+
+dependencies:
+  react-hook-form: 7.41.0
+
+packages:
+
+  /react-hook-form/7.41.0:
+    resolution: {integrity: sha512-u1cHOXujr+AsNBoeCtcCuRwPh87mXAgKtXqd3qTCBgNFYzVZLXjYgLcynORpAgqhe24r5scucR8+6gfWaXBtHQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dev: false

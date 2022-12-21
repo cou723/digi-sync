@@ -1,0 +1,44 @@
+{
+    "detail": [
+        {
+            "loc": [
+                "query",
+                "importRange"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        },
+        {
+            "loc": [
+                "query",
+                "toCalendar"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        },
+        {
+            "loc": [
+                "query",
+                "username"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        },
+        {
+            "loc": [
+                "query",
+                "password"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        },
+        {
+            "loc": [
+                "query",
+                "ignoreOtherEvents"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        }
+    ]
+}

@@ -1,13 +1,18 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, ReactNode} from "react";
 import {useSession, signIn, signOut} from "next-auth/react";
-import {Select, MenuItem, FormControl, InputLabel} from "@mui/material";
+import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
 
 type Calendar = {
     id: string;
     summary: string;
 };
 
-const Fetch = () => {
+type Props = {
+    value: string;
+    onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
+};
+
+const ToCalendar = ({value, onChange}: Props) => {
     const [calendars, setCalendars] = useState<Array<Calendar>>([{id: "0", summary: "Googleでログインしてください"}]);
     const {data: session} = useSession();
 
@@ -26,19 +31,17 @@ const Fetch = () => {
     }, [session]);
 
     return (
-        <>
-            {/* <FormControl fullWidth> */}
+        <FormControl fullWidth margin="normal">
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
-            <Select name="to_calendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
+            <Select onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar: Calendar) => (
                     <MenuItem value={calendar.id} key={calendar.id}>
                         {calendar.summary}
                     </MenuItem>
                 ))}
             </Select>
-            {/* </FormControl> */}
-        </>
+        </FormControl>
     );
 };
 
-export default Fetch;
+export default ToCalendar;

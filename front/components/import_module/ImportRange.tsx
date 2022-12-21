@@ -1,17 +1,24 @@
 import {useSession, signIn, signOut} from "next-auth/react";
-import {FormControl, Select, MenuItem, InputLabel} from "@mui/material";
-export default function Component() {
+import {ReactNode} from "react";
+import {FormControl, Select, MenuItem, InputLabel, SelectChangeEvent} from "@mui/material";
+
+type Props = {
+    value: string;
+    onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
+};
+
+export default function Component({value, onChange}: Props) {
     return (
-        <>
-        {/* <FormControl fullWidth margin="dense"> */}
+        <FormControl fullWidth margin="normal">
             <InputLabel id="import-q-label">インポートするクオーター</InputLabel>
-            <Select name="import_quarter" labelId="import-q-label" label="インポートするクオーター">
-                <MenuItem value="1">1</MenuItem>
-                <MenuItem value="2">2</MenuItem>
-                <MenuItem value="3">3</MenuItem>
-                <MenuItem value="4">4</MenuItem>
+            <Select onChange={onChange} value={value} required name="importRange" labelId="import-q-label" label="インポートするクオーター">
+                <MenuItem value="1q">1クオーター</MenuItem>
+                <MenuItem value="2q">2クオーター</MenuItem>
+                <MenuItem value="3q">3クオーター</MenuItem>
+                <MenuItem value="4q">4クオーター</MenuItem>
+                <MenuItem value="1q_and_2q">前期</MenuItem>
+                <MenuItem value="3q_and_4q">後期</MenuItem>
             </Select>
-        {/* </FormControl> */}
-        </>
+        </FormControl>
     );
 }

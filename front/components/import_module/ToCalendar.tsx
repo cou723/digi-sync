@@ -10,9 +10,10 @@ type Calendar = {
 type Props = {
     value: string;
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
+    setAccessToken: (accessToken: string) => void;
 };
 
-const ToCalendar = ({value, onChange}: Props) => {
+const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
     const [calendars, setCalendars] = useState<Array<Calendar>>([{id: "0", summary: "Googleでログインしてください"}]);
     const {data: session} = useSession();
 
@@ -28,6 +29,7 @@ const ToCalendar = ({value, onChange}: Props) => {
             .then((data) => {
                 setCalendars(data.items);
             });
+            setAccessToken(session.accessToken);
     }, [session]);
 
     return (

@@ -7,3 +7,5 @@ https://iij.github.io/bootcamp/server-app/fastapi/#fastapi%E3%81%AE%E3%82%A4%E3%
 https://developers.google.com/identity/gsi/web/guides/client-library
 https://ja.reactjs.org/docs/hooks-effect.html
 https://zenn.dev/seiichi1101/articles/google-oauth2-react-spa
+https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange-handler-react
+https://qiita.com/Quest_love33/items/a3e4169452cd057b0b09

@@ -1,10 +1,17 @@
-import {FormControl, TextField,Stack} from "@mui/material";
+import {FormControl, TextField, Stack} from "@mui/material";
+import {ChangeEvent} from "react";
 
-export default function DHUPortalData() {
+type Props = {
+    username: string;
+    password: string;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+};
+
+export default function DHUPortalData({username, password, onChange}: Props) {
     return (
-        <Stack>
-            <TextField name="portal_username" id="standard-basic" label="デジキャン ユーザーネーム" variant="standard" />
-            <TextField name="portal_password" id="standard-basic" label="デジキャン パスワード" variant="standard" />
+        <Stack spacing={1}>
+            <TextField onChange={onChange} value={username} required name="username" id="standard-basic" label="デジキャン ユーザーネーム" variant="standard" />
+            <TextField onChange={onChange} value={password} required name="password" id="standard-basic" label="デジキャン パスワード" variant="standard" />
         </Stack>
     );
 }

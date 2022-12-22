@@ -57,12 +57,18 @@ export default function Home() {
         let class_events: ClassEvent[];
         if (state.ignoreOtherEvents) class_events = res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1);
         else class_events = res.data.events;
+        let i = 0;
         for (let event of class_events) {
+            const end_date_unix_timestamp = Date.parse(event.start) + 60 * 90
+            const end_date:Date = new Date(end_date_unix_timestamp)
+            end_date.setMinutes(end_date.getMinutes() + 90);
+            const end = end_date.toISOString()
+            console.log(event.start, end)
             await axios.post(
                 `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
                 {
                     start: {dateTime: event.start},
-                    end: {dateTime: event.end},
+                    end: {dateTime: end},
                     summary: event.title,
                     description: "#created_by_dp2gc",
                 },
@@ -70,7 +76,9 @@ export default function Home() {
                     headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"},
                 }
             );
-            await new Promise((s) => setTimeout(s, 100));
+            await new Promise((s) => setTimeout(s, 50));
+            i++;
+            if (i == 2) break;
         }
     };
 

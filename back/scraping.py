@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import json
 from datetime import date
 import time
+from classes import CannotLoginException
 session = HTMLSession()
 LOGIN_URL = "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml"
 
@@ -27,29 +28,27 @@ def login(username: str, password: str):
         "javax.faces.ViewState": "stateless",
     }
 
-    url_login = "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml/"
-    res = session.post(url_login, data=login_info)
-    res.raise_for_status()
+    res = session.post(LOGIN_URL, data=login_info)
+    if (res.status_code >= 500 and res.status_code < 600):
+        raise Exception("server error")
+    if ("ユーザＩＤまたはパスワードが正しくありません。" in res.text):
+        raise CannotLoginException("user id or password is invalid")
 
     return res
 
 
-def get_form_data(res, start: date, end: date):
-    print(
-        time.mktime(
-            start.timetuple()) *
-        1000,
-        time.mktime(
-            end.timetuple()) *
-        1000)
+get_last_day = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+
+def get_form_data(res, year: int, month: int):
     return {
         "javax.faces.partial.ajax": "true",
         "javax.faces.source": "funcForm:j_idt361:content",
         "javax.faces.partial.execute": "funcForm:j_idt361:content",
         "javax.faces.partial.render": "funcForm:j_idt361:content",
         "funcForm:j_idt361:content": "funcForm:j_idt361:content",
-        "funcForm:j_idt361:content_start": int(time.mktime(start.timetuple()) * 1000),
-        "funcForm:j_idt361:content_end": int(time.mktime(end.timetuple()) * 1000),
+        "funcForm:j_idt361:content_start": int(time.mktime(date(year, month, 1).timetuple()) * 1000),
+        "funcForm:j_idt361:content_end": int(time.mktime(date(year, month, get_last_day[month]).timetuple()) * 1000),
         "funcForm": "funcForm",
         "rx-token": get_input_value(res, "rx-token"),
         "rx-loginKey": get_input_value(res, "rx-loginKey"),
@@ -71,17 +70,22 @@ def get_form_data(res, start: date, end: date):
     }
 
 
-def get_dhu_event_list(username: str, password: str, start: date, end: date):
+def get_dhu_event_list(username: str, password: str, year: int, month: int):
+    if (year > int(date.today().year + 1) or year < int(date.today().year - 1)):
+        raise Exception(
+            f"year({year}) is out of range. year must be between this year and next year.")
+    if (month < 1 or month > 12):
+        raise Exception("month is out of range")
     res = login(username, password)
-    # TODO: login失敗時の処理追加
-    form_data = get_form_data(res, start, end)
+
+
+    form_data = get_form_data(res, year, month)
 
     res = session.post(
         "https://portal.dhw.ac.jp/uprx/up/bs/bsa001/Bsa00101.xhtml",
         data=form_data)
     res.raise_for_status()
 
-    print(res.text)
     res_xml = ET.fromstring(res.text)
 
     events_element = None
@@ -96,5 +100,6 @@ def get_dhu_event_list(username: str, password: str, start: date, end: date):
 
     return (json.loads(events_element.text))
 
+
 # print(get_form_data(login(USER, PASS), date(2022, 9, 1), date(2022, 12, 30)))
-# print(get_dhu_event_list(USER, PASS, date(2022, 9, 1), date(2022, 12, 30)))
+# print(get_dhu_event_list(USER, PASS, 2022, 9))

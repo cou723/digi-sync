@@ -1,0 +1,2 @@
+class CannotLoginException(Exception):
+    pass

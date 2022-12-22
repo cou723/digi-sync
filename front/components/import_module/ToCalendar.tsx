@@ -18,25 +18,29 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
     const {data: session} = useSession();
 
     useEffect(() => {
-        if (!session) return;
-        fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${session.accessToken}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setCalendars(data.items);
-            });
+        (async () => {
+            let res: Response;
+            try {
+                if (!session) return;
+                res = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
+                    method: "GET",
+                    headers: {Authorization: `Bearer ${session.accessToken}`},
+                });
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+            let data = await res.json();
+            setCalendars(data.items);
             setAccessToken(session.accessToken);
-    }, [session]);
+        })()
+    }, [session, setAccessToken]);
 
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
             <Select onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
-                {calendars.map((calendar: Calendar) => (
+                {calendars.map((calendar) => (
                     <MenuItem value={calendar.id} key={calendar.id}>
                         {calendar.summary}
                     </MenuItem>

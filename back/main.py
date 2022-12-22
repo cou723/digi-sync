@@ -1,13 +1,23 @@
 from fastapi import FastAPI, HTTPException
 import scraping as scraper
+import os
 from datetime import date
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+FRONT_URL = "http://localhost:3000"
+BACK_URL = "http://localhost:8000"
+
+if os.getenv("FRONT_URL") is not None:
+    FRONT_URL = os.getenv("FRONT_URL")
+
+if os.getenv("BACK_URL") is not None:
+    BACK_URL = os.getenv("BACK_URL")
+
 origins = [
-    "http://localhost:8000",
-    "http://localhost:3000",
+    FRONT_URL,
+    BACK_URL,
 ]
 
 app.add_middleware(

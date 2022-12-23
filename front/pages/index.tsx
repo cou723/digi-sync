@@ -54,12 +54,14 @@ export default function Home() {
         });
         console.log(state);
     };
-    const handleSubmit = () => {
-        console.log("submit");
-    };
 
     const onImportClick = async () => {
         let res = await axios.get("http://localhost:8000/get_dhu_event_list", {params: {importRange: state.importRange, username: state.username, password: state.password}});
+        console.log(res);
+        if (res.data.status_code == "401" && res.data.detail == "user id or password is invalid") {
+            alert("ユーザーIDかパスワードが間違っています");
+            return;
+        }
         let class_events = state.ignoreOtherEvents ? res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : res.data.events;
         for (let event of class_events) {
             await axios.post(
@@ -83,7 +85,7 @@ export default function Home() {
             <Header />
 
             <Container maxWidth="sm">
-                <Stack spacing={2} component="form" onSubmit={handleSubmit} autoComplete="off" action="/import">
+                <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange value={state.importRange} onChange={handleSelectChange} />
                     <ToCalendar value={state.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
                     <DHUPortalData username={state.username} password={state.password} onChange={handleInputChange} />

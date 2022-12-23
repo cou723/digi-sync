@@ -7,9 +7,8 @@ from classes import CannotLoginException
 session = HTMLSession()
 LOGIN_URL = "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml"
 
-# メールアドレスとパスワードの指定
 USER = "A22DC030"
-PASS = "textarea"
+PASS = "********"
 
 
 def get_input_value(res, str):
@@ -77,7 +76,6 @@ def get_dhu_event_list(username: str, password: str, year: int, month: int):
     if (month < 1 or month > 12):
         raise Exception("month is out of range")
     res = login(username, password)
-
 
     form_data = get_form_data(res, year, month)
 

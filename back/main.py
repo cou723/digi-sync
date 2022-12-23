@@ -41,6 +41,7 @@ async def get_dhu_event_list(importRange: str, username: str, password: str):
         data = scraper.get_dhu_event_list(
             username,
             password,
+            # get_dhu_event_listの仕様変更に伴い固定数を入れているが変える必要がある
             year=2022, month=12
         )
     except CannotLoginException as e:

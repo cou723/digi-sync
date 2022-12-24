@@ -5,10 +5,9 @@ import ImportOptions from "../components/import_module/ImportOptions";
 import ToCalendar from "../components/import_module/ToCalendar";
 import {Container, Button, Stack, SelectChangeEvent} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
-import axios, {AxiosResponse} from "axios";
-import {useSession} from "next-auth/react";
+import axios from "axios";
 
-const API_SERVER_URL: string = "http://localhost:8000";
+const API_INTERVAL = 300;
 
 type Inputs = {
     importRange: string;
@@ -84,13 +83,13 @@ export default function Home() {
             });
     };
 
-    function processArray(class_events: Array<any>, i: number) {
+    function postToGoogleCalendar(class_events: Array<any>, i: number) {
         if (i >= class_events.length) {
             setIsImporting(false);
             return;
         }
         callGoogleAPI(class_events[i].start, class_events[i].summary);
-        setTimeout(() => processArray(class_events, i + 1), 200);
+        setTimeout(() => postToGoogleCalendar(class_events, i + 1), API_INTERVAL);
     }
 
     const getEventList = async () => {
@@ -115,8 +114,8 @@ export default function Home() {
         setIsImporting(true);
         setImportCount(0);
         setTotalImportCount(class_events.length);
+        postToGoogleCalendar(class_events, 0);
         console.log("finished!");
-        processArray(class_events, 0);
     };
 
     return (

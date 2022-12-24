@@ -1,20 +1,31 @@
 import {useSession, signIn, signOut} from "next-auth/react";
+import {Button} from "@mui/material";
 import Fetch from "./import_module/ToCalendar";
 
-export default function LoginBtn() {
+export default function LoginBtn({setIsGoogleLogin}) {
     const {data: session} = useSession();
+    const onSignIn = () => {
+        setIsGoogleLogin(true);
+        signIn("google");
+    };
+    const onSignOut = () => {
+        setIsGoogleLogin(false);
+        signOut();
+    };
+    if (session && session.user)
+        setIsGoogleLogin(true);
+    else
+        setIsGoogleLogin(false);
     if (session && session.user) {
         return (
             <>
-                Signed in as {session.user.email} <br />
-                <button onClick={() => signOut()}>Sign out</button>
+                <Button variant="contained" onClick={onSignOut}>Sign out</Button>
             </>
         );
     }
     return (
         <>
-            Not signed in with google  <br />
-            <button onClick={() => signIn('google')}>Sign in</button>
+            <Button variant="contained" onClick={onSignIn}>Sign in</Button>
         </>
     );
 }

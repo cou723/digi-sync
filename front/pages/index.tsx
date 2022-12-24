@@ -6,6 +6,7 @@ import ToCalendar from "../components/import_module/ToCalendar";
 import {Container, Button, Stack, SelectChangeEvent} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
 import axios, {AxiosResponse} from "axios";
+import {useSession} from "next-auth/react";
 
 const API_SERVER_URL: string = "http://localhost:8000";
 
@@ -41,6 +42,7 @@ export default function Home() {
     let [importCount, setImportCount] = useState<number>(0);
     let [totalImportCount, setTotalImportCount] = useState<number>(0);
     let [isDHUPortalWaiting, setIsDHUPortalWaiting] = useState<boolean>(false);
+    let [isGoogleLogin, setIsGoogleLogin] = useState<boolean>(false);
 
     const importCountIncrement = () => setImportCount((prevCount) => prevCount + 1);
 
@@ -91,14 +93,24 @@ export default function Home() {
         setTimeout(() => processArray(class_events, i + 1), 200);
     }
 
-    const onImportClick = async () => {
+    const getEventList = async () => {
         setIsDHUPortalWaiting(true);
         let res = await axios.get("http://localhost:8000/get_dhu_event_list", {params: {importRange: state.importRange, username: state.username, password: state.password}});
+        setIsDHUPortalWaiting(false);
         if (res.data.status_code == "401" && res.data.detail == "user id or password is invalid") {
             alert("ユーザーIDかパスワードが間違っています");
+            throw new Error("");
+        }
+        return res;
+    };
+
+    const onImportClick = async () => {
+        let res;
+        try {
+            res = await getEventList();
+        } catch (e) {
             return;
         }
-        setIsDHUPortalWaiting(false);
         let class_events = state.ignoreOtherEvents ? res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : res.data.events;
         setIsImporting(true);
         setImportCount(0);
@@ -109,7 +121,7 @@ export default function Home() {
 
     return (
         <>
-            <Header />
+            <Header setIsGoogleLogin={setIsGoogleLogin}/>
 
             <Container maxWidth="sm">
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
@@ -118,11 +130,11 @@ export default function Home() {
                     <DHUPortalData username={state.username} password={state.password} onChange={handleInputChange} />
                     <ImportOptions value={state.ignoreOtherEvents} onChange={handleInputChange} />
                     <input type="hidden" name="accessToken" value={accessToken} />
-                    インポートを何度も押さないでください
                     <br />
-                    <Button {...(isDHUPortalWaiting || isImporting ? {disabled:} : {})} variant="contained" onClick={onImportClick}>
+                    <Button disabled={!isGoogleLogin || isDHUPortalWaiting || isImporting ? true : false} variant="contained" onClick={onImportClick}>
                         インポート {isDHUPortalWaiting ? "デジキャンから読み込んでいます..." : ""}
                         {isImporting ? `(${importCount}件/${totalImportCount}件)` : ""}
+                        {isGoogleLogin ? "" : "Googleアカウントにログインしてください"}
                     </Button>
                 </Stack>
             </Container>

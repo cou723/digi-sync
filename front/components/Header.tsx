@@ -1,7 +1,7 @@
 import {AppBar, Box, Toolbar, Typography} from "@mui/material";
 import LoginBtn from "./LoginBtn";
 
-export default function Header() {
+export default function Header({setIsGoogleLogin}) {
     var account_button;
     return (
         <Box sx={{flexGrow: 1}}>
@@ -10,7 +10,7 @@ export default function Header() {
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         DHU portal to Google Cal.
                     </Typography>
-                    <LoginBtn></LoginBtn>
+                    <LoginBtn setIsGoogleLogin={setIsGoogleLogin}></LoginBtn>
                 </Toolbar>
             </AppBar>
         </Box>

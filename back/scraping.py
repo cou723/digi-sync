@@ -79,9 +79,11 @@ def get_dhu_event_list(username: str, password: str, year: int, month: int):
 
     form_data = get_form_data(res, year, month)
 
+    print("cal")
     res = session.post(
         "https://portal.dhw.ac.jp/uprx/up/bs/bsa001/Bsa00101.xhtml",
         data=form_data)
+    print("res")
     res.raise_for_status()
 
     res_xml = ET.fromstring(res.text)

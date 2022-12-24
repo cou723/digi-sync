@@ -20,7 +20,8 @@ export const authOptions: NextAuthOptions = {
             session.user.email = session.user.email
             return session
         }
-    }
+    },
+    secret: "T7sGkMv0CZQYDHhoQ9Lel1WebWMXIvjctqHi+wBcHko=",
 }
 
 export default NextAuth(authOptions)

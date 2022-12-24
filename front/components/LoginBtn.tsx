@@ -2,7 +2,7 @@ import {useSession, signIn, signOut} from "next-auth/react";
 import {Button} from "@mui/material";
 import Fetch from "./import_module/ToCalendar";
 
-export default function LoginBtn({setIsGoogleLogin}) {
+export default function LoginBtn({setIsGoogleLogin}: {setIsGoogleLogin: (isGoogleLogin: boolean) => void}) {
     const {data: session} = useSession();
     const onSignIn = () => {
         setIsGoogleLogin(true);

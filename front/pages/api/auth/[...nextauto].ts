@@ -4,8 +4,8 @@ import GoogleProvider from "next-auth/providers/google"
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_ID || "",
-            clientSecret: process.env.GOOGLE_SECRET || "",
+            clientId: process.env.NEXT_PUBLIC_GOOGLE_ID || "",
+            clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET || "",
             authorization: { params: { scope: 'openid https://www.googleapis.com/auth/calendar' } }
         }),
     ],
@@ -22,6 +22,7 @@ export const authOptions: NextAuthOptions = {
         }
     },
     secret: "T7sGkMv0CZQYDHhoQ9Lel1WebWMXIvjctqHi+wBcHko=",
+    debug: true
 }
 
 export default NextAuth(authOptions)

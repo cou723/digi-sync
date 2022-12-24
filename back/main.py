@@ -4,6 +4,7 @@ import os
 from datetime import date
 from fastapi.middleware.cors import CORSMiddleware
 from classes import CannotLoginException
+from typing import Tuple
 
 app = FastAPI()
 
@@ -30,28 +31,48 @@ app.add_middleware(
 )
 
 
+def get_month_range(start: int, end: int):
+
+    if (start < end):
+        return range(start, end)
+    else:
+        months = []
+        for i in range(start, 13):
+            months.append(i)
+        for i in range(1, end + 1):
+            months.append(i)
+        return months
+
+
 @app.get("/get_dhu_event_list")
 async def get_dhu_event_list(importRange: str, username: str, password: str):
     if (not is_correct_import_range(importRange)):
         return HTTPException(400, f"importRange {importRange} is not correct")
-    (start, end) = get_range(importRange)
+    (start, end) = get_date_startend(importRange)
     if (start is None or end is None):
         return HTTPException(500, "please tell cou about 'error in get_range'")
     try:
-        data = scraper.get_dhu_event_list(
-            username,
-            password,
-            # get_dhu_event_listの仕様変更に伴い固定数を入れているが変える必要がある
-            year=2022, month=12
-        )
+        data = {'events': []}
+        print(start.month, end.month)
+        pre_month = 0
+        year = start.year
+        for month in get_month_range(start.month, end.month):
+            if (month < pre_month):
+                year += 1
+            data["events"] += (scraper.get_dhu_event_list(
+                username, password,
+                year=year, month=month
+            )["events"])
+            pre_month = month
     except CannotLoginException as e:
         return HTTPException(401, detail=str(e))
     # except Exception as e:
         # return HTTPException(500, detail=str(e))
+    print(data)
     return data
 
 
-def get_range(importRange: str):
+def get_date_startend(importRange: str) -> Tuple[date, date]:
     if (importRange == "1q" or importRange == "1q_and_2q"):
         return (date(2022, 4, 1), date(2022, 6, 4))
     elif (importRange == "2q"):

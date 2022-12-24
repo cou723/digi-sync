@@ -1,14 +1,14 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 import scraping as scraper
 import os
 from datetime import date
 from fastapi.middleware.cors import CORSMiddleware
 from classes import CannotLoginException
-from typing import Tuple
+from typing import Tuple, Union
 
 app = FastAPI()
 
-FRONT_URL = "http://localhost:3000"
+FRONT_URL = "https://dp2gc.vercel.app/"
 BACK_URL = "http://localhost:8000"
 
 if os.getenv("FRONT_URL") is not None:
@@ -44,8 +44,14 @@ def get_month_range(start: int, end: int):
         return months
 
 
+@app.get("/")
+def root():
+    return {"text": "Hello!"}
+
+
 @app.get("/get_dhu_event_list")
-async def get_dhu_event_list(importRange: str, username: str, password: str):
+async def get_dhu_event_list(importRange: str, username: str, password: str, response: Response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
     if (not is_correct_import_range(importRange)):
         return HTTPException(400, f"importRange {importRange} is not correct")
     (start, end) = get_date_startend(importRange)

@@ -1,7 +1,7 @@
 import {AppBar, Box, Toolbar, Typography} from "@mui/material";
 import LoginBtn from "./LoginBtn";
 
-export default function Header({setIsGoogleLogin}) {
+export default function Header({setIsGoogleLogin}: {setIsGoogleLogin: (isGoogleLogin: boolean) => void}) {
     var account_button;
     return (
         <Box sx={{flexGrow: 1}}>

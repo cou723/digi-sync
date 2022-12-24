@@ -53,7 +53,6 @@ async def get_dhu_event_list(importRange: str, username: str, password: str):
         return HTTPException(500, "please tell cou about 'error in get_range'")
     try:
         data = {'events': []}
-        print(start.month, end.month)
         pre_month = 0
         year = start.year
         for month in get_month_range(start.month, end.month):
@@ -64,11 +63,11 @@ async def get_dhu_event_list(importRange: str, username: str, password: str):
                 year=year, month=month
             )["events"])
             pre_month = month
+
     except CannotLoginException as e:
         return HTTPException(401, detail=str(e))
     # except Exception as e:
         # return HTTPException(500, detail=str(e))
-    print(data)
     return data
 
 

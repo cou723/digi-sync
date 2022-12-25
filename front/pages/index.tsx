@@ -6,6 +6,7 @@ import ToCalendar from "../components/import_module/ToCalendar";
 import {Container, Button, Stack, SelectChangeEvent} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
 import axios from "axios";
+import {useSession, signIn, signOut} from "next-auth/react";
 
 const API_INTERVAL = 500;
 
@@ -41,7 +42,7 @@ export default function Home() {
     let [importCount, setImportCount] = useState<number>(0);
     let [totalImportCount, setTotalImportCount] = useState<number>(0);
     let [isDHUPortalWaiting, setIsDHUPortalWaiting] = useState<boolean>(false);
-    let [isGoogleLogin, setIsGoogleLogin] = useState<boolean>(false);
+    const {data: session, status} = useSession();
 
     const importCountIncrement = () => setImportCount((prevCount) => prevCount + 1);
 
@@ -60,26 +61,23 @@ export default function Home() {
         });
     };
 
-    const callGoogleAPI = (start: string, title: string) => {
+    const addEventToGoogleCal = async (start: string, title: string) => {
         console.log("call");
 
-        axios
-            .post(
-                `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
-                {
-                    start: {dateTime: start},
-                    end: {dateTime: get_end_time(start)},
-                    summary: title,
-                    description: "#created_by_dp2gc",
-                },
-                {
-                    headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"},
-                }
-            )
-            .then((res) => {
-                if (res.status >= 400) throw new Error("Bad response from server");
-                importCountIncrement();
-            });
+        let res = await axios.post(
+            `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
+            {
+                start: {dateTime: start},
+                end: {dateTime: get_end_time(start)},
+                summary: title,
+                description: "#created_by_dp2gc",
+            },
+            {
+                headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"},
+            }
+        );
+        if (res.status >= 400) throw new Error("Bad response from server");
+        importCountIncrement();
     };
 
     function postToGoogleCalendar(class_events: Array<any>, i: number) {
@@ -87,7 +85,7 @@ export default function Home() {
             setIsImporting(false);
             return;
         }
-        callGoogleAPI(class_events[i].start, class_events[i].title);
+        addEventToGoogleCal(class_events[i].start, class_events[i].title);
         setTimeout(() => postToGoogleCalendar(class_events, i + 1), API_INTERVAL);
     }
 
@@ -118,7 +116,7 @@ export default function Home() {
 
     return (
         <>
-            <Header setIsGoogleLogin={setIsGoogleLogin}/>
+            <Header />
 
             <Container maxWidth="sm">
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
@@ -128,10 +126,10 @@ export default function Home() {
                     <ImportOptions value={state.ignoreOtherEvents} onChange={handleInputChange} />
                     <input type="hidden" name="accessToken" value={accessToken} />
                     <br />
-                    <Button disabled={!isGoogleLogin || isDHUPortalWaiting || isImporting ? true : false} variant="contained" onClick={onImportClick}>
+                    <Button disabled={!(status === "authenticated") || isDHUPortalWaiting || isImporting ? true : false} variant="contained" onClick={onImportClick}>
                         インポート {isDHUPortalWaiting ? "デジキャンから読み込んでいます..." : ""}
                         {isImporting ? `(${importCount}件/${totalImportCount}件)` : ""}
-                        {isGoogleLogin ? "" : "Googleアカウントにログインしてください"}
+                        {status == "authenticated" ? "" : "Googleアカウントにログインしてください"}
                     </Button>
                 </Stack>
             </Container>

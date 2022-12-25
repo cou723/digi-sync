@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
-    const [calendars, setCalendars] = useState<Array<Calendar>>([{id: "0", summary: "Googleでログインしてください"}]);
+    const [calendars, setCalendars] = useState<Array<Calendar>>([]);
     const {data: session} = useSession();
 
     useEffect(() => {
@@ -31,10 +31,14 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
                 return;
             }
             let data = await res.json();
-            console.log(data);
+            if (data.hasOwnProperty("error") && data.error.code >= 400) {
+                signOut();
+                return;
+            }
+            console.log("set:", data.items);
             setCalendars(data.items);
             setAccessToken(session.accessToken);
-        })()
+        })();
     }, [session, setAccessToken]);
 
     return (

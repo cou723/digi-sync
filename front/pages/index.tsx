@@ -62,8 +62,6 @@ export default function Home() {
     };
 
     const addEventToGoogleCal = async (start: string, title: string) => {
-        console.log("call");
-
         let res = await axios.post(
             `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
             {
@@ -91,7 +89,9 @@ export default function Home() {
 
     const getEventList = async () => {
         setIsDHUPortalWaiting(true);
-        let res = await axios.get("http://localhost:8000/get_dhu_event_list", {params: {importRange: state.importRange, username: state.username, password: state.password}});
+        let res = await axios.get(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list", {
+            params: {importRange: state.importRange, username: state.username, password: state.password},
+        });
         setIsDHUPortalWaiting(false);
         if (res.data.status_code == "401" && res.data.detail == "user id or password is invalid") {
             alert("ユーザーIDかパスワードが間違っています");

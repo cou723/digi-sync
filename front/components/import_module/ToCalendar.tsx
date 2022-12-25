@@ -31,6 +31,7 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
                 return;
             }
             let data = await res.json();
+            console.log(data);
             setCalendars(data.items);
             setAccessToken(session.accessToken);
         })()

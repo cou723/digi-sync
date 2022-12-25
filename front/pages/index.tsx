@@ -42,6 +42,7 @@ export default function Home() {
     let [totalImportCount, setTotalImportCount] = useState<number>(0);
     let [isDHUPortalWaiting, setIsDHUPortalWaiting] = useState<boolean>(false);
     let [isGoogleLogin, setIsGoogleLogin] = useState<boolean>(false);
+    let  =useSession()
 
     const importCountIncrement = () => setImportCount((prevCount) => prevCount + 1);
 

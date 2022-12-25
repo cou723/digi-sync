@@ -35,7 +35,6 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
                 signOut();
                 return;
             }
-            console.log("set:", data.items);
             setCalendars(data.items);
             setAccessToken(session.accessToken);
         })();

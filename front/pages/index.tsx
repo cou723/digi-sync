@@ -58,7 +58,6 @@ export default function Home() {
             ...state,
             [event.target.name]: value,
         });
-        console.log(state);
     };
 
     const callGoogleAPI = (start: string, title: string) => {
@@ -100,7 +99,6 @@ export default function Home() {
             alert("ユーザーIDかパスワードが間違っています");
             throw new Error("");
         }
-        console.log(res);
         return res;
     };
 
@@ -116,7 +114,6 @@ export default function Home() {
         setImportCount(0);
         setTotalImportCount(class_events.length);
         postToGoogleCalendar(class_events, 0);
-        console.log("finished!");
     };
 
     return (

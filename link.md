@@ -11,3 +11,8 @@ https://www.pluralsight.com/guides/handling-multiple-inputs-with-single-onchange
 https://qiita.com/Quest_love33/items/a3e4169452cd057b0b09
 https://zenn.dev/stin/articles/use-appropriate-api
 https://zenn.dev/mkt_engr/articles/axios-req-res-typescript
+https://zenn.dev/msy/articles/fe4e7d44e5d095
+https://qiita.com/Abbiscuit/items/66ee955509284e941803
+
+https://teratail.com/questions/352794
+https://qiita.com/rymiyamoto/items/be91b04f70de2b621bb3

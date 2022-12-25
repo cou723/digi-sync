@@ -8,17 +8,8 @@ from typing import Tuple, Union
 
 app = FastAPI()
 
-FRONT_URL = "https://dp2gc.vercel.app/"
-BACK_URL = "http://localhost:8000"
-
-if os.getenv("FRONT_URL") is not None:
-    FRONT_URL = os.getenv("FRONT_URL")
-
-if os.getenv("BACK_URL") is not None:
-    BACK_URL = os.getenv("BACK_URL")
-
 origins = [
-    FRONT_URL,
+    "https://dp2gc.vercel.app/",
     "http://localhost:8000",
     "http://localhost:3000",
 ]

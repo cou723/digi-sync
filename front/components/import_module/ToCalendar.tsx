@@ -21,7 +21,7 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
         (async () => {
             let res: Response;
             try {
-                if (!session) return;
+                if (!(session && session.user)) return;
                 res = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
                     method: "GET",
                     headers: {Authorization: `Bearer ${session.accessToken}`},

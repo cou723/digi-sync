@@ -7,8 +7,6 @@ type Props = {
 
 export default function ImportOptions({value, onChange}: Props) {
     return (
-        <>
             <FormControlLabel control={<Checkbox value={value} onChange={onChange} required name="ignoreOtherEvents" defaultChecked />} label="授業以外をインポートしない" />
-        </>
     );
 }

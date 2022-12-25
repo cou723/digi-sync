@@ -1,4 +1,3 @@
-import Header from "../components/Header";
 import ImportRange from "../components/import_module/ImportRange";
 import DHUPortalData from "../components/import_module/DHUPortalData";
 import ImportOptions from "../components/import_module/ImportOptions";
@@ -116,8 +115,6 @@ export default function Home() {
 
     return (
         <>
-            <Header />
-
             <Container maxWidth="sm">
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange value={state.importRange} onChange={handleSelectChange} />

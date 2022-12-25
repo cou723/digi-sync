@@ -100,6 +100,7 @@ export default function Home() {
             alert("ユーザーIDかパスワードが間違っています");
             throw new Error("");
         }
+        console.log(res);
         return res;
     };
 

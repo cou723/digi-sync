@@ -88,7 +88,7 @@ export default function Home() {
             setIsImporting(false);
             return;
         }
-        callGoogleAPI(class_events[i].start, class_events[i].summary);
+        callGoogleAPI(class_events[i].start, class_events[i].title);
         setTimeout(() => postToGoogleCalendar(class_events, i + 1), API_INTERVAL);
     }
 

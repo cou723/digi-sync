@@ -7,7 +7,7 @@ import {Container, Button, Stack, SelectChangeEvent} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
 import axios from "axios";
 
-const API_INTERVAL = 300;
+const API_INTERVAL = 500;
 
 type Inputs = {
     importRange: string;

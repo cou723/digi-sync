@@ -19,7 +19,8 @@ if os.getenv("BACK_URL") is not None:
 
 origins = [
     FRONT_URL,
-    BACK_URL,
+    "http://localhost:8000",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(

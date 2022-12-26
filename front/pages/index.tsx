@@ -2,7 +2,7 @@ import ImportRange from "../components/import_module/ImportRange";
 import DHUPortalData from "../components/import_module/DHUPortalData";
 import ImportOptions from "../components/import_module/ImportOptions";
 import ToCalendar from "../components/import_module/ToCalendar";
-import {Container, Button, Stack, SelectChangeEvent} from "@mui/material";
+import {Container, Button, Stack, SelectChangeEvent, Typography} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
 import axios from "axios";
 import {useSession, signIn, signOut} from "next-auth/react";
@@ -116,6 +116,8 @@ export default function Home() {
     return (
         <>
             <Container maxWidth="sm">
+                <Typography variant="h1">このアプリケーションについて</Typography>
+                <Typography variant="body1">このアプリケーションは、デジタルキャンパスから取得したイベントをGoogleカレンダーにインポートするためのものです。</Typography>
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange value={state.importRange} onChange={handleSelectChange} />
                     <ToCalendar value={state.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />

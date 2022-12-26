@@ -116,7 +116,7 @@ export default function Home() {
     return (
         <>
             <Container maxWidth="sm">
-                <Typography variant="h1">このアプリケーションについて</Typography>
+                <Typography variant="h4" component="h1">このアプリケーションについて</Typography>
                 <Typography variant="body1">このアプリケーションは、デジタルキャンパスから取得したイベントをGoogleカレンダーにインポートするためのものです。</Typography>
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange value={state.importRange} onChange={handleSelectChange} />

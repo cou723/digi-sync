@@ -4,7 +4,7 @@ export default function privacy_policy() {
     return (
         <>
             <Container maxWidth="md">
-                <Typography variant="h2" gutterBottom>
+                <Typography variant="h4" component="h1" gutterBottom>
                     利用規約
                 </Typography>
                 <Typography variant="body1">

@@ -4,6 +4,7 @@ import {useRouter} from "next/router";
 
 const pages = [
     {display: "インポート", link: "/"},
+    {display: "About", link: "/about"},
     {display: "プライバシーポリシー", link: "/privacy_policy"},
     {display: "利用規約", link: "/terms_and_conditions"},
 ];

@@ -6,6 +6,7 @@ import {Container, Button, Stack, SelectChangeEvent, Typography} from "@mui/mate
 import {useState, ChangeEvent, ReactNode} from "react";
 import axios from "axios";
 import {useSession, signIn, signOut} from "next-auth/react";
+import Head from "next/head"
 
 const API_INTERVAL = 500;
 
@@ -115,6 +116,9 @@ export default function Home() {
 
     return (
         <>
+            <Head>
+                <meta name="google-site-verification" content="YRVBxjKFSCa5gYxDgaLk0sjJFCDBkJ0z7IcFereoi1w" />
+            </Head>
             <Container maxWidth="sm">
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange value={state.importRange} onChange={handleSelectChange} />

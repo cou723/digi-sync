@@ -16,3 +16,4 @@ https://qiita.com/Abbiscuit/items/66ee955509284e941803
 
 https://teratail.com/questions/352794
 https://qiita.com/rymiyamoto/items/be91b04f70de2b621bb3
+https://techblg.app/articles/how-to-transfer-to-different-page-without-link/

@@ -2,6 +2,7 @@ import {SessionProvider} from "next-auth/react";
 import { CssBaseline } from '@mui/material'
 import type {AppProps} from "next/app";
 import Header from "../components/Header";
+import Head from "next/head";
 
 export default function App({Component, pageProps: {session, ...pageProps}}: AppProps) {
     return (

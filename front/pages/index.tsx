@@ -4,11 +4,8 @@ import ImportOptions from "../components/import_module/ImportOptions";
 import ToCalendar from "../components/import_module/ToCalendar";
 import {Container, Button, Stack, SelectChangeEvent, Typography} from "@mui/material";
 import {useState, ChangeEvent, ReactNode} from "react";
-import axios from "axios";
 import {useSession, signIn, signOut} from "next-auth/react";
-import Head from "next/head"
-
-const API_INTERVAL = 500;
+import Head from "next/head";
 
 type Inputs = {
     importRange: string;
@@ -29,10 +26,10 @@ type ClassEvent = {
 };
 
 function get_end_time(start: string): string {
-    const end_date_unix_timestamp = Date.parse(start) + 60 * 90;
+    const end_date_unix_timestamp = Date.parse(start) + 60 * 90 * 1000;
     const end_date: Date = new Date(end_date_unix_timestamp);
-    end_date.setMinutes(end_date.getMinutes() + 90);
-    return end_date.toISOString();
+    end_date.setMinutes(end_date.getMinutes());
+    return end_date.toISOString().slice(0, -5) + "+0000";
 }
 
 export default function Home() {
@@ -61,57 +58,67 @@ export default function Home() {
         });
     };
 
-    const addEventToGoogleCal = async (start: string, title: string) => {
-        let res = await axios.post(
-            `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`,
-            {
-                start: {dateTime: start},
+    async function addEventToGoogleCal(start: string, title: string) {
+        let url = `https://www.googleapis.com/calendar/v3/calendars/${state.toCalendar}/events`;
+        console.log(url);
+        // TODO エラー処理
+        if (!(session && session.user)) return;
+        let res = await fetch(url, {
+            method: "POST",
+            headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
+            body: JSON.stringify({
                 end: {dateTime: get_end_time(start)},
+                start: {dateTime: start},
                 summary: title,
                 description: "#created_by_dp2gc",
-            },
-            {
-                headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"},
-            }
-        );
-        if (res.status >= 400) throw new Error("Bad response from server");
-        importCountIncrement();
-    };
-
-    function postToGoogleCalendar(class_events: Array<any>, i: number) {
-        if (i >= class_events.length) {
-            setIsImporting(false);
-            return;
+            }),
+        });
+        if (res.status >= 400) {
+            res.json().then((data) => {
+                console.log(data);
+            });
+            throw new Error(`${res.status} : Bad response from server`);
         }
-        addEventToGoogleCal(class_events[i].start, class_events[i].title);
-        setTimeout(() => postToGoogleCalendar(class_events, i + 1), API_INTERVAL);
+        importCountIncrement();
     }
+
+    const postToGoogleCalendar = async (class_events: Array<any>) => {
+        for (const class_event of class_events) {
+            try {
+                await addEventToGoogleCal(class_event.start, class_event.title);
+            } catch (error) {
+                console.error(error);
+                break;
+            }
+        }
+        setIsImporting(false);
+    };
 
     const getEventList = async () => {
         setIsDHUPortalWaiting(true);
-        let res = await axios.get(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list", {
-            params: {importRange: state.importRange, username: state.username, password: state.password},
-        });
+        const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" + new URLSearchParams({importRange: state.importRange, username: state.username, password: state.password}).toString(), {method: "GET"});
+        const data = await res.json();
         setIsDHUPortalWaiting(false);
-        if (res.data.status_code == "401" && res.data.detail == "user id or password is invalid") {
+        if (data.status_code == "401" && data.detail == "user id or password is invalid") {
             alert("ユーザーIDかパスワードが間違っています");
             throw new Error("");
         }
-        return res;
+        return data;
     };
 
     const onImportClick = async () => {
-        let res;
+        let data;
         try {
-            res = await getEventList();
+            data = await getEventList();
         } catch (e) {
+            //TODO: エラー処理
             return;
         }
-        let class_events = state.ignoreOtherEvents ? res.data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : res.data.events;
+        let class_events = state.ignoreOtherEvents ? data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : data.events;
         setIsImporting(true);
         setImportCount(0);
         setTotalImportCount(class_events.length);
-        postToGoogleCalendar(class_events, 0);
+        postToGoogleCalendar(class_events);
     };
 
     return (
@@ -128,9 +135,9 @@ export default function Home() {
                     <input type="hidden" name="accessToken" value={accessToken} />
                     <br />
                     <Button disabled={!(status === "authenticated") || isDHUPortalWaiting || isImporting ? true : false} variant="contained" onClick={onImportClick}>
-                        インポート {isDHUPortalWaiting ? "デジキャンから読み込んでいます..." : ""}
+                        {isDHUPortalWaiting ? "デジキャンから読み込んでいます..." : ""}
                         {isImporting ? `(${importCount}件/${totalImportCount}件)` : ""}
-                        {status == "authenticated" ? "" : "Googleアカウントにログインしてください"}
+                        {status == "authenticated" ? "インポート" : "Googleアカウントにログインしてください"}
                     </Button>
                 </Stack>
             </Container>

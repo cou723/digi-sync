@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
-
+console.log(process.env.NEXT_PUBLIC_GOOGLE_ID || "", process.env.NEXT_PUBLIC_GOOGLE_SECRET);
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({

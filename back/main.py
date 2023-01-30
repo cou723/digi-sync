@@ -10,7 +10,6 @@ app = FastAPI()
 
 origins = [
     "https://dp2gc.vercel.app/",
-    "http://localhost:8000",
     "http://localhost:3000",
 ]
 
@@ -43,7 +42,7 @@ def root():
 
 @app.get("/get_dhu_event_list")
 async def get_dhu_event_list(importRange: str, username: str, password: str, response: Response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "https://dp2gc.vercel.app/"
     if (not is_correct_import_range(importRange)):
         return HTTPException(400, f"importRange {importRange} is not correct")
     (start, end) = get_date_startend(importRange)

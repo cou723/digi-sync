@@ -1,6 +1,6 @@
 import React, {useState, useEffect, ReactNode} from "react";
 import {useSession, signIn, signOut} from "next-auth/react";
-import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent} from "@mui/material";
+import {Select, MenuItem, FormControl, InputLabel, SelectChangeEvent, FormHelperText} from "@mui/material";
 
 type Calendar = {
     id: string;
@@ -8,12 +8,13 @@ type Calendar = {
 };
 
 type Props = {
+    error: string;
     value: string;
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
     setAccessToken: (accessToken: string) => void;
 };
 
-const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
+const ToCalendar = ({error, value, onChange, setAccessToken}: Props) => {
     const [calendars, setCalendars] = useState<Array<Calendar>>([]);
     const {data: session} = useSession();
 
@@ -43,13 +44,14 @@ const ToCalendar = ({value, onChange, setAccessToken}: Props) => {
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
-            <Select onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
+            <Select error={error != ""} onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar) => (
                     <MenuItem value={calendar.id} key={calendar.id}>
                         {calendar.summary}
                     </MenuItem>
                 ))}
             </Select>
+            <FormHelperText>{error}</FormHelperText>
         </FormControl>
     );
 };

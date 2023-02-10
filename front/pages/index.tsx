@@ -3,16 +3,16 @@ import DHUPortalData from "../components/import_module/DHUPortalData";
 import ImportOptions from "../components/import_module/ImportOptions";
 import ToCalendar from "../components/import_module/ToCalendar";
 import {Container, Button, Stack, SelectChangeEvent, Typography} from "@mui/material";
-import {useState, ChangeEvent, ReactNode} from "react";
+import {useState, useEffect, useCallback, ChangeEvent, ReactNode} from "react";
 import {useSession, signIn, signOut} from "next-auth/react";
 import Head from "next/head";
 
 type Inputs = {
     importRange: string;
+    toCalendar: string;
     username: string;
     password: string;
     ignoreOtherEvents: boolean;
-    toCalendar: string;
     [key: string]: string | boolean;
 };
 
@@ -33,19 +33,40 @@ function get_end_time(start: string): string {
     return end_date.toISOString().slice(0, -5) + "+0000";
 }
 
-const FORM_STATE_INIT_VALUE: Inputs = {importRange: "", username: "", password: "", ignoreOtherEvents: true, toCalendar: ""} as Inputs;
+const FORM_STATE_INIT_VALUE: Inputs = {importRange: "", toCalendar: "", username: "", password: "", ignoreOtherEvents: true} as Inputs;
 
 export default function Home() {
     let [formState, setFormState] = useState<Inputs>(FORM_STATE_INIT_VALUE);
     let [accessToken, setAccessToken] = useState<string>("");
-    let [isImporting, setIsImporting] = useState<boolean>(false);
     let [importCount, setImportCount] = useState<number>(0);
     let [totalImportCount, setTotalImportCount] = useState<number>(0);
-    let [isDHUPortalWaiting, setIsDHUPortalWaiting] = useState<boolean>(false);
-    let [dhuPortalInputError, setDhuPortalInputError] = useState({username: "", password: ""});
-    let [calendarInputError, setCalendarInputError] = useState<string>("");
+
     let [importRangeError, setImportRangeError] = useState<string>("");
-    const {data: session, status} = useSession();
+    let [calendarInputError, setCalendarInputError] = useState<string>("");
+    let [dhuPortalInputError, setDhuPortalInputError] = useState({username: "", password: ""});
+
+    let [appState, setAppState] = useState<"unauthenticated" | "ready" | "connect portal" | "import">("unauthenticated");
+
+    const {data: session, status: authStatus} = useSession();
+
+    useEffect(() => {
+        if (authStatus == "unauthenticated") setAppState("unauthenticated");
+        else setAppState("ready");
+    }, []);
+
+    useEffect(() => {
+        if (appState == "import") {
+            window.onbeforeunload = function () {
+                return "Are you sure you want to leave this page?";
+            };
+        } else {
+            window.onbeforeunload = null;
+        }
+
+        return () => {
+            window.onbeforeunload = null;
+        };
+    }, [appState]);
 
     const importCountIncrement = () => setImportCount((prevCount) => prevCount + 1);
 
@@ -56,6 +77,7 @@ export default function Home() {
             [event.target.name]: value,
         });
     };
+
     const handleSelectChange = (event: SelectChangeEvent<string>, child: ReactNode) => {
         const value = event.target.value;
         setFormState({
@@ -100,11 +122,15 @@ export default function Home() {
     };
 
     const getEventList = async () => {
-        setIsDHUPortalWaiting(true);
-        const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" + new URLSearchParams({importRange: formState.importRange, username: formState.username, password: formState.password}).toString(), {method: "GET"});
+        setAppState("connect portal");
+        let res;
+        try {
+            res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" + new URLSearchParams({importRange: formState.importRange, username: formState.username, password: formState.password}).toString(), {method: "GET"});
+        } catch {
+            throw new Error("サーバーに接続できませんでした");
+        }
         const data = await res.json();
-        setIsDHUPortalWaiting(false);
-        if (data.status_code == "401" && data.detail == "user id or password is invalid") throw new Error("");
+        if (data.status_code == "401" && data.detail == "user id or password is invalid") throw new Error("ユーザー名またはパスワードが違います");
         return data;
     };
 
@@ -115,39 +141,38 @@ export default function Home() {
         return false;
     }
 
-    function resetErrorMessage(){
-        setDhuPortalInputError({username: "", password: ""});
-        setCalendarInputError("");
+    function resetErrorMessage() {
         setImportRangeError("");
+        setCalendarInputError("");
+        setDhuPortalInputError({username: "", password: ""});
     }
 
     const onImportClick = async () => {
         resetErrorMessage();
         if (existsStateEmpty()) {
+            if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) setImportRangeError("インポート範囲が指定されていません");
+            if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) setCalendarInputError("インポート先のカレンダーが指定されていません");
             let username_error_msg = "";
             if (formState.username == FORM_STATE_INIT_VALUE.username) username_error_msg = "ユーザー名を入力してください";
             let password_error_msg = "";
             if (formState.password == FORM_STATE_INIT_VALUE.password) password_error_msg = "パスワードを入力してください";
             setDhuPortalInputError({username: username_error_msg, password: password_error_msg});
-            if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) setCalendarInputError("インポート先のカレンダーが指定されていません");
-            if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) setImportRangeError("インポート範囲が指定されていません");
             return;
         }
         let data;
         try {
             data = await getEventList();
         } catch (e) {
-            alert("ユーザーIDまたはパスワードが間違っています");
+            alert(e.message);
+            setAppState("ready");
             return;
-        } finally {
-            setIsImporting(false);
         }
         let class_events = formState.ignoreOtherEvents ? data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : data.events;
-        setIsImporting(true);
+        setAppState("import");
         setImportCount(0);
         setTotalImportCount(class_events.length);
-        postToGoogleCalendar(class_events);
-        setIsImporting(false);
+        await postToGoogleCalendar(class_events);
+        setAppState("ready");
     };
 
     return (
@@ -163,10 +188,10 @@ export default function Home() {
                     <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
                     <input type="hidden" name="accessToken" value={accessToken} />
                     <br />
-                    <Button disabled={!(status === "authenticated") || isDHUPortalWaiting || isImporting ? true : false} variant="contained" onClick={onImportClick}>
-                        {isDHUPortalWaiting ? "デジキャンから読み込んでいます..." : ""}
-                        {isImporting ? `(${importCount}件/${totalImportCount}件)` : ""}
-                        {status == "authenticated" ? "インポート" : "Googleアカウントにログインしてください"}
+                    <Button disabled={!(authStatus === "authenticated") || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>
+                        {appState == "connect portal" ? "デジキャンから読み込んでいます..." : ""}
+                        {appState == "import" ? `(${importCount}件/${totalImportCount}件)` : ""}
+                        {authStatus == "authenticated" ? "インポート" : "Googleアカウントにログインしてください"}
                     </Button>
                 </Stack>
             </Container>

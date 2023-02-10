@@ -108,22 +108,22 @@ export default function Home() {
         return data;
     };
 
-    function exists_state_empty() {
+    function existsStateEmpty() {
         for (let input_label of Object.keys(formState)) {
             if (typeof FORM_STATE_INIT_VALUE[input_label] == "string" && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
         }
         return false;
     }
 
-    function reset_error_message(){
+    function resetErrorMessage(){
         setDhuPortalInputError({username: "", password: ""});
         setCalendarInputError("");
         setImportRangeError("");
     }
 
     const onImportClick = async () => {
-        reset_error_message();
-        if (exists_state_empty()) {
+        resetErrorMessage();
+        if (existsStateEmpty()) {
             let username_error_msg = "";
             if (formState.username == FORM_STATE_INIT_VALUE.username) username_error_msg = "ユーザー名を入力してください";
             let password_error_msg = "";

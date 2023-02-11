@@ -52,7 +52,7 @@ export default function Home() {
     useEffect(() => {
         if (authStatus == "unauthenticated") setAppState("unauthenticated");
         else setAppState("ready");
-    }, []);
+    }, [authStatus]);
 
     useEffect(() => {
         if (appState == "import") {
@@ -147,22 +147,26 @@ export default function Home() {
         setDhuPortalInputError({username: "", password: ""});
     }
 
+    function setErrorMessages() {
+        if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) setImportRangeError("インポート範囲が指定されていません");
+        if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) setCalendarInputError("インポート先のカレンダーが指定されていません");
+        let username_error_msg = "";
+        if (formState.username == FORM_STATE_INIT_VALUE.username) username_error_msg = "ユーザー名を入力してください";
+        let password_error_msg = "";
+        if (formState.password == FORM_STATE_INIT_VALUE.password) password_error_msg = "パスワードを入力してください";
+        setDhuPortalInputError({username: username_error_msg, password: password_error_msg});
+    }
+
     const onImportClick = async () => {
         resetErrorMessage();
         if (existsStateEmpty()) {
-            if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) setImportRangeError("インポート範囲が指定されていません");
-            if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) setCalendarInputError("インポート先のカレンダーが指定されていません");
-            let username_error_msg = "";
-            if (formState.username == FORM_STATE_INIT_VALUE.username) username_error_msg = "ユーザー名を入力してください";
-            let password_error_msg = "";
-            if (formState.password == FORM_STATE_INIT_VALUE.password) password_error_msg = "パスワードを入力してください";
-            setDhuPortalInputError({username: username_error_msg, password: password_error_msg});
+            setErrorMessages();
             return;
         }
         let data;
         try {
             data = await getEventList();
-        } catch (e) {
+        } catch (e: any) {
             alert(e.message);
             setAppState("ready");
             return;
@@ -177,9 +181,6 @@ export default function Home() {
 
     return (
         <>
-            <Head>
-                <meta name="google-site-verification" content="YRVBxjKFSCa5gYxDgaLk0sjJFCDBkJ0z7IcFereoi1w" />
-            </Head>
             <Container maxWidth="sm">
                 <Stack spacing={2} component="form" autoComplete="off" action="/import">
                     <ImportRange error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
@@ -188,10 +189,10 @@ export default function Home() {
                     <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
                     <input type="hidden" name="accessToken" value={accessToken} />
                     <br />
-                    <Button disabled={!(authStatus === "authenticated") || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>
+                    <Button disabled={appState == "unauthenticated" || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>
                         {appState == "connect portal" ? "デジキャンから読み込んでいます..." : ""}
                         {appState == "import" ? `(${importCount}件/${totalImportCount}件)` : ""}
-                        {authStatus == "authenticated" ? "インポート" : "Googleアカウントにログインしてください"}
+                        {appState == "unauthenticated" ? "Googleアカウントにログインしてください" : "インポート"}
                     </Button>
                 </Stack>
             </Container>

@@ -11,7 +11,7 @@ export default function Component({error, value, onChange}: Props) {
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel id="import-q-label">インポートするクオーター</InputLabel>
-            <Select error={error != ""} onChange={onChange} value={value} required name="importRange" labelId="import-q-label" label="インポートするクオーター">
+            <Select error={error != ""} onChange={onChange} value={value} required name="importRange" labelId="import-q-label" label="インポートするクオーター" margin="dense">
                 <MenuItem value="1q">1クオーター</MenuItem>
                 <MenuItem value="2q">2クオーター</MenuItem>
                 <MenuItem value="3q">3クオーター</MenuItem>

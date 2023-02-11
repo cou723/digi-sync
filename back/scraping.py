@@ -7,10 +7,6 @@ from classes import CannotLoginException
 session = HTMLSession()
 LOGIN_URL = "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml"
 
-USER = "A22DC030"
-PASS = "********"
-
-
 def get_input_value(res, str):
     return res.html.find(f"input[name='{str}']", first=True).attrs["value"]
 
@@ -77,20 +73,15 @@ def get_dhu_event_list(username: str, password: str, year: int, month: int):
         raise Exception("month is out of range")
     res = login(username, password)
 
-    form_data = get_form_data(res, year, month)
-
-    print("cal")
+    print("cal",time.time())
     res = session.post(
         "https://portal.dhw.ac.jp/uprx/up/bs/bsa001/Bsa00101.xhtml",
-        data=form_data)
-    print("res")
+        data=get_form_data(res, year, month))
+    print("res",time.time())
     res.raise_for_status()
 
-    res_xml = ET.fromstring(res.text)
-
     events_element = None
-
-    for updates_element in res_xml[0]:
+    for updates_element in ET.fromstring(res.text)[0]:
         if updates_element.attrib['id'] == "funcForm:j_idt361:content":
             events_element = updates_element
             break
@@ -99,7 +90,3 @@ def get_dhu_event_list(username: str, password: str, year: int, month: int):
             "funcForm:j_idt361:content is not found. maybe xml returned by dhu portal is changed.")
 
     return (json.loads(events_element.text))
-
-
-# print(get_form_data(login(USER, PASS), date(2022, 9, 1), date(2022, 12, 30)))
-# print(get_dhu_event_list(USER, PASS, 2022, 9))

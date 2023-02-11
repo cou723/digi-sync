@@ -171,8 +171,8 @@ export default function Home() {
             setAppState("ready");
             return;
         }
-        let class_events = formState.ignoreOtherEvents ? data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : data.events;
         setAppState("import");
+        let class_events = formState.ignoreOtherEvents ? data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1) : data.events;
         setImportCount(0);
         setTotalImportCount(class_events.length);
         await postToGoogleCalendar(class_events);

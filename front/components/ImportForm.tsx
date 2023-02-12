@@ -35,7 +35,7 @@ function get_end_time(start: string): string {
 
 const FORM_STATE_INIT_VALUE: Inputs = {importYear: (new Date().getFullYear() - 1).toString(), importRange: "", toCalendar: "", username: "", password: "", ignoreOtherEvents: true} as Inputs;
 
-const INIT_REQUIRE_VALUE_LIST = ["importRange","toCalendar","username","password"];
+const INIT_REQUIRE_VALUE_LIST = ["importRange", "toCalendar", "username", "password"];
 
 export default function ImportForm() {
     let [formState, setFormState] = useState<Inputs>(FORM_STATE_INIT_VALUE);
@@ -86,28 +86,6 @@ export default function ImportForm() {
             [event.target.name]: value,
         });
     };
-
-    async function addEventToGoogleCal(start: string, title: string) {
-        if (!(session && session.user)) return;
-        let google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
-        let res = await fetch(google_api_url, {
-            method: "POST",
-            headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
-            body: JSON.stringify({
-                end: {dateTime: get_end_time(start)},
-                start: {dateTime: start},
-                summary: title,
-                description: "#created_by_dp2gc",
-            }),
-        });
-        if (res.status >= 400) {
-            res.json().then((data) => {
-                console.log(data);
-            });
-            throw new Error(`${res.status} : Bad response from server`);
-        }
-        setImportCount((prevCount) => prevCount + 1);
-    }
 
     const onImportClick = async () => {
         resetErrorMessage();
@@ -172,6 +150,11 @@ export default function ImportForm() {
     }
 
     const postToGoogleCalendar = async (class_events: Array<any>) => {
+        //if (!(session && session.user)) return;
+        //let google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
+        //let res = await fetch(google_api_url, {method: "GET", headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"}});
+        // TODO: res.statusが400と500のときのエラー処理
+
         for (const class_event of class_events) {
             try {
                 await addEventToGoogleCal(class_event.start, class_event.title);
@@ -181,6 +164,28 @@ export default function ImportForm() {
             }
         }
     };
+
+    async function addEventToGoogleCal(start: string, title: string) {
+        if (!(session && session.user)) return;
+        let google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
+        let res = await fetch(google_api_url, {
+            method: "POST",
+            headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
+            body: JSON.stringify({
+                end: {dateTime: get_end_time(start)},
+                start: {dateTime: start},
+                summary: title,
+                description: "#created_by_dp2gc",
+            }),
+        });
+        if (res.status >= 400) {
+            res.json().then((data) => {
+                console.log(data);
+            });
+            throw new Error(`${res.status} : Bad response from server`);
+        }
+        setImportCount((prevCount) => prevCount + 1);
+    }
 
     return (
         <Stack spacing={2} component="form" autoComplete="off" action="/import">

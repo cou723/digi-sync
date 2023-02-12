@@ -5,6 +5,7 @@ from datetime import date
 from fastapi.middleware.cors import CORSMiddleware
 from classes import CannotLoginException
 from typing import Tuple, Union
+import calendar
 
 app = FastAPI()
 
@@ -88,15 +89,24 @@ def is_correct_import_year(importYear: str) -> bool:
 
 def get_range_date(importYear: str, importRange: str) -> Tuple[date, date]:
     year = int(importYear)
+    _1q_start = date(year, 4, 1)
+    _2q_start = date(year, 6, 10)
+    _3q_start = date(year, 9, 1)
+    _4q_start = date(year, 11, 25)
+    _1q_end = date(year, 6, 9)
+    _2q_end = date(year, 8, 31)
+    _3q_end = date(year, 11, 24)
+    _4q_end = date(year+1, 2, calendar.monthrange(year+1, 2)[1])
+
     if (importRange == "1q"):
-        return (date(year, 4, 1), date(year, 6, 9))
+        return (_1q_start, _1q_end)
     elif (importRange == "2q"):
-        return (date(year, 6, 10), date(year, 8, 31))
+        return (_2q_start, _2q_end)
     elif (importRange == "3q"):
-        return (date(year, 9, 1), date(year, 11, 25))
+        return (_3q_start, _3q_end)
     elif (importRange == "4q"):
-        return (date(year, 11, 25), date(year + 1, 2, 29))
+        return (_4q_start, _4q_end)
     elif (importRange == "1q_and_2q"):
-        return (date(year, 4, 1), date(year, 8, 31))
+        return (_1q_start, _2q_end)
     elif (importRange == "3q_and_4q"):
-        return (date(year, 9, 1), date(year + 1, 2, 29))
+        return (_3q_start, _4q_end)

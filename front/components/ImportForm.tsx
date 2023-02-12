@@ -4,36 +4,10 @@ import ImportOptions from "./import_module/ImportOptions";
 import ToCalendar from "./import_module/ToCalendar";
 import {Button, Stack, SelectChangeEvent, Select, InputLabel, FormControl, MenuItem} from "@mui/material";
 import {useState, useEffect, ChangeEvent, ReactNode} from "react";
-import {useSession} from "next-auth/react";
+import {useSession, Session} from "next-auth/react";
 import type {CalendarList, Event} from "../gapi_calendar.d.ts";
-import {start} from "repl";
-
-type Inputs = {
-    importYear: string;
-    importRange: string;
-    toCalendar: string;
-    username: string;
-    password: string;
-    ignoreOtherEvents: boolean;
-    [key: string]: string | boolean;
-};
-
-type ClassEvent = {
-    allDay: boolean;
-    className: string;
-    editable: boolean;
-    end: string;
-    id: string;
-    start: string;
-    title: string;
-};
-
-function get_end_time(start: string): string {
-    const end_date_unix_timestamp = Date.parse(start) + 60 * 90 * 1000;
-    const end_date: Date = new Date(end_date_unix_timestamp);
-    end_date.setMinutes(end_date.getMinutes());
-    return end_date.toISOString().slice(0, -5) + "+0000";
-}
+import {encodeQueryData, getEndTime, getQuarterRange} from "./utils";
+import {Inputs, ClassEvent} from "./types";
 
 const FORM_STATE_INIT_VALUE: Inputs = {
     importYear: (new Date().getFullYear() - 1).toString(),
@@ -43,21 +17,6 @@ const FORM_STATE_INIT_VALUE: Inputs = {
     password: "",
     ignoreOtherEvents: true,
 } as Inputs;
-
-type Range = {start: Date; end: Date};
-function get_quarter_ranges(year: number) {
-    return {
-        _1q_start: new Date(year, 4 - 1, 1),
-        _2q_start: new Date(year, 6 - 1, 10),
-        _3q_start: new Date(year, 9 - 1, 1),
-        _4q_start: new Date(year, 11 - 1, 25),
-
-        _1q_end: new Date(year, 6 - 1, 9, 23, 59, 59),
-        _2q_end: new Date(year, 8 - 1, 31, 23, 59, 59),
-        _3q_end: new Date(year, 11 - 1, 24, 23, 59, 59),
-        _4q_end: new Date(year + 1, 2 - 1, new Date(year, 2, 0).getDate(), 23, 59, 59),
-    };
-}
 
 const INIT_REQUIRE_VALUE_LIST = ["importRange", "toCalendar", "username", "password"];
 
@@ -128,11 +87,21 @@ export default function ImportForm() {
         }
         setAppState("import");
         let class_events: Array<ClassEvent> = data.events;
-        if (formState.ignoreOtherEvents) class_events = data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1);
+        if (formState.ignoreOtherEvents) {
+            class_events = data.events.filter((e: ClassEvent) => e.className.indexOf("eventJugyo") !== -1);
+        }
         setImportCount(0);
+        class_events = excludeOutOfImportRange(class_events);
         await postToGoogleCalendar(class_events);
         setAppState("ready");
     };
+
+    function existsStateEmpty() {
+        for (let input_label of Object.keys(formState)) {
+            if (INIT_REQUIRE_VALUE_LIST.includes(input_label) && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
+        }
+        return false;
+    }
 
     const getEventList = async () => {
         setAppState("connect portal");
@@ -154,13 +123,6 @@ export default function ImportForm() {
         return res;
     };
 
-    function existsStateEmpty() {
-        for (let input_label of Object.keys(formState)) {
-            if (INIT_REQUIRE_VALUE_LIST.includes(input_label) && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
-        }
-        return false;
-    }
-
     function resetErrorMessage() {
         setImportRangeError(FORM_STATE_INIT_VALUE.importRange);
         setCalendarInputError(FORM_STATE_INIT_VALUE.toCalendar);
@@ -168,54 +130,43 @@ export default function ImportForm() {
     }
 
     function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) setImportRangeError("インポート範囲が指定されていません");
-        if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) setCalendarInputError("インポート先のカレンダーが指定されていません");
+        if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) {
+            setImportRangeError("インポート範囲が指定されていません");
+        }
+        if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) {
+            setCalendarInputError("インポート先のカレンダーが指定されていません");
+        }
         let username_error_msg = "";
-        if (formState.username == FORM_STATE_INIT_VALUE.username) username_error_msg = "ユーザー名を入力してください";
+        if (formState.username == FORM_STATE_INIT_VALUE.username) {
+            username_error_msg = "ユーザー名を入力してください";
+        }
         let password_error_msg = "";
-        if (formState.password == FORM_STATE_INIT_VALUE.password) password_error_msg = "パスワードを入力してください";
+        if (formState.password == FORM_STATE_INIT_VALUE.password) {
+            password_error_msg = "パスワードを入力してください";
+        }
         setDhuPortalInputError({username: username_error_msg, password: password_error_msg});
     }
 
+    function excludeOutOfImportRange(class_events: ClassEvent[]): ClassEvent[] {
+        let {start: start_date, end: end_date} = getQuarterRange(parseInt(formState.importYear), formState.importRange);
+        let start = start_date.getTime();
+        let end = end_date.getTime();
+        return class_events.filter((class_event) => {
+            let start_date = new Date(class_event.start).getTime();
+            return start_date > start && start_date < end;
+        });
+    }
+
+    // class_eventsをgoogleに追加する
     const postToGoogleCalendar = async (class_events: Array<ClassEvent>) => {
-        if (!(session && session.user)) return;
-        let res_obj: CalendarList;
-        let next_page_token: string = "";
-        let already_posted_event_list: Array<Event> = [];
-        do {
-            let {start, end} = get_quarter_range(+formState.importYear, formState.importRange);
-            let query_param_obj;
-            if (next_page_token != "")
-                query_param_obj = {
-                    pageToken: next_page_token,
-                };
-            else
-                query_param_obj = {
-                    maxResults: 2000,
-                    timeMax: end.toISOString(),
-                    timeMin: start.toISOString(),
-                    orderBy: "startTime",
-                    singleEvents: true,
-                };
-            console.log(start.toISOString(), end.toISOString());
-            let query_param_str = new URLSearchParams(query_param_obj).toString();
-            let google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events?${query_param_str}`;
-            let res = await fetch(google_api_url, {
-                method: "GET",
-                headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
-            });
-            res_obj = await res.json();
-            console.log(res_obj);
-            if (res_obj.hasOwnProperty("error")) throw Error(`status ${res_obj.status}`);
-            if (res_obj.nextPageToken) next_page_token = res_obj.nextPageToken;
-            already_posted_event_list.push(...res_obj.items);
-        } while (res_obj.hasOwnProperty("nextPageToken"));
-        console.log(res_obj.items);
-        // TODO: res.statusが400と500のときのエラー処理
-        class_events = class_events.filter((class_event, i) => !is_event_duplicated(already_posted_event_list, class_event));
-        let {start, end} = get_quarter_range(parseInt(formState.importYear), formState.importRange);
-        // importRange外の授業を削除する
-        class_events = class_events.filter((class_event, i) => new Date(class_event.start).getTime() > start.getTime() && new Date(class_event.start).getTime() < end.getTime());
+        if (session instanceof Session) return;
+        let already_posted_event_list: Array<Event>;
+        try {
+            already_posted_event_list = await getAlreadyPostedEvents(session);
+            class_events = class_events.filter((class_event) => !isEventDuplicated(already_posted_event_list, class_event));
+        } catch (e) {
+            console.error("Failed to retrieve from import destination google calendar");
+        }
         setTotalImportCount(class_events.length);
         for (const class_event of class_events) {
             try {
@@ -227,24 +178,58 @@ export default function ImportForm() {
         }
     };
 
-    function get_quarter_range(year: number, importRange: string): Range {
-        let r = get_quarter_ranges(year);
-        if (importRange == "1q") return {start: r._1q_start, end: r._1q_end};
-        else if (importRange == "2q") return {start: r._2q_start, end: r._2q_end};
-        else if (importRange == "3q") return {start: r._3q_start, end: r._3q_end};
-        else if (importRange == "4q") return {start: r._4q_start, end: r._4q_end};
-        else if (importRange == "1q_and_2q") return {start: r._1q_start, end: r._2q_end};
-        return {start: r._3q_start, end: r._4q_end};
+    async function getAlreadyPostedEvents(session: Session) {
+        let res: CalendarList | GetEventsErrorObject;
+        let next_page_token: string = "";
+        let already_posted_events: Array<Event> = [];
+        const {start, end} = getQuarterRange(parseInt(formState.importYear), formState.importRange);
+        do {
+            let query_param_obj: object;
+            if (next_page_token != "") query_param_obj = {pageToken: next_page_token};
+            else
+                query_param_obj = {
+                    maxResults: 2000,
+                    timeMax: end.toISOString(),
+                    timeMin: start.toISOString(),
+                    orderBy: "startTime",
+                    singleEvents: true,
+                };
+            const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events?${encodeQueryData(query_param_obj)}`;
+            const raw_response = await fetch(google_api_url, {
+                method: "GET",
+                headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
+            });
+            res = await raw_response.json();
+            // TODO: res.statusが400と500のときのエラー処理
+            if (res instanceof GetEventsErrorObject) throw Error(`status ${res.error.code}`);
+            if (res.nextPageToken) next_page_token = res.nextPageToken;
+            already_posted_events.push(...res.items);
+        } while (res.hasOwnProperty("nextPageToken"));
+        return already_posted_events;
+    }
+
+    class GetEventsErrorObject {
+        error: {
+            errors: [
+                {
+                    domain: string;
+                    reason: string;
+                    message: string;
+                }
+            ];
+            code: number;
+            message: string;
+        };
     }
 
     async function addEventToGoogleCal(start: string, title: string) {
         if (!(session && session.user)) return;
-        let google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
+        const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
         let res = await fetch(google_api_url, {
             method: "POST",
             headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
             body: JSON.stringify({
-                end: {dateTime: get_end_time(start)},
+                end: {dateTime: getEndTime(start)},
                 start: {dateTime: start},
                 summary: title,
                 description: "#created_by_dp2gc",
@@ -259,13 +244,17 @@ export default function ImportForm() {
         setImportCount((prevCount) => prevCount + 1);
     }
 
-    //fkjdskf
-
     // If we sort Event, we can bisect the search by date.
-    function is_event_duplicated(already_posted_event_list: Event[], class_event: ClassEvent): boolean {
+    function isEventDuplicated(already_posted_event_list: Event[], class_event: ClassEvent): boolean {
         for (const already_posted_event of already_posted_event_list) {
-            if (!already_posted_event.start.dateTime) continue;
-            if (class_event.title == already_posted_event.summary && new Date(class_event.start).toISOString() == new Date(already_posted_event.start.dateTime).toISOString()) return true;
+            if (!already_posted_event.start.dateTime) {
+                continue;
+            }
+            const is_class_title_same = class_event.title == already_posted_event.summary;
+            const is_start_time_same = new Date(class_event.start).toISOString() == new Date(already_posted_event.start.dateTime).toISOString();
+            if (is_class_title_same && is_start_time_same) {
+                return true;
+            }
         }
         return false;
     }

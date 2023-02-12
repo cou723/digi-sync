@@ -21,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 def get_month_range(start: int, end: int):
     if (start < end):
         return range(start, end)
@@ -86,11 +87,16 @@ def is_correct_import_year(importYear: str) -> bool:
 
 
 def get_range_date(importYear: str, importRange: str) -> Tuple[date, date]:
-    if (importRange == "1q" or importRange == "1q_and_2q"):
-        return (date(int(importYear), 4, 1), date(int(importYear), 6, 4))
+    year = int(importYear)
+    if (importRange == "1q"):
+        return (date(year, 4, 1), date(year, 6, 9))
     elif (importRange == "2q"):
-        return (date(int(importYear), 6, 1), date(int(importYear), 8, 10))
-    elif (importRange == "3q" or importRange == "3q_and_4q"):
-        return (date(int(importYear), 9, 20), date(int(importYear), 11, 30))
+        return (date(year, 6, 10), date(year, 8, 31))
+    elif (importRange == "3q"):
+        return (date(year, 9, 1), date(year, 11, 25))
     elif (importRange == "4q"):
-        return (date(int(importYear), 11, 20), date(int(importYear) + 1, 3, 20))
+        return (date(year, 11, 25), date(year + 1, 2, 29))
+    elif (importRange == "1q_and_2q"):
+        return (date(year, 4, 1), date(year, 8, 31))
+    elif (importRange == "3q_and_4q"):
+        return (date(year, 9, 1), date(year + 1, 2, 29))

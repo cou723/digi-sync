@@ -159,23 +159,21 @@ export default function ImportForm() {
 
     // class_eventsをgoogleに追加する
     const postToGoogleCalendar = async (class_events: Array<ClassEvent>) => {
-        if (session instanceof Session) return;
+        if (!session) return;
         let already_posted_event_list: Array<Event>;
         try {
             already_posted_event_list = await getAlreadyPostedEvents(session);
             class_events = class_events.filter((class_event) => !isEventDuplicated(already_posted_event_list, class_event));
         } catch (e) {
-            console.error("Failed to retrieve from import destination google calendar");
+            alert("Google Calendarに登録されている既存の予定の取得に失敗しました");
+            return;
         }
         setTotalImportCount(class_events.length);
         for (const class_event of class_events) {
-            try {
-                await addEventToGoogleCal(class_event.start, class_event.title);
-            } catch (error) {
-                console.error(error);
-                break;
-            }
+            await addEventToGoogleCal(class_event.start, class_event.title);
         }
+        if (class_events.length == 0) alert(`すべての予定がGoogle Calendarに追加されていたので、インポートしませんでした`);
+        else alert(`${class_events.length}件のインポートに成功しました`);
     };
 
     async function getAlreadyPostedEvents(session: Session) {
@@ -184,24 +182,26 @@ export default function ImportForm() {
         let already_posted_events: Array<Event> = [];
         const {start, end} = getQuarterRange(parseInt(formState.importYear), formState.importRange);
         do {
-            let query_param_obj: object;
-            if (next_page_token != "") query_param_obj = {pageToken: next_page_token};
+            let query_param: object;
+            if (next_page_token != "") query_param = {pageToken: next_page_token};
             else
-                query_param_obj = {
+                query_param = {
                     maxResults: 2000,
                     timeMax: end.toISOString(),
                     timeMin: start.toISOString(),
                     orderBy: "startTime",
                     singleEvents: true,
                 };
-            const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events?${encodeQueryData(query_param_obj)}`;
+            const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events?${encodeQueryData(query_param)}`;
             const raw_response = await fetch(google_api_url, {
                 method: "GET",
                 headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
             });
             res = await raw_response.json();
-            // TODO: res.statusが400と500のときのエラー処理
-            if (res instanceof GetEventsErrorObject) throw Error(`status ${res.error.code}`);
+            if (res instanceof GetEventsErrorObject) {
+                console.error(res);
+                throw Error(`status ${res.error.code}`);
+            }
             if (res.nextPageToken) next_page_token = res.nextPageToken;
             already_posted_events.push(...res.items);
         } while (res.hasOwnProperty("nextPageToken"));
@@ -239,7 +239,7 @@ export default function ImportForm() {
             res.json().then((data) => {
                 console.log(data);
             });
-            throw new Error(`${res.status} : Bad response from server`);
+            alert(`${start}から始まる${title}の追加に失敗しました。もう一度インポートするとうまくいく場合があります。`);
         }
         setImportCount((prevCount) => prevCount + 1);
     }
@@ -271,10 +271,10 @@ export default function ImportForm() {
                     ))}
                 </Select>
             </FormControl>
-            <ImportRange error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
-            <ToCalendar error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
-            <DHUPortalData error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
-            <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
+            <ImportRange disable={appState!="ready"} error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
+            <ToCalendar disable={appState!="ready"} error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
+            <DHUPortalData disable={appState!="ready"} error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
+            <ImportOptions disable={appState!="ready"} value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <input type="hidden" name="accessToken" value={accessToken} />
             <br />
             <Button disabled={appState == "unauthenticated" || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>

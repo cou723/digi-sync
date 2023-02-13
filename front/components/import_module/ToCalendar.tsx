@@ -8,13 +8,14 @@ type Calendar = {
 };
 
 type Props = {
+    disable:boolean;
     error: string;
     value: string;
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
     setAccessToken: (accessToken: string) => void;
 };
 
-const ToCalendar = ({error, value, onChange, setAccessToken}: Props) => {
+const ToCalendar = ({disable, error, value, onChange, setAccessToken}: Props) => {
     const [calendars, setCalendars] = useState<Array<Calendar>>([]);
     const {data: session} = useSession();
 
@@ -44,7 +45,7 @@ const ToCalendar = ({error, value, onChange, setAccessToken}: Props) => {
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel id="to-calendar-list-label">インポート先カレンダー</InputLabel>
-            <Select error={error != ""} onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
+            <Select disabled={disable} error={error != ""} onChange={onChange} value={value} required name="toCalendar" labelId="to-calendar-list-label" label="インポート先カレンダー" margin="dense">
                 {calendars.map((calendar) => (
                     <MenuItem value={calendar.id} key={calendar.id}>
                         {calendar.summary}

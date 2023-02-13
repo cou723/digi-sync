@@ -4,9 +4,9 @@ import ImportOptions from "./import_module/ImportOptions";
 import ToCalendar from "./import_module/ToCalendar";
 import {Button, Stack, SelectChangeEvent, Select, InputLabel, FormControl, MenuItem} from "@mui/material";
 import {useState, useEffect, ChangeEvent, ReactNode} from "react";
-import {useSession, Session} from "next-auth/react";
+import {useSession} from "next-auth/react";
 import type {CalendarList, Event} from "../gapi_calendar.d.ts";
-import {encodeQueryData, getEndTime, getQuarterRange} from "./utils";
+import {encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject} from "./utils";
 import {Inputs, ClassEvent} from "./types";
 
 const FORM_STATE_INIT_VALUE: Inputs = {
@@ -176,7 +176,7 @@ export default function ImportForm() {
         else alert(`${class_events.length}件のインポートに成功しました`);
     };
 
-    async function getAlreadyPostedEvents(session: Session) {
+    async function getAlreadyPostedEvents(session: any) {
         let res: CalendarList | GetEventsErrorObject;
         let next_page_token: string = "";
         let already_posted_events: Array<Event> = [];
@@ -198,7 +198,7 @@ export default function ImportForm() {
                 headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
             });
             res = await raw_response.json();
-            if (res instanceof GetEventsErrorObject) {
+            if (isGetEventErrorObject(res)) {
                 console.error(res);
                 throw Error(`status ${res.error.code}`);
             }
@@ -206,20 +206,6 @@ export default function ImportForm() {
             already_posted_events.push(...res.items);
         } while (res.hasOwnProperty("nextPageToken"));
         return already_posted_events;
-    }
-
-    class GetEventsErrorObject {
-        error: {
-            errors: [
-                {
-                    domain: string;
-                    reason: string;
-                    message: string;
-                }
-            ];
-            code: number;
-            message: string;
-        };
     }
 
     async function addEventToGoogleCal(start: string, title: string) {
@@ -271,10 +257,10 @@ export default function ImportForm() {
                     ))}
                 </Select>
             </FormControl>
-            <ImportRange disable={appState!="ready"} error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
-            <ToCalendar disable={appState!="ready"} error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
-            <DHUPortalData disable={appState!="ready"} error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
-            <ImportOptions disable={appState!="ready"} value={formState.ignoreOtherEvents} onChange={handleInputChange} />
+            <ImportRange disable={appState != "ready"} error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
+            <ToCalendar disable={appState != "ready"} error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
+            <DHUPortalData disable={appState != "ready"} error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
+            <ImportOptions disable={appState != "ready"} value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <input type="hidden" name="accessToken" value={accessToken} />
             <br />
             <Button disabled={appState == "unauthenticated" || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>

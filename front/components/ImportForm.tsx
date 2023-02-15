@@ -5,7 +5,7 @@ import ToCalendar from "./import_module/ToCalendar";
 import {Button, Stack, SelectChangeEvent, Select, InputLabel, FormControl, MenuItem} from "@mui/material";
 import {useState, useEffect, ChangeEvent, ReactNode} from "react";
 import {useSession} from "next-auth/react";
-import type {CalendarList, Event} from "../gapi_calendar.d.ts";
+import type {CalendarList, Event} from "../gapi_calendar";
 import {encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject} from "./utils";
 import {Inputs, ClassEvent} from "./types";
 

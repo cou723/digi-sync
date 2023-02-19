@@ -249,7 +249,7 @@ export default function ImportForm() {
         <Stack spacing={2} component="form" autoComplete="off" action="/import">
             <FormControl margin="normal">
                 <InputLabel id="import-year-label">インポート年度</InputLabel>
-                <Select value={formState.importYear} onChange={handleSelectChange} name="importYear" labelId="import-year-label" label="インポート先カレンダー" margin="dense">
+                <Select disabled={appState != "ready"} value={formState.importYear} onChange={handleSelectChange} name="importYear" labelId="import-year-label" label="インポート先カレンダー" margin="dense">
                     {selectableYears.map((selectableYear: number, i: number) => (
                         <MenuItem value={selectableYear} key={i}>
                             {selectableYear}
@@ -257,10 +257,10 @@ export default function ImportForm() {
                     ))}
                 </Select>
             </FormControl>
-            <ImportRange disable={appState != "ready"} error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
-            <ToCalendar disable={appState != "ready"} error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
-            <DHUPortalData disable={appState != "ready"} error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
-            <ImportOptions disable={appState != "ready"} value={formState.ignoreOtherEvents} onChange={handleInputChange} />
+            <ImportRange disabled={appState != "ready"} error={importRangeError} value={formState.importRange} onChange={handleSelectChange} />
+            <ToCalendar disabled={appState != "ready"} error={calendarInputError} value={formState.toCalendar} onChange={handleSelectChange} setAccessToken={setAccessToken} />
+            <DHUPortalData disabled={appState != "ready"} error={dhuPortalInputError} username={formState.username} password={formState.password} onChange={handleInputChange} />
+            <ImportOptions disabled={appState != "ready"} value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <input type="hidden" name="accessToken" value={accessToken} />
             <br />
             <Button disabled={appState == "unauthenticated" || appState == "connect portal" || appState == "import"} variant="contained" onClick={onImportClick}>

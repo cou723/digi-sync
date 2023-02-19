@@ -3,7 +3,7 @@ import { Html, Head, Main, NextScript } from 'next/document'
 export default function Document() {
   return (
     <Html lang="ja">
-      <title>デジキャンからGoogleCalendarにインポートするやつ</title>
+      <title>デジシンク</title>
       <Head />
       <body>
         <Main />

@@ -1,6 +1,8 @@
-import {AppBar, Box, Toolbar, Typography, Button} from "@mui/material";
+import {AppBar, Box, Toolbar, Button, Container} from "@mui/material";
 import LoginBtn from "./LoginBtn";
 import {useRouter} from "next/router";
+import Image from "next/image";
+import LogoImage from "../public/logo.svg";
 
 const pages = [
     {display: "インポート", link: "/"},
@@ -12,22 +14,22 @@ const pages = [
 export default function Header() {
     const router = useRouter();
     return (
-        <Box sx={{flexGrow: 1}}>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                        DHU portal to Google Cal.
-                    </Typography>
-                    <Box sx={{flexGrow: 1, display: {xs: "none", md: "flex"}}}>
+        <AppBar position="static">
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <Box sx={{mt: 1, display: "block", mr: 2}}>
+                        <Image src={LogoImage} alt="デジシンク" height="40" />
+                    </Box>
+                    <Box sx={{flexGrow: 1, display: {md: "flex"}}}>
                         {pages.map((page) => (
-                            <Button key={page.display} onClick={() => router.push(page.link)} sx={{my: 2, color: "white", display: "block"}}>
+                            <Button key={page} onClick={() => router.push(page.link)} sx={{my: 1, color: "white"}}>
                                 {page.display}
                             </Button>
                         ))}
                     </Box>
                     <LoginBtn />
                 </Toolbar>
-            </AppBar>
-        </Box>
+            </Container>
+        </AppBar>
     );
 }

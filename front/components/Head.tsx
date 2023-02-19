@@ -2,7 +2,7 @@ import Head from "next/head";
 
 const title: string = "デジシンク";
 const description: string = "「デジシンク」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。";
-const url: string = "test";
+const url: string = "https://dp2gc.vercel.app";
 const type: string = "website";
 const imageUrl: string = "https://dp2gc.vercel.app/ogp_image.png";
 

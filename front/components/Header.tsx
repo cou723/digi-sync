@@ -2,7 +2,7 @@ import {AppBar, Box, Toolbar, Button, Container} from "@mui/material";
 import LoginBtn from "./LoginBtn";
 import {useRouter} from "next/router";
 import Image from "next/image";
-import LogoImage from "../public/logo.svg";
+import LogoImage from "/logo.svg";
 
 const pages = [
     {display: "インポート", link: "/"},

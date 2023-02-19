@@ -5,13 +5,13 @@ export default function LoginBtn() {
     const {data: session, status} = useSession();
     if (status == "authenticated") {
         return (
-            <Button variant="contained" onClick={() => signOut()}>
+            <Button color="inherit" onClick={() => signOut()}>
                 Sign out
             </Button>
         );
     }
     return (
-        <Button variant="contained" onClick={() => signIn("google")}>
+        <Button color="inherit" onClick={() => signIn("google")}>
             Sign in
         </Button>
     );

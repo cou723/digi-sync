@@ -22,7 +22,7 @@ export default function Header() {
                     </Box>
                     <Box sx={{flexGrow: 1, display: {md: "flex"}}}>
                         {pages.map((page) => (
-                            <Button key={page} onClick={() => router.push(page.link)} sx={{my: 1, color: "white"}}>
+                            <Button key={page.display} onClick={() => router.push(page.link)} sx={{my: 1, color: "white"}}>
                                 {page.display}
                             </Button>
                         ))}

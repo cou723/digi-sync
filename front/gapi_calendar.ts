@@ -4,44 +4,6 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
-
-
-interface FreeBusyQueryParameters {
-  timeMin: datetime;
-  timeMax: datetime;
-  timeZone?: string | undefined;
-  groupExpansionMax?: integer | undefined;
-  calendarExpansionMax?: integer | undefined;
-  items: { id: string }[];
-}
-
-interface FreeBusy {
-  kind: 'calendar#freeBusy';
-  timeMin: datetime;
-  timeMax: datetime;
-  groups: {
-    [key: string]: {
-      errors?: {
-        domain: string;
-        reason: string;
-      }[] | undefined;
-      calendars: string[];
-    }
-  };
-  calendars: {
-    [key: string]: {
-      errors?: {
-        domain: string;
-        reason: string;
-      }[] | undefined;
-      busy: {
-        start: datetime;
-        end: datetime;
-      }[];
-    }
-  };
-}
-
 // The type of the scope. Possible values are:
 type ScopeType =
   // The public scope. This is the default value.
@@ -53,41 +15,6 @@ type ScopeType =
   'group' |
   // Limits the scope to a domain.
   'domain';
-
-interface Acl {
-  kind: 'calendar#aclRule';
-  etag: etag;
-  id: string;
-  scope: {
-    type: ScopeType;
-    value: string;
-  };
-  role: AccessRole;
-}
-
-interface AclInsertParameters {
-  calendarId: string;
-
-  // Acl resource
-  role: AccessRole;
-  scope: {
-    type: ScopeType;
-    value?: string | undefined;
-  };
-}
-
-interface AclGetParameters {
-  calendarId: string;
-  ruleId: string;
-}
-
-interface AclUpdateParameters extends AclInsertParameters {
-  ruleId: string;
-}
-
-interface AclDeleteParameters extends AclGetParameters {
-}
-
 
 type AccessRoleWithoutNone =
   // The user has read access to free/busy information.

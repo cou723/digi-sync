@@ -2,17 +2,17 @@ import {ReactNode} from "react";
 import {FormControl, Select, MenuItem, InputLabel, SelectChangeEvent, FormHelperText} from "@mui/material";
 
 type Props = {
-    disable:boolean;
+    disabled:boolean;
     error: string;
     value: string;
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
 };
 
-export default function Component({disable,error, value, onChange}: Props) {
+export default function Component({disabled,error, value, onChange}: Props) {
     return (
         <FormControl fullWidth margin="normal">
             <InputLabel id="import-q-label">インポートするクオーター</InputLabel>
-            <Select disabled={disable} error={error != ""} onChange={onChange} value={value} required name="importRange" labelId="import-q-label" label="インポートするクオーター" margin="dense">
+            <Select disabled={disabled} error={error != ""} onChange={onChange} value={value} required name="importRange" labelId="import-q-label" label="インポートするクオーター" margin="dense">
                 <MenuItem value="1q">1クオーター</MenuItem>
                 <MenuItem value="2q">2クオーター</MenuItem>
                 <MenuItem value="3q">3クオーター</MenuItem>

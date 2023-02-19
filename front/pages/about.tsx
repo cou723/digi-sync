@@ -16,7 +16,6 @@ export default function about() {
                     <br />
                     また、メールアドレスは今現在あなたがどのアカウントでログインしているかを示すために表示されているだけで、そのほかの目的では一切利用していません。
                 </Typography>
-
             </Container>
         </>
     );

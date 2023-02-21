@@ -2,6 +2,7 @@ import ImportRange from "./ImportModules/ImportRange";
 import DHUPortalData from "./ImportModules/DHUPortalData";
 import ImportOptions from "./ImportModules/ImportOptions";
 import ToCalendar from "./ImportModules/ToCalendar";
+import AllDeleteButton from "./ImportModules/AllDeleteButton";
 import {Button, Stack, SelectChangeEvent, Select, InputLabel, FormControl, MenuItem} from "@mui/material";
 import {useState, useEffect, ChangeEvent, ReactNode} from "react";
 import {useSession} from "next-auth/react";
@@ -170,7 +171,10 @@ export default function ImportForm() {
         }
         setTotalImportCount(class_events.length);
         for (const class_event of class_events) {
-            await addEventToGoogleCal(class_event.start, class_event.title);
+            addEventToGoogleCal(class_event.start, class_event.title);
+            await new Promise(function (resolve) {
+                setTimeout(resolve, 300);
+            });
         }
         if (class_events.length == 0) alert(`すべての予定がGoogle Calendarに追加されていたので、インポートしませんでした`);
         else alert(`${class_events.length}件のインポートに成功しました`);
@@ -268,6 +272,7 @@ export default function ImportForm() {
                 {appState == "import" ? `(${importCount}件/${totalImportCount}件)` : ""}
                 {appState == "unauthenticated" ? "Googleアカウントにログインしてください" : "インポート"}
             </Button>
+            <AllDeleteButton disabled={appState == "unauthenticated"}></AllDeleteButton>
         </Stack>
     );
 }

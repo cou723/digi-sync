@@ -1,13 +1,13 @@
-import ImportRange from "./import_module/ImportRange";
-import DHUPortalData from "./import_module/DHUPortalData";
-import ImportOptions from "./import_module/ImportOptions";
-import ToCalendar from "./import_module/ToCalendar";
+import ImportRange from "./ImportModules/ImportRange";
+import DHUPortalData from "./ImportModules/DHUPortalData";
+import ImportOptions from "./ImportModules/ImportOptions";
+import ToCalendar from "./ImportModules/ToCalendar";
 import {Button, Stack, SelectChangeEvent, Select, InputLabel, FormControl, MenuItem} from "@mui/material";
 import {useState, useEffect, ChangeEvent, ReactNode} from "react";
 import {useSession} from "next-auth/react";
-import type {CalendarList, Event} from "../gapi_calendar";
-import {encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject} from "./utils";
-import {Inputs, ClassEvent} from "./types";
+import type {CalendarList, Event} from "../types/gapi_calendar";
+import {encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject} from "../libs/utils";
+import {Inputs, ClassEvent} from "../types/types";
 
 const FORM_STATE_INIT_VALUE: Inputs = {
     importYear: (new Date().getFullYear() - 1).toString(),

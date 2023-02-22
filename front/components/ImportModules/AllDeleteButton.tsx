@@ -1,8 +1,8 @@
-import {Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText} from "@mui/material";
-import {useState, useEffect, ChangeEvent, ReactNode} from "react";
-import {useSession, signIn, signOut} from "next-auth/react";
+import {Button, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, CircularProgress, Fade} from "@mui/material";
+import {useState, useEffect} from "react";
+import {useSession} from "next-auth/react";
 import type {CalendarList, Event} from "../../types/gapi_calendar";
-import {encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject} from "../../libs/utils";
+import {encodeQueryData, isGetEventErrorObject, GetEventsErrorObject} from "../../libs/utils";
 
 type Props = {
     disabled: boolean;
@@ -12,11 +12,17 @@ let delete_event_url_list: string[];
 export default function AllDeleteButton({disabled}: Props) {
     let [isShowDialog, setIsShowDialog] = useState(false);
     let [deleteEventCout, setDeleteEventCout] = useState(0);
-    let [isDeleting, setIsDeleting] = useState(false);
+    let [deleteStatus, setDeleteStatus] = useState<"unauthenticated" | "ready" | "getting_calendar" | "deleting">("unauthenticated");
     let [deleteCount, setDeleteCount] = useState(0);
-    const {data: session} = useSession();
+    const {data: session, status: authStatus} = useSession();
+
+    useEffect(() => {
+        if (authStatus == "unauthenticated") setDeleteStatus("unauthenticated");
+        else setDeleteStatus("ready");
+    }, [authStatus]);
 
     const onAllDeleteClick = async () => {
+        setDeleteStatus("getting_calendar");
         delete_event_url_list = [];
         // すべてのカレンダーを取得
         if (!(session && session.user)) return;
@@ -70,10 +76,12 @@ export default function AllDeleteButton({disabled}: Props) {
 
     const handleClose = () => {
         setIsShowDialog(false);
+        setDeleteStatus("ready");
     };
 
     const allDelete = async () => {
-        setIsDeleting(true);
+        setIsShowDialog(false);
+        setDeleteStatus("deleting");
         setDeleteCount(0);
         handleClose();
         let i = 0;
@@ -85,18 +93,28 @@ export default function AllDeleteButton({disabled}: Props) {
                 method: "DELETE",
                 headers: {Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json"},
             });
-            setDeleteCount(deleteCount =>deleteCount + 1);
+            setDeleteCount((deleteCount) => deleteCount + 1);
             await new Promise(function (resolve) {
                 setTimeout(resolve, 250);
             });
         }
-        setIsDeleting(false);
+        setDeleteStatus("ready");
     };
 
     return (
         <>
-            <Button disabled={disabled || isDeleting} color="error" onClick={onAllDeleteClick}>
-                {isDeleting ? `${deleteCount}件削除済み` : "デジシンクによって追加した予定をすべて消す"}
+            <Button disabled={deleteStatus != "ready"} color="error" onClick={onAllDeleteClick}>
+                {
+                    {
+                        unauthenticated: "Googleアカウントにログインしてください",
+                        ready: "デジシンクによって追加した予定をすべて消す",
+                        deleting: `${deleteCount}件削除済み`,
+                        getting_calendar: "カレンダーからデジシンクによって追加された予定を検索中(30秒ほどかかります)",
+                    }[deleteStatus]
+                }
+                <Fade in={deleteStatus == "getting_calendar"}>
+                    <CircularProgress />
+                </Fade>
             </Button>
             <Dialog open={isShowDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
                 <DialogTitle id="alert-dialog-title">予定を削除しますか？</DialogTitle>

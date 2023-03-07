@@ -9,7 +9,7 @@ const imageUrl: string = "https://dp2gc.vercel.app/ogp_image.png";
 const CommonMeta = () => {
     return (
         <Head>
-            <title>デジログ</title>
+            <title>デジシンク</title>
             <meta name="description" content={description} />
             <meta name="twitter:card" content="summary_large_image" />
             <meta property="og:title" content={title} />

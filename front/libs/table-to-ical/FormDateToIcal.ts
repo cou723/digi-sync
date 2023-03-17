@@ -11,7 +11,7 @@ const FormDateToIcal = (
   args: API_RETURN_EventList["events"][0]
 ): FormDateToIcalReturnType => {
   const StartClassTime = dayjsWapper(args.start)
-  const EndClassTime = dayjsWapper(args.end)
+  const EndClassTime = dayjsWapper(args.start).add(90, "minutes")
 
   const ReturnValue: FormDateToIcalReturnType = {
     summary: args.title,

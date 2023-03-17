@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import type { CalendarList, Event } from "../types/gapi_calendar";
 import { encodeQueryData, getEndTime, getQuarterRange, isGetEventErrorObject, GetEventsErrorObject } from "../libs/utils";
 import { Inputs, ClassEvent } from "../types/types";
+import { DownloadBrowsser } from "../libs/table-to-ical/DownloadBrowser";
 
 const FORM_STATE_INIT_VALUE: Inputs = {
   importYear: (new Date().getFullYear() - 1).toString(),
@@ -30,7 +31,7 @@ interface Event {
   className: string;
 }
 
-interface API_RETURN_EventList {
+export interface API_RETURN_EventList {
   events: Event[];
 }
 const INIT_REQUIRE_VALUE_LIST = ["importRange", "toCalendar", "username", "password"];
@@ -47,12 +48,6 @@ export function ImportIcalForm() {
   let [appState, setAppState] = useState<"unauthenticated" | "ready" | "connect portal" | "import">("unauthenticated");
 
   let selectableYears: Array<number> = new Array<number>(new Date().getFullYear() - 1, new Date().getFullYear(), new Date().getFullYear() + 1);
-  // const { data: session, status: authStatus } = useSession();
-
-  // useEffect(() => {
-  //   if (authStatus == "unauthenticated") setAppState("unauthenticated");
-  //   else setAppState("ready");
-  // }, [authStatus]);
 
   useEffect(() => {
     if (appState == "import") {
@@ -85,15 +80,19 @@ export function ImportIcalForm() {
   };
 
   const onImportClick = async () => {
+    console.log("dataonImportClick ")
     resetErrorMessage();
-    if (existsStateEmpty()) {
-      setErrorMessages();
-      return;
-    }
+    // if (existsStateEmpty()) {
+    //   setErrorMessages();
+    //   return;
+    // }
 
     let data;
     try {
+
       data = await getEventList();
+      console.log("data ", data)
+      DownloadBrowsser(data.events);
     } catch (e: any) {
       alert(e.message);
       setAppState("ready");
@@ -110,12 +109,12 @@ export function ImportIcalForm() {
     setAppState("ready");
   };
 
-  function existsStateEmpty() {
-    for (let input_label of Object.keys(formState)) {
-      if (INIT_REQUIRE_VALUE_LIST.includes(input_label) && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
-    }
-    return false;
-  }
+  // function existsStateEmpty() {
+  //   for (let input_label of Object.keys(formState)) {
+  //     if (INIT_REQUIRE_VALUE_LIST.includes(input_label) && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
+  //   }
+  //   return false;
+  // }
 
   const getEventList = async () => {
     setAppState("connect portal");
@@ -128,8 +127,8 @@ export function ImportIcalForm() {
     };
     let query_param_str = new URLSearchParams(query_param_obj).toString();
     try {
-      res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" + query_param_str, { method: "GET" });
-      res = await res.json();
+      const fetchValue = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" + query_param_str, { method: "GET" });
+      res = await fetchValue.json();
     } catch {
       throw new Error("サーバーに接続できませんでした");
     }
@@ -171,30 +170,6 @@ export function ImportIcalForm() {
     });
   }
 
-  // class_eventsをgoogleに追加する
-
-
-  // async function addEventToGoogleCal(start: string, title: string) {
-  //   if (!(session && session.user)) return;
-  //   const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`;
-  //   let res = await fetch(google_api_url, {
-  //     method: "POST",
-  //     headers: { Authorization: `Bearer ${session.accessToken}`, "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       end: { dateTime: getEndTime(start) },
-  //       start: { dateTime: start },
-  //       summary: title,
-  //       description: "#created_by_dp2gc",
-  //     }),
-  //   });
-  //   if (res.status >= 400) {
-  //     res.json().then((data) => {
-  //       console.log(data);
-  //     });
-  //     alert(`${start}から始まる${title}の追加に失敗しました。もう一度インポートするとうまくいく場合があります。`);
-  //   }
-  //   setImportCount((prevCount) => prevCount + 1);
-  // }
 
 
   return (

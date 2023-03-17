@@ -4,6 +4,7 @@ import type {AppProps} from "next/app";
 import Header from "../components/Header";
 import theme from "../libs/color_theme";
 import {ThemeProvider} from "@mui/material/styles";
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App({Component, pageProps: {session, ...pageProps}}: AppProps) {
     return (
@@ -13,6 +14,7 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
                 <Header />
                 <Component {...pageProps} />
             </SessionProvider>
+            <Analytics />
         </ThemeProvider>
     );
 }

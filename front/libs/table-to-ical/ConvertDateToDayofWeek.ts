@@ -1,4 +1,4 @@
-import { dayjsWapper } from "./dayjs";
+import { dayjsWrapper } from "./dayjs";
 
 export type ConvertDateToDayofWeekArgsType = string;
 export type ConvertDateToDayofWeekReturnType = number;
@@ -12,7 +12,7 @@ export type ConvertDateToDayofWeekReturnType = number;
 const ConvertDateToDayofWeek = (
   Args: ConvertDateToDayofWeekArgsType
 ): ConvertDateToDayofWeekReturnType => {
-  return dayjsWapper(Args).day();
+  return dayjsWrapper(Args).day();
 };
 
 export default ConvertDateToDayofWeek;

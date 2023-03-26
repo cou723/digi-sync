@@ -8,5 +8,5 @@ dayjs.extend(timezone);
 dayjs.extend(utc);
 dayjs.tz.setDefault(dayjs.tz.guess());
 
-const dayjsWapper = dayjs;
-export { dayjsWapper, Dayjs };
+const dayjsWrapper = dayjs;
+export { dayjsWrapper, Dayjs };

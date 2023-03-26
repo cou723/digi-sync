@@ -10,11 +10,11 @@ export type FormDateToIcalReturnType = useClassTableIcalProps["init"][0];
 const FormDateToIcal = (
     args: API_RETURN_EventList["events"][0]
 ): FormDateToIcalReturnType => {
-    const StartClassTime = dayjsWrapper(args.start.dateTime)
-    const EndClassTime = dayjsWrapper(args.start.dateTime).add(90, "minutes")
+    const StartClassTime = dayjsWrapper(args.start)
+    const EndClassTime = dayjsWrapper(args.start).add(90, "minutes")
 
     const ReturnValue: FormDateToIcalReturnType = {
-        summary: args.summary,
+        summary: args.title,
         start: StartClassTime.toDate(),
         end: EndClassTime.toDate(),
         timezone: dayjsWrapper.tz.guess(),

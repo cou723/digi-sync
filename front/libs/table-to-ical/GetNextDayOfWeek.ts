@@ -1,4 +1,4 @@
-import { dayjsWapper } from "./dayjs";
+import { dayjsWrapper } from "./dayjs";
 
 //https://crieit.net/posts/JavaScript-60f839da9668b このコードを参考にした
 export type GetNextDayOfWeekArgsType = {
@@ -11,10 +11,10 @@ export type GetNextDayOfWeekReturnType = Date;
 const GetNextDayOfWeek = (
   args: GetNextDayOfWeekArgsType
 ): GetNextDayOfWeekReturnType => {
-  const now = dayjsWapper(args.date).tz("Asia/Tokyo").toDate();
+  const now = dayjsWrapper(args.date).tz("Asia/Tokyo").toDate();
   now.setDate(now.getDate() + ((args.dayOfWeek + (7 - now.getDay())) % 7));
 
-  return dayjsWapper(now).tz("Asia/Tokyo").toDate();
+  return dayjsWrapper(now).tz("Asia/Tokyo").toDate();
 };
 
 export default GetNextDayOfWeek;

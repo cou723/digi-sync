@@ -7,6 +7,8 @@ export const ConvertToIcalMap = (
 ) => {
     return FormData
         .map((value) => {
+            console.log(value);
+
             if (value.title.length > 0) {
                 return FormDateToIcal(value);
             }
@@ -14,4 +16,3 @@ export const ConvertToIcalMap = (
         })
         .filter((list) => list !== null);
 };
-

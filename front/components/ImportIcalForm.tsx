@@ -71,7 +71,7 @@ export function ImportIcalForm() {
 
     useEffect(() => {
         if (appState == "import") {
-            window.onbeforeunload = function () {
+            window.onbeforeunload = function() {
                 return "Are you sure you want to leave this page?";
             };
         } else {
@@ -117,6 +117,7 @@ export function ImportIcalForm() {
             const IcalTimeTable: any = ConvertToIcalMap(data.events);
             if (IcalTimeTable != null) {
                 DownloadBrowser(IcalTimeTable);
+                setAppState("ready");
                 return;
             }
         } catch (e: any) {
@@ -158,8 +159,8 @@ export function ImportIcalForm() {
         try {
             const fetchValue = await fetch(
                 process.env.NEXT_PUBLIC_API_DOMAIN +
-                    "/get_dhu_event_list?" +
-                    query_param_str,
+                "/get_dhu_event_list?" +
+                query_param_str,
                 { method: "GET" }
             );
             res = await fetchValue.json();

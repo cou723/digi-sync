@@ -253,7 +253,7 @@ export default function ImportForm() {
         <Stack spacing={2} component="form" autoComplete="off" action="/import">
             <FormControl margin="normal">
                 <InputLabel id="import-year-label">インポート年度</InputLabel>
-                <Select disabled={appState != "ready"} value={formState.importYear} onChange={handleSelectChange} name="importYear" labelId="import-year-label" label="インポート先カレンダー" margin="dense">
+                <Select defaultValue={new Date().getFullYear().toString()} disabled={appState != "ready"} value={formState.importYear} onChange={handleSelectChange} name="importYear" labelId="import-year-label" label="インポート先カレンダー" margin="dense">
                     {selectableYears.map((selectableYear: number, i: number) => (
                         <MenuItem value={selectableYear} key={i}>
                             {selectableYear}

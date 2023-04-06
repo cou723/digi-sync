@@ -18,7 +18,7 @@ const FormDateToIcal = (
         start: StartClassTime.toDate(),
         end: EndClassTime.toDate(),
         timezone: dayjsWrapper.tz.guess(),
-        location: "〒101-0062 東京都千代田区神田駿河台４丁目６ 御茶ノ水ソラシティアカデミア 3F/4F"
+        location: "デジタルハリウッド大学, 日本、〒101-0062 東京都千代田区神田駿河台４丁目６ 御茶ノ水ソラシティアカデミア 3F/4F"
     };
 
     return ReturnValue;

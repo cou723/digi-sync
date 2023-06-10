@@ -28,7 +28,6 @@ def login(username: str, password: str):
         raise Exception("server error")
     if ("ユーザＩＤまたはパスワードが正しくありません。" in res.text):
         raise CannotLoginException("user id or password is invalid")
-
     return res
 
 
@@ -88,5 +87,6 @@ def get_dhu_event_list(username: str, password: str, year: int, month: int):
     if events_element is None:
         raise Exception(
             "funcForm:j_idt361:content is not found. maybe xml returned by dhu portal is changed.")
+
 
     return (json.loads(events_element.text))

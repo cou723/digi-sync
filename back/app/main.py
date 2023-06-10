@@ -9,30 +9,24 @@ import calendar
 
 app = FastAPI()
 
-origins = [
-    "https://dp2gc.vercel.app",
-    "http://localhost:3000",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 
 def get_month_range(start: int, end: int):
     if (start < end):
         return range(start, end)
-    else:
-        months = []
-        for i in range(start, 13):
-            months.append(i)
-        for i in range(1, end + 1):
-            months.append(i)
-        return months
+    months = []
+    for i in range(start, 13):
+        months.append(i)
+    for i in range(1, end + 1):
+        months.append(i)
+    return months
 
 
 @app.get("/")
@@ -46,7 +40,6 @@ async def get_dhu_event_list(importYear: str, importRange: str, username: str, p
         return HTTPException(400, f"importRange '{importRange}' is not correct")
     if (not is_correct_import_year(importYear)):
         return HTTPException(400, f"importYear '{importYear}' is not correct")
-    # response.headers["Access-Control-Allow-Origin"] = origins
     (start, end) = get_range_date(importYear, importRange)
     if (start is None or end is None):
         return HTTPException(500, "please tell cou about 'error in get_range'")
@@ -110,3 +103,5 @@ def get_range_date(importYear: str, importRange: str) -> Tuple[date, date]:
         return (_1q_start, _2q_end)
     elif (importRange == "3q_and_4q"):
         return (_3q_start, _4q_end)
+
+import json

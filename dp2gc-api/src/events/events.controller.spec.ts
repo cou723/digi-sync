@@ -2,8 +2,7 @@ import {Test, type TestingModule} from '@nestjs/testing';
 import {EventsController} from './events.controller';
 
 describe('EventsController', () => {
-	let controller: EventsController;
-
+let controller: EventsController;
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			controllers: [EventsController],

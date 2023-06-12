@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
+
 import { ClassEvent, RawClassEvent as NonTypedClassEvent } from '../type';
+
 import dayjs from 'dayjs';
 import 'dayjs/locale/ja';
-import { JSDOM } from 'jsdom';
 import { XMLParser } from 'fast-xml-parser';
+import { JSDOM } from 'jsdom';
 
 const jsdom = new JSDOM();
 const html_parser = new jsdom.window.DOMParser();
 const xml_parser = new XMLParser();
 
 type TimeRange = {
-    start: dayjs.Dayjs;
     end: dayjs.Dayjs;
+    start: dayjs.Dayjs;
 };
 
 class SessionData {
@@ -63,9 +65,9 @@ export class EventsService {
         const session_data = await getSessionData(username, password);
         try {
             const res = await fetch(API_URL, {
-                method: 'POST',
+                body: generateBody({ end, start }, session_data),
                 headers: generateHeaders(session_data.j_session_id),
-                body: generateBody({ start, end }, session_data),
+                method: 'POST',
             });
             const class_events = await parseClassEvents(res);
 
@@ -78,13 +80,13 @@ export class EventsService {
 
 function generateHeaders(j_session_id: string): Record<string, string> {
     return {
-        Cookie: generateCookie({
-            j_session_id,
-        }),
         Accept: 'application/xml, text/xml, */*; q=0.01',
         'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        Cookie: generateCookie({
+            j_session_id,
+        }),
         'Faces-Request': 'partial/ajax',
         Origin: 'https://portal.dhw.ac.jp',
         Referer: 'https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml',
@@ -182,11 +184,11 @@ async function getLoginResponse(
     password: string,
 ): Promise<Response> {
     const res = await fetch(LOGIN_URL, {
-        method: 'POST',
+        body: generateLoginBody(username, password),
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: generateLoginBody(username, password),
+        method: 'POST',
     });
     if (res.status / 100 >= 4) return;
     return res;

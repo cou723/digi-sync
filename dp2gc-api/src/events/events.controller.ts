@@ -1,5 +1,6 @@
-import dayjs from 'dayjs';
 import { Controller, Get, Query } from '@nestjs/common';
+import dayjs from 'dayjs';
+
 import { EventsService } from './events.service';
 
 type ImportRangeString = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q';

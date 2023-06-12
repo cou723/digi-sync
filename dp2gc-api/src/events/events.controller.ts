@@ -48,8 +48,8 @@ export class EventsController {
 
         console.log('username', username);
         console.log('password', password);
-        console.log('year', importYear);
-        console.log('range', importRange);
+        console.log('year', importYear, start);
+        console.log('range', importRange, end);
 
         return await this.eventsService.getList(username, password, start, end);
     }

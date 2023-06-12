@@ -30,12 +30,18 @@ class SessionData {
 const LOGIN_URL = 'https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml';
 const API_URL = 'https://portal.dhw.ac.jp/uprx/up/bs/bsa001/Bsa00101.xhtml';
 
-async function parseClassEvents(res: Response): Promise<ClassEvent[]> {
+async function parseClassEvents(
+    res: Response,
+): Promise<{ events: ClassEvent[] }> {
     const xml_response_body = xml_parser.parse(await res.text());
 
+    console.log(xml_response_body);
+    console.log(xml_response_body['partial-response']['changes']['update']);
     const json_class_events = xml_response_body['partial-response']['changes'][
         'update'
     ].filter((x: string) => x.includes('events'))[0];
+
+    console.log(json_class_events);
 
     const non_typed_class_events: NonTypedClassEvent[] =
         JSON.parse(json_class_events).events;
@@ -43,7 +49,7 @@ async function parseClassEvents(res: Response): Promise<ClassEvent[]> {
     const class_events: ClassEvent[] = [];
     for (const ev of non_typed_class_events)
         class_events.push(new ClassEvent(ev));
-    return class_events;
+    return { events: class_events };
 }
 
 @Injectable()
@@ -63,7 +69,7 @@ export class EventsService {
             });
             const class_events = await parseClassEvents(res);
 
-            return class_events.map((event) => event.toString()).join('\n');
+            return JSON.stringify(class_events);
         } catch (e) {
             console.log(e);
         }

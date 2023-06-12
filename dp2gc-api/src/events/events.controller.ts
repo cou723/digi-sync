@@ -2,11 +2,11 @@ import dayjs from 'dayjs';
 import { Controller, Get, Query } from '@nestjs/common';
 import { EventsService } from './events.service';
 
-type _ImportRange = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q';
+type ImportRangeString = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q';
 
 class ImportRange {
-    range: _ImportRange;
-    constructor(range: _ImportRange) {
+    range: ImportRangeString;
+    constructor(range: ImportRangeString) {
         this.range = range;
     }
 
@@ -40,11 +40,8 @@ export class EventsController {
         @Query('username') username: string,
         @Query('password') password: string,
         @Query('year') year: number,
-        @Query('range') range: _ImportRange,
+        @Query('range') range: ImportRangeString,
     ): Promise<string> {
-        year = 2023;
-        range = '1q';
-
         const importRange = new ImportRange(range);
         const [start, end] = importRange.getRange(year);
 

@@ -40,16 +40,16 @@ export class EventsController {
     async getList(
         @Query('username') username: string,
         @Query('password') password: string,
-        @Query('year') year: number,
-        @Query('range') range: ImportRangeString,
+        @Query('importYear') importYear: number,
+        @Query('importRange') importRange: ImportRangeString,
     ): Promise<string> {
-        const importRange = new ImportRange(range);
-        const [start, end] = importRange.getRange(year);
+        const importRangeObj = new ImportRange(importRange);
+        const [start, end] = importRangeObj.getRange(importYear);
 
         console.log('username', username);
         console.log('password', password);
-        console.log('year', year);
-        console.log('range', range);
+        console.log('year', importYear);
+        console.log('range', importRange);
 
         return await this.eventsService.getList(username, password, start, end);
     }

@@ -158,7 +158,7 @@ export function ImportIcalForm() {
     try {
       const fetchValue = await fetch(
         process.env.NEXT_PUBLIC_API_DOMAIN +
-          "/get_dhu_event_list?" +
+          "/events?" +
           query_param_str,
         { method: "GET" },
       );

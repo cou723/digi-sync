@@ -152,7 +152,7 @@ export default function ImportForm() {
     let query_param_str = new URLSearchParams(query_param_obj).toString();
     try {
       res = await fetch(
-        process.env.NEXT_PUBLIC_API_DOMAIN + "/get_dhu_event_list?" +
+        process.env.NEXT_PUBLIC_API_DOMAIN + "/events?" +
           query_param_str,
         { method: "GET" },
       );

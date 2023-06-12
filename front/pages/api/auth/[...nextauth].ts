@@ -6,7 +6,10 @@ export const authOptions: NextAuthOptions = {
         GoogleProvider({
             clientId: process.env.NEXT_PUBLIC_GOOGLE_ID || "",
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET || "",
-            authorization: { params: { scope: 'openid https://www.googleapis.com/auth/calendar' } }
+            authorization: { params: { scope: 'openid https://www.googleapis.com/auth/calendar' } },
+            httpOptions: {
+                timeout: 60000,
+            }
         }),
     ],
     callbacks: {

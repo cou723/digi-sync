@@ -1,2 +1,0 @@
-class CannotLoginException(Exception):
-    pass

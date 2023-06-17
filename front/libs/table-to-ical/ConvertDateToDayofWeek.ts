@@ -1,7 +1,7 @@
-import { dayjsWrapper } from "./dayjs";
+import { dayjsWrapper } from './dayjs'
 
-export type ConvertDateToDayofWeekArgsType = string;
-export type ConvertDateToDayofWeekReturnType = number;
+export type ConvertDateToDayofWeekArgsType = string
+export type ConvertDateToDayofWeekReturnType = number
 /*
  * 日付を入力したら曜日を返す
  * 返す曜日は数字
@@ -10,9 +10,9 @@ export type ConvertDateToDayofWeekReturnType = number;
  *  土曜日 -> 6
  * **/
 const ConvertDateToDayofWeek = (
-  Args: ConvertDateToDayofWeekArgsType
+    Args: ConvertDateToDayofWeekArgsType,
 ): ConvertDateToDayofWeekReturnType => {
-  return dayjsWrapper(Args).day();
-};
+    return dayjsWrapper(Args).day()
+}
 
-export default ConvertDateToDayofWeek;
+export default ConvertDateToDayofWeek

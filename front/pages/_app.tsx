@@ -1,12 +1,12 @@
-import {SessionProvider} from "next-auth/react";
-import {CssBaseline} from "@mui/material";
-import type {AppProps} from "next/app";
-import Header from "../components/Header";
-import theme from "../libs/color_theme";
-import {ThemeProvider} from "@mui/material/styles";
-import { Analytics } from '@vercel/analytics/react';
+import { CssBaseline } from '@mui/material'
+import { ThemeProvider } from '@mui/material/styles'
+import { Analytics } from '@vercel/analytics/react'
+import type { AppProps } from 'next/app'
+import { SessionProvider } from 'next-auth/react'
+import Header from '../components/Header'
+import theme from '../libs/color_theme'
 
-export default function App({Component, pageProps: {session, ...pageProps}}: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     return (
         <ThemeProvider theme={theme}>
             <SessionProvider session={session}>
@@ -16,5 +16,5 @@ export default function App({Component, pageProps: {session, ...pageProps}}: App
             </SessionProvider>
             <Analytics />
         </ThemeProvider>
-    );
+    )
 }

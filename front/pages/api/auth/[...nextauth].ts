@@ -31,6 +31,7 @@ export const authOptions: NextAuthOptions = {
             return session
         },
     },
+    secret: GOOGLE_CLIENT_SECRET,
     debug: true,
 }
 

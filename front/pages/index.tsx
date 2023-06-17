@@ -12,7 +12,7 @@ export default function Home() {
                 <Link href='/ical'>Googleカレンダー以外にインポートする場合はこちら</Link>
                 {authStatus == 'unauthenticated' && (
                     <Alert severity='error'>
-                        GoogleアカウントでログインしないとGoogleカレンダーにインポートする昨日は使えません。icalでダウンロードしたい方は
+                        GoogleアカウントでログインしないとGoogleカレンダーにインポートする機能は使えません。icalでダウンロードしたい方は
                         <Link href='/ical'>こちら</Link>
                     </Alert>
                 )}

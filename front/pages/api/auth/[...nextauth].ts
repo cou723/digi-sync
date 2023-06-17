@@ -19,11 +19,10 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             session.accessToken = token.accessToken
-            session.user.email = session.user.email
+            session.user.email = user.email
             return session
         },
     },
-    secret: 'T7sGkMv0CZQYDHhoQ9Lel1WebWMXIvjctqHi+wBcHko=',
     debug: true,
 }
 

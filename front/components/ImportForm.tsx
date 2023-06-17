@@ -11,33 +11,37 @@ import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
+    excludeOutOfImportRange,
+    fetchClassEventList,
+    INIT_REQUIRE_VALUE_LIST,
+    FORM_STATE_DEFAULT_VALUE,
+    getSelectableYearList,
+} from '../libs/importFormCommons'
+import {
     encodeQueryData,
     getEndTime,
     GetEventsErrorObject,
     getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
-import type { CalendarList, Event } from '../types/gapi_calendar'
-import { RawClassEvent, FormInputs } from '../types/types'
+import { GoogleFormInputs } from '../types/formInputs'
+import type { CalendarList, Event } from '../types/gapiCalendar'
+import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
 import DHUPortalData from './ImportModules/DHUPortalData'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
 import ToCalendar from './ImportModules/ToCalendar'
 
-const FORM_STATE_DEFAULT_VALUE: FormInputs = {
-    importYear: getNowAcademicYear().toString(),
-    importRange: '',
+const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
+    ...FORM_STATE_DEFAULT_VALUE,
     toCalendar: '',
-    username: '',
-    password: '',
-    ignoreOtherEvents: true,
-} as FormInputs
-
-const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
+} as GoogleFormInputs
 
 export default function ImportForm() {
-    const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE)
+    const [formState, setFormState] = useState<GoogleFormInputs>(
+        FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE,
+    )
     const [accessToken, setAccessToken] = useState<string>('')
     const [importCount, setImportCount] = useState<number>(0)
     const [totalImportCount, setTotalImportCount] = useState<number>(0)
@@ -53,11 +57,8 @@ export default function ImportForm() {
         'unauthenticated' | 'ready' | 'connect portal' | 'import'
     >('unauthenticated')
 
-    const selectableYears: number[] = new Array<number>(
-        new Date().getFullYear() - 1,
-        new Date().getFullYear(),
-        new Date().getFullYear() + 1,
-    )
+    const selectableYears: Array<number> = getSelectableYearList()
+
     const { data: session, status: authStatus } = useSession()
 
     useEffect(() => {
@@ -105,7 +106,7 @@ export default function ImportForm() {
 
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList()
+            class_event_list = await fetchClassEventList(formState, setAppState)
         } catch (e) {
             setAppState('ready')
             return
@@ -118,7 +119,7 @@ export default function ImportForm() {
             )
         }
         setImportCount(0)
-        class_events = excludeOutOfImportRange(class_events)
+        class_events = excludeOutOfImportRange(formState, class_events)
         await postToGoogleCalendar(class_events)
         setAppState('ready')
     }
@@ -127,79 +128,40 @@ export default function ImportForm() {
         for (const input_label of Object.keys(formState)) {
             if (
                 INIT_REQUIRE_VALUE_LIST.includes(input_label) &&
-                FORM_STATE_DEFAULT_VALUE[input_label] == formState[input_label]
+                FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE[input_label] == formState[input_label]
             )
                 return true
         }
         return false
     }
 
-    const fetchClassEventList = async (): Promise<RawClassEvent[]> => {
-        setAppState('connect portal')
-        let res
-        let event_list: RawClassEvent[]
-        const query_param_obj = {
-            importYear: formState.importYear,
-            importRange: formState.importRange,
-            username: formState.username,
-            password: formState.password,
-        }
-        const query_param_str = new URLSearchParams(query_param_obj).toString()
-        try {
-            res = await fetch(
-                process.env.NEXT_PUBLIC_API_DOMAIN + '/class_events?' + query_param_str,
-                { method: 'GET' },
-            )
-            event_list = await res.json()
-            console.log('res', res)
-        } catch {
-            throw new Error('サーバーに接続できませんでした')
-        }
-        if (res.status_code == '401' && res.detail == 'user id or password is invalid')
-            throw new Error('ユーザー名またはパスワードが違います')
-        return event_list
-    }
-
     function resetErrorMessage() {
-        setImportRangeError(FORM_STATE_DEFAULT_VALUE.importRange)
-        setCalendarInputError(FORM_STATE_DEFAULT_VALUE.toCalendar)
+        setImportRangeError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange)
+        setCalendarInputError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar)
         setDhuPortalInputError({
-            username: FORM_STATE_DEFAULT_VALUE.username,
-            password: FORM_STATE_DEFAULT_VALUE.password,
+            username: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username,
+            password: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password,
         })
     }
 
     function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_DEFAULT_VALUE.importRange) {
+        if (formState.importRange == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange) {
             setImportRangeError('インポート範囲が指定されていません')
         }
-        if (formState.toCalendar == FORM_STATE_DEFAULT_VALUE.toCalendar) {
+        if (formState.toCalendar == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar) {
             setCalendarInputError('インポート先のカレンダーが指定されていません')
         }
         let username_error_msg = ''
-        if (formState.username == FORM_STATE_DEFAULT_VALUE.username) {
+        if (formState.username == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username) {
             username_error_msg = 'ユーザー名を入力してください'
         }
         let password_error_msg = ''
-        if (formState.password == FORM_STATE_DEFAULT_VALUE.password) {
+        if (formState.password == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password) {
             password_error_msg = 'パスワードを入力してください'
         }
         setDhuPortalInputError({
             username: username_error_msg,
             password: password_error_msg,
-        })
-    }
-
-    function excludeOutOfImportRange(class_events: RawClassEvent[]): RawClassEvent[] {
-        const { start: start_date, end: end_date } = getQuarterRange(
-            parseInt(formState.importYear),
-            formState.importRange,
-        )
-        const start = start_date.getTime()
-        const end = end_date.getTime()
-        return class_events.filter((class_event) => {
-            const start_date = new Date(class_event.start).getTime()
-            return start_date > start && start_date < end
         })
     }
 
@@ -265,7 +227,7 @@ export default function ImportForm() {
             }
             if (res.nextPageToken) next_page_token = res.nextPageToken
             already_posted_events.push(...res.items)
-        } while (res.hasOwnProperty('nextPageToken'))
+        } while (res.nextPageToken !== undefined)
         return already_posted_events
     }
 
@@ -381,10 +343,4 @@ export default function ImportForm() {
             <AllDeleteButton disabled={appState == 'unauthenticated'} />
         </Stack>
     )
-}
-
-function getNowAcademicYear(): number {
-    const thisMonth = new Date().getMonth()
-    if (thisMonth >= 1 && thisMonth <= 2) return new Date().getFullYear() - 1
-    return new Date().getFullYear()
 }

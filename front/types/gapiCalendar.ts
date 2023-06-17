@@ -166,7 +166,7 @@ interface CalendarsDeleteParameters {
     calendarId: string
 }
 
-interface Calendar {
+export interface Calendar {
     kind: 'calendar#calendar'
     etag: etag
     id: string

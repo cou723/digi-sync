@@ -1,6 +1,6 @@
 export function encodeQueryData(data: { [key: string]: any }) {
     const searchParams = new URLSearchParams()
-    for (let key in data) {
+    for (const key in data) {
         searchParams.set(key, data[key])
     }
     return searchParams.toString()
@@ -29,7 +29,7 @@ export function getQuarterRanges(year: number) {
 }
 
 export function getQuarterRange(year: number, importRange: string): Range {
-    let r = getQuarterRanges(year)
+    const r = getQuarterRanges(year)
     if (importRange == '1q') return { start: r._1q_start, end: r._1q_end }
     else if (importRange == '2q') return { start: r._2q_start, end: r._2q_end }
     else if (importRange == '3q') return { start: r._3q_start, end: r._3q_end }
@@ -67,4 +67,10 @@ export function isGetEventErrorObject(obj: object): obj is GetEventsErrorObject 
         'reason' in obj.error.errors[0] &&
         'message' in obj.error.errors[0]
     )
+}
+
+export function getNowAcademicYear(): number {
+    const thisMonth = new Date().getMonth();
+    if (thisMonth >= 1 && thisMonth <= 2) return new Date().getFullYear() - 1;
+    return new Date().getFullYear();
 }

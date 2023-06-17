@@ -2,16 +2,6 @@ import dayjs from 'dayjs'
 
 type ClassType = 'eventJugyo' | 'eventDuring'
 
-export type FormInputs = {
-    importYear: string
-    importRange: string
-    toCalendar: string
-    username: string
-    password: string
-    ignoreOtherEvents: boolean
-    [key: string]: string | boolean
-}
-
 export type RawClassEvent = {
     id: string
     title: string

@@ -40,7 +40,7 @@ const ToCalendar = ({ disabled, error, value, onChange, setAccessToken }: Props)
                 return
             }
             const data = await res.json()
-            if (data.hasOwnProperty('error') && data.error.code >= 400) {
+            if (data.error !== undefined && data.error.code >= 400) {
                 signOut()
                 return
             }

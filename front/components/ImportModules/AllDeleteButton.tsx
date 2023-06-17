@@ -11,12 +11,14 @@ import {
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject } from '../../libs/utils'
-import type { CalendarList, Event } from '../../types/gapi_calendar'
+import type { CalendarList, Calendar, Event } from '../../types/gapiCalendar'
 
 type Props = {
     disabled: boolean
 }
 let delete_event_url_list: string[]
+
+type CalendarId = string
 
 export default function AllDeleteButton({ disabled }: Props) {
     const [isShowDialog, setIsShowDialog] = useState(false)
@@ -32,22 +34,10 @@ export default function AllDeleteButton({ disabled }: Props) {
         else setDeleteStatus('ready')
     }, [authStatus])
 
-    const onAllDeleteClick = async () => {
-        setDeleteStatus('getting_calendar')
-        delete_event_url_list = []
-        // すべてのカレンダーを取得
-        if (!(session && session.user)) return
-        const res: Response = await fetch(
-            'https://www.googleapis.com/calendar/v3/users/me/calendarList',
-            {
-                method: 'GET',
-                headers: { Authorization: `Bearer ${session.accessToken}` },
-            },
-        )
-        const all_calendar_list = (await res.json()).items
-
-        // すべてのカレンダーの予定を取得
-        const all_events = new Map<string, Event[]>()
+    const getAllGCalEvents = async (
+        all_calendar_list: Calendar[],
+    ): Promise<Map<CalendarId, Event[]>> => {
+        const all_events: Map<CalendarId, Event[]> = new Map()
         for (const calendar of all_calendar_list) {
             const query_param = {
                 maxResults: 2000,
@@ -82,20 +72,41 @@ export default function AllDeleteButton({ disabled }: Props) {
                 ),
             )
         }
-        // 取得した予定の中から詳細に#dp2gcがあるものだけを残すようフィルタリング
-        const delete_events = all_events
+        return all_events
+    }
+
+    const onAllDeleteClick = async () => {
+        setDeleteStatus('getting_calendar')
+        delete_event_url_list = []
+        // すべてのカレンダーを取得
+        if (!(session && session.user)) return
+        const res: Response = await fetch(
+            'https://www.googleapis.com/calendar/v3/users/me/calendarList',
+            {
+                method: 'GET',
+                headers: { Authorization: `Bearer ${session.accessToken}` },
+            },
+        )
+        const all_calendar_list = (await res.json()).items
+
+        // すべてのカレンダーの予定を取得
+        const all_events: Map<CalendarId, Event[]> = await getAllGCalEvents(all_calendar_list)
+
+        // 取得した予定の中から詳細に#created_by_dp2gcがあるものだけを残すようフィルタリング
+        const delete_events: Map<CalendarId, Event[]> = all_events
         let delete_count = 0
         delete_events.forEach((events) => {
             delete_count += events.length
         })
         setDeleteEventCout(delete_count)
-        delete_events.forEach((events, k) => {
+        delete_events.forEach((events, calendar_id) => {
             for (const delete_event of events) {
                 delete_event_url_list.push(
-                    `https://www.googleapis.com/calendar/v3/calendars/${k}/events/${delete_event.id}`,
+                    `https://www.googleapis.com/calendar/v3/calendars/${calendar_id}/events/${delete_event.id}`,
                 )
             }
         })
+
         // フィルタリングしたものを消していいかどうかホップアップを出す
         setIsShowDialog(true)
     }

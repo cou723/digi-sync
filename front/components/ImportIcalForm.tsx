@@ -7,47 +7,30 @@ import {
     SelectChangeEvent,
     Stack,
 } from '@mui/material'
-import { useSession } from 'next-auth/react'
-import Reacrt, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
+import {
+    excludeOutOfImportRange,
+    fetchClassEventList,
+    INIT_REQUIRE_VALUE_LIST,
+    FORM_STATE_DEFAULT_VALUE,
+    getSelectableYearList,
+} from '../libs/importFormCommons'
 import { ConvertToIcalMap } from '../libs/table-to-ical/ConvertToIcal'
 import { DownloadBrowser } from '../libs/table-to-ical/DownloadBrowser'
-import {
-    encodeQueryData,
-    getEndTime,
-    GetEventsErrorObject,
-    getQuarterRange,
-    isGetEventErrorObject,
-} from '../libs/utils'
-import type { CalendarList, Event } from '../types/gapi_calendar'
-import { ClassEvent, FormInputs } from '../types/types'
-import AllDeleteButton from './ImportModules/AllDeleteButton'
+import { FormInputs } from '../types/formInputs'
+import { RawClassEvent } from '../types/types'
 import DHUPortalData from './ImportModules/DHUPortalData'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
-import ToCalendar from './ImportModules/ToCalendar'
-
-const FORM_STATE_INIT_VALUE: FormInputs = {
-    importYear: (new Date().getFullYear() - 1).toString(),
-    importRange: '',
-    toCalendar: '',
-    username: '',
-    password: '',
-    ignoreOtherEvents: true,
-} as FormInputs
 
 export interface API_RETURN_EventList {
-    events: ClassEvent[]
+    events: RawClassEvent[]
 }
 
-const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
-
 export function ImportIcalForm() {
-    const [formState, setFormState] = useState<FormInputs>(FORM_STATE_INIT_VALUE)
-    const [accessToken, setAccessToken] = useState<string>('')
-    const [importCount, setImportCount] = useState<number>(0)
+    const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE)
 
     const [importRangeError, setImportRangeError] = useState<string>('')
-    const [calendarInputError, setCalendarInputError] = useState<string>('')
     const [dhuPortalInputError, setDhuPortalInputError] = useState({
         username: '',
         password: '',
@@ -57,11 +40,7 @@ export function ImportIcalForm() {
         'unauthenticated' | 'ready' | 'connect portal' | 'import'
     >('unauthenticated')
 
-    const selectableYears: Array<number> = new Array<number>(
-        new Date().getFullYear() - 1,
-        new Date().getFullYear(),
-        new Date().getFullYear() + 1,
-    )
+    const selectableYears: Array<number> = getSelectableYearList()
 
     useEffect(() => {
         if (appState == 'import') {
@@ -77,7 +56,7 @@ export function ImportIcalForm() {
         }
     }, [appState])
 
-    const handleSelectChange = (event: SelectChangeEvent<string>, child: ReactNode) => {
+    const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const value = event.target.value
         setFormState({
             ...formState,
@@ -94,22 +73,17 @@ export function ImportIcalForm() {
     }
 
     const onImportClick = async () => {
-        console.log('dataonImportClick ')
         resetErrorMessage()
-        // if (existsStateEmpty()) {
-        //   setErrorMessages();
-        //   return;
-        // }
 
-        let data
+        if (existsStateEmpty()) {
+            setErrorMessages()
+            return
+        }
+
+        let class_event_list: RawClassEvent[]
         try {
-            data = await getEventList()
-            console.log('data ', data)
-            const IcalTimeTable: any = ConvertToIcalMap(data.events)
-            if (IcalTimeTable != null) {
-                DownloadBrowser(IcalTimeTable)
-                return
-            }
+            class_event_list = await fetchClassEventList(formState, setAppState)
+            console.log('data ', class_event_list)
         } catch (e: any) {
             alert(e.message)
             console.log(e)
@@ -117,90 +91,51 @@ export function ImportIcalForm() {
             return
         }
         setAppState('import')
-        let class_events: Array<ClassEvent> = data.events
         if (formState.ignoreOtherEvents) {
-            class_events = data.events.filter(
-                (e: ClassEvent) => e.className.indexOf('eventJugyo') !== -1,
+            class_event_list = class_event_list.filter(
+                (e: RawClassEvent) => e.className.indexOf('eventJugyo') !== -1,
             )
         }
-        setImportCount(0)
-        class_events = excludeOutOfImportRange(class_events)
-        // await postToGoogleCalendar(class_events);
+        class_event_list = excludeOutOfImportRange(formState, class_event_list)
+        const IcalTimeTable: any = ConvertToIcalMap(class_event_list)
+        if (IcalTimeTable != null) DownloadBrowser(IcalTimeTable)
         setAppState('ready')
     }
 
-    // function existsStateEmpty() {
-    //   for (let input_label of Object.keys(formState)) {
-    //     if (INIT_REQUIRE_VALUE_LIST.includes(input_label) && FORM_STATE_INIT_VALUE[input_label] == formState[input_label]) return true;
-    //   }
-    //   return false;
-    // }
-
-    const getEventList = async () => {
-        setAppState('connect portal')
-        let res
-        const query_param_obj = {
-            importYear: formState.importYear,
-            importRange: formState.importRange,
-            username: formState.username,
-            password: formState.password,
-        }
-        const query_param_str = new URLSearchParams(query_param_obj).toString()
-        try {
-            const fetchValue = await fetch(
-                process.env.NEXT_PUBLIC_API_DOMAIN + '/class_events?' + query_param_str,
-                { method: 'GET' },
+    function existsStateEmpty() {
+        for (const input_label of Object.keys(formState)) {
+            if (
+                INIT_REQUIRE_VALUE_LIST.includes(input_label) &&
+                FORM_STATE_DEFAULT_VALUE[input_label] == formState[input_label]
             )
-            res = await fetchValue.json()
-        } catch {
-            throw new Error('サーバーに接続できませんでした')
+                return true
         }
-        if (res.status_code == '401' && res.detail == 'user id or password is invalid') {
-            throw new Error('ユーザー名またはパスワードが違います')
-        }
-        return res
+        return false
     }
 
     function resetErrorMessage() {
-        setImportRangeError(FORM_STATE_INIT_VALUE.importRange)
-        setCalendarInputError(FORM_STATE_INIT_VALUE.toCalendar)
+        setImportRangeError(FORM_STATE_DEFAULT_VALUE.importRange)
         setDhuPortalInputError({
-            username: FORM_STATE_INIT_VALUE.username,
-            password: FORM_STATE_INIT_VALUE.password,
+            username: FORM_STATE_DEFAULT_VALUE.username,
+            password: FORM_STATE_DEFAULT_VALUE.password,
         })
     }
 
     function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_INIT_VALUE.importRange) {
+        if (formState.importRange == FORM_STATE_DEFAULT_VALUE.importRange) {
             setImportRangeError('インポート範囲が指定されていません')
         }
-        if (formState.toCalendar == FORM_STATE_INIT_VALUE.toCalendar) {
-            setCalendarInputError('インポート先のカレンダーが指定されていません')
-        }
         let username_error_msg = ''
-        if (formState.username == FORM_STATE_INIT_VALUE.username) {
+        if (formState.username == FORM_STATE_DEFAULT_VALUE.username) {
             username_error_msg = 'ユーザー名を入力してください'
         }
         let password_error_msg = ''
-        if (formState.password == FORM_STATE_INIT_VALUE.password) {
+        if (formState.password == FORM_STATE_DEFAULT_VALUE.password) {
             password_error_msg = 'パスワードを入力してください'
         }
         setDhuPortalInputError({
             username: username_error_msg,
             password: password_error_msg,
-        })
-    }
-
-    function excludeOutOfImportRange(class_events: ClassEvent[]): ClassEvent[] {
-        const { start: start_date, end: end_date } = getQuarterRange(
-            parseInt(formState.importYear),
-            formState.importRange,
-        )
-        const start = start_date.getTime()
-        const end = end_date.getTime()
-        return class_events.filter((class_event) => {
-            const start_date = new Date(class_event.start).getTime()
-            return start_date > start && start_date < end
         })
     }
 
@@ -240,7 +175,6 @@ export function ImportIcalForm() {
                 value={formState.ignoreOtherEvents}
                 onChange={handleInputChange}
             />
-            <input type='hidden' name='accessToken' value={accessToken} />
             <br />
             <Button
                 disabled={appState == 'connect portal' || appState == 'import'}

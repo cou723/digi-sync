@@ -9,19 +9,21 @@ import {
 import { ReactNode } from 'react'
 
 type Props = {
+    register: any
     disabled: boolean
-    error: string
+    errorMessage: string
     value: string
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
 }
 
-export default function Component({ disabled, error, value, onChange }: Props) {
+export default function Component({ register,disabled, errorMessage, value, onChange }: Props) {
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='import-q-label'>インポートするクオーター</InputLabel>
             <Select
+                {...register('importRange')}
                 disabled={disabled}
-                error={error != ''}
+                error={!!errorMessage}
                 onChange={onChange}
                 value={value}
                 required
@@ -37,7 +39,7 @@ export default function Component({ disabled, error, value, onChange }: Props) {
                 <MenuItem value='1q_and_2q'>前期</MenuItem>
                 <MenuItem value='3q_and_4q'>後期</MenuItem>
             </Select>
-            <FormHelperText>{error}</FormHelperText>
+            <FormHelperText>{errorMessage}</FormHelperText>
         </FormControl>
     )
 }

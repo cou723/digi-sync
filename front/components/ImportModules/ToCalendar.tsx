@@ -15,14 +15,22 @@ type Calendar = {
 }
 
 type Props = {
+    register: any
     disabled: boolean
-    error: string
+    errorMessage: string
     value: string
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
     setAccessToken: (accessToken: string) => void
 }
 
-const ToCalendar = ({ disabled, error, value, onChange, setAccessToken }: Props) => {
+const ToCalendar = ({
+    register,
+    disabled,
+    errorMessage,
+    value,
+    onChange,
+    setAccessToken,
+}: Props) => {
     const [calendars, setCalendars] = useState<Array<Calendar>>([])
     const { data: session } = useSession()
 
@@ -53,8 +61,9 @@ const ToCalendar = ({ disabled, error, value, onChange, setAccessToken }: Props)
         <FormControl fullWidth margin='normal'>
             <InputLabel id='to-calendar-list-label'>インポート先カレンダー</InputLabel>
             <Select
+                {...register('toCalendar')}
                 disabled={disabled}
-                error={error != ''}
+                error={!!errorMessage}
                 onChange={onChange}
                 value={value}
                 required
@@ -69,7 +78,7 @@ const ToCalendar = ({ disabled, error, value, onChange, setAccessToken }: Props)
                     </MenuItem>
                 ))}
             </Select>
-            <FormHelperText>{error}</FormHelperText>
+            <FormHelperText>{errorMessage}</FormHelperText>
         </FormControl>
     )
 }

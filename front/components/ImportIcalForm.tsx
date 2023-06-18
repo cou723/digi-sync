@@ -159,7 +159,7 @@ export function ImportIcalForm() {
             </FormControl>
             <ImportRange
                 disabled={false}
-                error={importRangeError}
+                errorMessage={importRangeError}
                 value={formState.importRange}
                 onChange={handleSelectChange}
             />

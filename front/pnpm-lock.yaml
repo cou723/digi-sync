@@ -11,6 +11,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.10.5
     version: 11.10.6(@emotion/react@11.10.6)(@types/react@18.0.26)(react@18.2.0)
+  '@hookform/resolvers':
+    specifier: ^3.1.1
+    version: 3.1.1(react-hook-form@7.43.1)
   '@mui/material':
     specifier: ^5.11.0
     version: 5.11.9(@emotion/react@11.10.6)(@emotion/styled@11.10.6)(@types/react@18.0.26)(react-dom@18.2.0)(react@18.2.0)
@@ -280,6 +283,14 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+
+  /@hookform/resolvers@3.1.1(react-hook-form@7.43.1):
+    resolution: {integrity: sha512-tS16bAUkqjITNSvbJuO1x7MXbn7Oe8ZziDTJdA9mMvsoYthnOOiznOTGBYwbdlYBgU+tgpI/BtTU3paRbCuSlg==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.1(react@18.2.0)
+    dev: false
 
   /@humanwhocodes/config-array@0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}

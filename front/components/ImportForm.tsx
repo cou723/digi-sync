@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
     Button,
     FormControl,
@@ -6,10 +7,14 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
+    FormHelperText,
+    TextField,
 } from '@mui/material'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 import {
     excludeOutOfImportRange,
     fetchClassEventList,
@@ -33,6 +38,17 @@ import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
 import ToCalendar from './ImportModules/ToCalendar'
 
+const schema = z.object({
+    importYear: z.number(),
+    importRange: z.string().min(1,{message:"入力してください"}),
+    toCalendar: z.string().min(1,{message:"入力してください"}),
+    username: z.string().min(1,{message:"入力してください"}),
+    password: z.string().min(1,{message:"入力してください"}),
+    ignoreOtherEvents: z.boolean(),
+})
+
+type Schema = z.infer<typeof schema>
+
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
     toCalendar: '',
@@ -51,6 +67,14 @@ export default function ImportForm() {
     const [dhuPortalInputError, setDhuPortalInputError] = useState({
         username: '',
         password: '',
+    })
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<Schema>({
+        resolver: zodResolver(schema),
     })
 
     const [appState, setAppState] = useState<
@@ -90,36 +114,32 @@ export default function ImportForm() {
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
+        console.log(errors);
         setFormState({
             ...formState,
             [event.target.name]: value,
         })
     }
 
-    const onImportClick = async () => {
-        resetErrorMessage()
-
-        if (existsStateEmpty()) {
-            setErrorMessages()
-            return
-        }
+    const onSubmit = async (inputs:Schema) => {
+        console.log(inputs);
 
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList(formState, setAppState)
+            class_event_list = await fetchClassEventList(inputs, setAppState)
         } catch (e) {
             setAppState('ready')
             return
         }
         setAppState('import')
         let class_events: RawClassEvent[] = class_event_list
-        if (formState.ignoreOtherEvents) {
+        if (inputs.ignoreOtherEvents) {
             class_events = class_event_list.filter(
                 (class_event) => class_event.className.indexOf('eventJugyo') !== -1,
             )
         }
         setImportCount(0)
-        class_events = excludeOutOfImportRange(formState, class_events)
+        class_events = excludeOutOfImportRange(inputs, class_events)
         await postToGoogleCalendar(class_events)
         setAppState('ready')
     }
@@ -279,10 +299,11 @@ export default function ImportForm() {
     }
 
     return (
-        <Stack spacing={2} component='form' autoComplete='off' action='/import'>
+        <Stack spacing={2} component='form' action='/import'>
             <FormControl margin='normal'>
                 <InputLabel id='import-year-label'>インポート年度</InputLabel>
                 <Select
+                    {...register('importYear', { required: true, valueAsNumber: true })}
                     disabled={appState != 'ready'}
                     value={formState.importYear}
                     onChange={handleSelectChange}
@@ -299,25 +320,48 @@ export default function ImportForm() {
                 </Select>
             </FormControl>
             <ImportRange
+                register={register}
                 disabled={appState != 'ready'}
-                error={importRangeError}
+                errorMessage={errors.importRange?.message}
                 value={formState.importRange}
                 onChange={handleSelectChange}
             />
             <ToCalendar
+                register={register}
                 disabled={appState != 'ready'}
-                error={calendarInputError}
+                errorMessage={errors.toCalendar?.message}
                 value={formState.toCalendar}
                 onChange={handleSelectChange}
                 setAccessToken={setAccessToken}
             />
-            <DHUPortalData
-                disabled={appState != 'ready'}
-                error={dhuPortalInputError}
-                username={formState.username}
-                password={formState.password}
-                onChange={handleInputChange}
-            />
+            <Stack spacing={1}>
+                <TextField
+                    {...register('username', { required: true })}
+                    disabled={appState != 'ready'}
+                    error={'username' in errors}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    name='username'
+                    id='standard-basic'
+                    label='デジキャン ユーザーネーム'
+                    variant='standard'
+                    helperText={errors.username?.message}
+                />
+                <TextField
+                    {...register('password', { required: true })}
+                    disabled={appState != 'ready'}
+                    error={'password' in errors}
+                    type='password'
+                    onChange={handleInputChange}
+                    value={formState.password}
+                    required
+                    name='password'
+                    id='standard-basic'
+                    label='デジキャン パスワード'
+                    variant='standard'
+                    helperText={errors.password?.message}
+                />
+            </Stack>
             <ImportOptions
                 disabled={appState != 'ready'}
                 value={formState.ignoreOtherEvents}
@@ -332,7 +376,8 @@ export default function ImportForm() {
                     appState == 'import'
                 }
                 variant='contained'
-                onClick={onImportClick}
+                type='submit'
+                onClick={handleSubmit(onSubmit)}
             >
                 {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' : ''}
                 {appState == 'import' ? `(${importCount}件/${totalImportCount}件)` : ''}

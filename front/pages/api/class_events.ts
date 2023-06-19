@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { XMLParser } from 'fast-xml-parser'
 import { JSDOM } from 'jsdom'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -37,6 +37,29 @@ type QueryParams = {
     importRange: ImportRange
 }
 
+async function fetchClassEventsOneMonth(
+    month: number,
+    session_data: SessionData,
+): Promise<ClassEvent[]> {
+    if (month < 1 || month > 12) throw Error('Invalid month')
+    const this_year = dayjs().year()
+    const dhuPortalRes = await fetch(API_URL, {
+        body: generateBody(this_year, month, session_data),
+        headers: generateHeaders(session_data.j_session_id),
+        method: 'POST',
+    })
+
+    if (!dhuPortalRes.ok) throw Error('Failed to fetch class events from DHU Portal.')
+
+    let class_events: ClassEvent[]
+    try {
+        class_events = (await parseClassEvents(dhuPortalRes)).events
+    } catch {
+        throw Error('Failed to parse class events from DHU Portal. Maybe your login is failing.')
+    }
+    return class_events
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method Not Allowed' })
 
@@ -44,39 +67,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (queryParameters === undefined) return
     const { username, password, importYear, importRange } = queryParameters
 
-    const [start, end] = importRange.getRange(Number(importYear))
+    // eslint-disable-next-line prefer-const
+    const import_month_list = importRange.getMonthList()
 
     console.log('username', username)
     console.log('password', '*'.repeat(password.length))
-    console.log('year', importYear, start)
-    console.log('range', importRange, end)
+    console.log('year', importYear)
+    console.log('range', importRange)
 
     const session_data = await getSessionData(username, password)
-    try {
-        const dhuPortalRes = await fetch(API_URL, {
-            body: generateBody({ end, start }, session_data),
-            headers: generateHeaders(session_data.j_session_id),
-            method: 'POST',
-        })
-
-        if (!dhuPortalRes.ok)
-            res.status(500).json({ error: 'Failed to fetch class events from DHU Portal.' })
-
-        let class_events: ClassEvent[]
+    const class_events: ClassEvent[] = []
+    for (const month of import_month_list) {
         try {
-            class_events = (await parseClassEvents(dhuPortalRes)).events
-        } catch {
-            res.status(500).json({
-                error: 'Failed to parse class events from DHU Portal. Maybe your login is failing.',
-            })
-            return
+            class_events.push(...(await fetchClassEventsOneMonth(month, session_data)))
+        } catch (e: unknown) {
+            console.log(e)
+            if (e instanceof Error) return res.status(500).json({ error: e.message })
+            else return res.status(500).json({ error: 'Unknown error' })
         }
-
-        res.status(200).json(class_events)
-    } catch (e) {
-        res.status(500).json({ error: 'Internal Server Error' })
     }
-    return
+    return res.status(200).json(class_events)
 }
 
 function urlToQueryParameter(res: NextApiResponse, req: NextApiRequest): QueryParams | undefined {
@@ -156,15 +166,21 @@ function generateHeaders(j_session_id: string): Record<string, string> {
     }
 }
 
-function generateBody(range: TimeRange, sessionData: SessionData): string {
+function generateBody(year: number, month: number, sessionData: SessionData): string {
     const data = new URLSearchParams()
     data.append('javax.faces.partial.ajax', 'true')
     data.append('javax.faces.source', 'funcForm:j_idt361:content')
     data.append('javax.faces.partial.execute', 'funcForm:j_idt361:content')
     data.append('javax.faces.partial.render', 'funcForm:j_idt361:content')
     data.append('funcForm:j_idt361:content', 'funcForm:j_idt361:content')
-    data.append('funcForm:j_idt361:content_start', (range.start.unix() * 1000).toString())
-    data.append('funcForm:j_idt361:content_end', (range.end.unix() * 1000).toString())
+    data.append(
+        'funcForm:j_idt361:content_start',
+        (dayjs(`${year}-${month}-1`).unix() * 1000).toString(),
+    )
+    data.append(
+        'funcForm:j_idt361:content_end',
+        (dayjs(`${year}-${month}-1`).add(1, 'month').add(-1, 'day').unix() * 1000).toString(),
+    )
     data.append('funcForm', 'funcForm')
     data.append('rx-token', sessionData.rx_token)
     data.append('rx-loginKey', sessionData.rx_login_key)
@@ -264,22 +280,18 @@ class ImportRange {
         )
     }
 
-    getRange(year: number): [dayjs.Dayjs, dayjs.Dayjs] {
-        const _1q_start = dayjs(`${year}-4-1`)
-        const _2q_start = dayjs(`${year}-6-10`)
-        const _3q_start = dayjs(`${year}-9-1`)
-        const _4q_start = dayjs(`${year}-11-25`)
-        const _1q_end = dayjs(`${year}-6-9`)
-        const _2q_end = dayjs(`${year}-8-31`)
-        const _3q_end = dayjs(`${year}-11-24`)
-        const _4q_end = dayjs(`${year + 1}-3-1`).subtract(1, 'day')
+    getMonthList(): number[] {
+        const _1q_list = [4, 6]
+        const _2q_list = [6, 8]
+        const _3q_list = [8, 10]
+        const _4q_list = [10, 3]
 
-        if (this.range == '1q') return [_1q_start, _1q_end]
-        else if (this.range == '2q') return [_2q_start, _2q_end]
-        else if (this.range == '3q') return [_3q_start, _3q_end]
-        else if (this.range == '4q') return [_4q_start, _4q_end]
-        else if (this.range == '1q_and_2q') return [_1q_start, _2q_end]
-        else if (this.range == '3q_and_4q') return [_3q_start, _4q_end]
+        if (this.range == '1q') return _1q_list
+        else if (this.range == '2q') return _2q_list
+        else if (this.range == '3q') return _3q_list
+        else if (this.range == '4q') return _4q_list
+        else if (this.range == '1q_and_2q') return _1q_list.concat(_2q_list)
+        else if (this.range == '3q_and_4q') return _3q_list.concat(_4q_list)
         throw new Error('Invalid range')
     }
 }

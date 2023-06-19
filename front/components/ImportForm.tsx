@@ -111,6 +111,7 @@ export default function ImportForm() {
 
         let class_event_list: RawClassEvent[]
         try {
+            inputs.importYear = formState.importYear
             class_event_list = await fetchClassEventList(inputs)
         } catch (e) {
             setAppState('ready')

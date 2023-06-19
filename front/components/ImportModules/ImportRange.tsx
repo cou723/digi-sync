@@ -38,10 +38,10 @@ export default function Component({
                 label='インポートするクオーター'
                 margin='dense'
             >
-                <MenuItem value='1q'>1クオーター</MenuItem>
-                <MenuItem value='2q'>2クオーター</MenuItem>
-                <MenuItem value='3q'>3クオーター</MenuItem>
-                <MenuItem value='4q'>4クオーター</MenuItem>
+                <MenuItem value='1q'>1クオーター(4月～5月)</MenuItem>
+                <MenuItem value='2q'>2クオーター(6月～8月)</MenuItem>
+                <MenuItem value='3q'>3クオーター(9月～11月)</MenuItem>
+                <MenuItem value='4q'>4クオーター(11月～3月)</MenuItem>
                 <MenuItem value='1q_and_2q'>前期</MenuItem>
                 <MenuItem value='3q_and_4q'>後期</MenuItem>
             </Select>

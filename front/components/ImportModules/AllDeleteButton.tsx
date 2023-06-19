@@ -115,7 +115,7 @@ export default function AllDeleteButton({ disabled }) {
         handleClose()
         if (!session) return
         for (const delete_url of delete_event_url_list) {
-            fetch(delete_url, {
+            await fetch(delete_url, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${session.accessToken}`,

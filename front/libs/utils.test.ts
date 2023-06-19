@@ -103,3 +103,8 @@ test('isGetEventErrorObject', () => {
         }),
     ).toBe(true)
 })
+
+// toBeの先を今年度に変えること
+// test('getNowAcademicYear', () => {
+//     expect(utils.getNowAcademicYear()).toBe(2023)
+// })

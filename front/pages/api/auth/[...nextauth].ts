@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: GOOGLE_CLIENT_SECRET,
             authorization: { params: { scope: 'openid https://www.googleapis.com/auth/calendar' } },
             httpOptions: {
-                timeout: 60000,
+                timeout: 6000,
             },
         }),
     ],

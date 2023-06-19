@@ -37,6 +37,7 @@ export function excludeOutOfImportRange(
 export async function fetchClassEventList(formState: FormInputs): Promise<RawClassEvent[]> {
     let res: Response
     let event_list: RawClassEvent[]
+    console.log("send",formState)
     const query_param_obj = {
         importYear: formState.importYear,
         importRange: formState.importRange,

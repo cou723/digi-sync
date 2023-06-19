@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { Range } from '../types/types'
 dayjs.extend(utc)
 
 export function encodeQueryData(data: { [key: string]: string | number | boolean }) {
@@ -20,7 +21,6 @@ export function getClassEndTimeString(class_start_string: string): string {
     return class_start_time.add(90, 'minute').utc().format('YYYY-MM-DDTHH:mm:ssZZ')
 }
 
-export type Range = { start: Dayjs; end: Dayjs }
 export function getQuarterRanges(year: number): {
     _1q_start: Dayjs
     _2q_start: Dayjs

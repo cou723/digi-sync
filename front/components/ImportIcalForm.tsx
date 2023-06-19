@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Button,
     FormControl,
     InputLabel,
     MenuItem,
@@ -12,15 +11,15 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import {
-    excludeOutOfImportRange,
     fetchClassEventList,
     FORM_SCHEMA_SHAPE,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
+    NonTextTransformButton
 } from '../libs/importFormCommons'
 import { ConvertToIcalMap } from '../libs/table-to-ical/ConvertToIcal'
 import { DownloadBrowser } from '../libs/table-to-ical/DownloadBrowser'
-import { FormInputs } from '../types/formInputs'
+import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
@@ -141,13 +140,13 @@ export function ImportIcalForm() {
             </Stack>
             <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <br />
-            <Button
+            <NonTextTransformButton
                 disabled={appState == 'connect portal'}
                 variant='contained'
                 onClick={handleSubmit(onSubmit)}
             >
-                {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' : 'インポート'}
-            </Button>
+                {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' :  '.icalでダウンロード'}
+            </NonTextTransformButton>
         </Stack>
     )
 }

@@ -1,10 +1,14 @@
+import styled from '@emotion/styled'
+import {Button,ButtonProps} from '@mui/material'
 import dayjs from 'dayjs'
 import * as yup from 'yup'
-import { FormInputs } from '../types/formInputs'
+import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
 import { getQuarterRange, getNowAcademicYear } from './utils'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
+
+
 
 export const FORM_STATE_DEFAULT_VALUE: FormInputs = {
     importYear: getNowAcademicYear().toString(),
@@ -67,3 +71,7 @@ export const FORM_SCHEMA_SHAPE = {
     password: yup.string().required('入力してください'),
     ignoreOtherEvents: yup.boolean(),
 }
+
+export const NonTextTransformButton = styled(Button)<ButtonProps>(() => ({
+    textTransform: 'none',
+}))

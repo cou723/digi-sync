@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Button,
     FormControl,
     InputLabel,
     MenuItem,
@@ -8,6 +7,7 @@ import {
     SelectChangeEvent,
     Stack,
 } from '@mui/material'
+import dayjs from 'dayjs'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -19,6 +19,7 @@ import {
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
     FORM_SCHEMA_SHAPE,
+    NonTextTransformButton
 } from '../libs/importFormCommons'
 import {
     encodeQueryData,
@@ -27,7 +28,7 @@ import {
     getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
-import { GoogleFormInputs } from '../types/formInputs'
+import { GoogleFormInputs } from '../types/formInputsTypes'
 import type { CalendarList, Event } from '../types/gapiCalendar'
 import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
@@ -305,7 +306,7 @@ export default function ImportForm() {
             />
             <input type='hidden' name='accessToken' value={accessToken} />
             <br />
-            <Button
+            <NonTextTransformButton
                 disabled={
                     appState == 'unauthenticated' ||
                     appState == 'connect portal' ||
@@ -319,8 +320,8 @@ export default function ImportForm() {
                 {appState == 'import' ? `(${importCount}件/${totalImportCount}件)` : ''}
                 {appState == 'unauthenticated'
                     ? 'Googleアカウントにログインしてください'
-                    : 'インポート'}
-            </Button>
+                    : 'Google Calendarにインポート'}
+            </NonTextTransformButton>
             <AllDeleteButton disabled={appState == 'unauthenticated'} />
         </Stack>
     )

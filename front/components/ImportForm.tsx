@@ -196,6 +196,7 @@ export default function ImportForm() {
 
     async function addEventToGoogleCal(start: string, title: string) {
         if (!(session && session.user)) return
+        console.log(`add ${start} ${title}`)
         const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`
         const res = await fetch(google_api_url, {
             method: 'POST',
@@ -291,9 +292,9 @@ export default function ImportForm() {
                     type='password'
                     disabled={appState != 'ready'}
                     register={register}
-                    error_message={errors.username?.message}
+                    error_message={errors.password?.message}
                     onChange={handleInputChange}
-                    value={formState.username}
+                    value={formState.password}
                     label='デジキャン パスワード'
                 />
             </Stack>

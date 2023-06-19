@@ -41,11 +41,6 @@ export default function AllDeleteButton({ disabled }) {
                 orderBy: 'startTime',
                 singleEvents: true,
             }
-            console.log(
-                `https://www.googleapis.com/calendar/v3/calendars/${
-                    calendar.id
-                }/events?${encodeQueryData(query_param)}`,
-            )
 
             const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
                 calendar.id
@@ -119,9 +114,7 @@ export default function AllDeleteButton({ disabled }) {
         setDeleteCount(0)
         handleClose()
         if (!session) return
-        console.log()
         for (const delete_url of delete_event_url_list) {
-            console.log(delete_url)
             fetch(delete_url, {
                 method: 'DELETE',
                 headers: {

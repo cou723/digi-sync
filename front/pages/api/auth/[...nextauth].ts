@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-console.log(process.env.NEXT_PUBLIC_GOOGLE_ID || '', process.env.NEXT_PUBLIC_GOOGLE_SECRET)
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_ID || ''
 const GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_SECRET || ''

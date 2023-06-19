@@ -28,7 +28,6 @@ export function excludeOutOfImportRange(
     )
     const start = start_date.unix()
     const end = end_date.unix()
-    console.log('class_events', class_events)
     return class_events.filter((class_event) => {
         const start_date = dayjs(class_event.start).unix()
         return start_date > start && start_date < end
@@ -52,7 +51,6 @@ export async function fetchClassEventList(formState: FormInputs): Promise<RawCla
 
         if (!res.ok) throw new Error()
         event_list = await res.json()
-        console.log('res', res)
     } catch {
         throw new Error('デジキャンに接続できませんでした')
     }

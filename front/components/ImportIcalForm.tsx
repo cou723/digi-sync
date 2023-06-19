@@ -81,7 +81,6 @@ export function ImportIcalForm() {
         let class_event_list: RawClassEvent[]
         try {
             class_event_list = await fetchClassEventList(inputs)
-            console.log('data ', class_event_list)
         } catch (e: any) {
             alert(e.message)
             console.log(e)

@@ -100,7 +100,6 @@ export default function ImportForm() {
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
-        console.log(errors)
         setFormState({
             ...formState,
             [event.target.name]: value,
@@ -108,7 +107,6 @@ export default function ImportForm() {
     }
 
     const onSubmit = async (inputs: GoogleFormInputs) => {
-        console.log(inputs)
         setAppState('connect portal')
 
         let class_event_list: RawClassEvent[]

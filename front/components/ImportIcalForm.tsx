@@ -116,7 +116,6 @@ export function ImportIcalForm() {
                 <InputLabel id='import-year-label'>インポート年度</InputLabel>
                 <Select
                     {...register('importYear', { required: true, valueAsNumber: true })}
-                    disabled={appState != 'ready'}
                     value={formState.importYear}
                     onChange={handleSelectChange}
                     name='importYear'
@@ -164,7 +163,6 @@ export function ImportIcalForm() {
                 />
             </Stack>
             <ImportOptions
-                disabled={appState != 'ready'}
                 value={formState.ignoreOtherEvents}
                 onChange={handleInputChange}
             />

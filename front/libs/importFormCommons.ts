@@ -56,11 +56,7 @@ export async function fetchClassEventList(formState: FormInputs): Promise<RawCla
 }
 
 export const getSelectableYearList = (): number[] => {
-    return new Array<number>(
-        dayjs().year() - 1,
-        dayjs().year(),
-        dayjs().year() + 1,
-    )
+    return new Array<number>(dayjs().year() - 1, dayjs().year(), dayjs().year() + 1)
 }
 
 export const FORM_SCHEMA_SHAPE = {

@@ -2,11 +2,12 @@ import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
 
-export function encodeQueryData(data: { [key: string]: string | number | boolean}) {
+export function encodeQueryData(data: { [key: string]: string | number | boolean }) {
     const searchParams = new URLSearchParams()
     for (const key in data) {
         let value
-        if (typeof data[key] === 'number' || typeof data[key] === 'boolean') value = String(data[key])
+        if (typeof data[key] === 'number' || typeof data[key] === 'boolean')
+            value = String(data[key])
         else value = data[key]
         searchParams.set(key, value)
     }

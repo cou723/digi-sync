@@ -36,7 +36,7 @@ export default function AllDeleteButton({ disabled }) {
     ): Promise<Map<CalendarId, Event[]>> => {
         const all_events: Map<CalendarId, Event[]> = new Map()
         for (const calendar of all_calendar_list) {
-            const query_param: { [key: string]: string | number | boolean} = {
+            const query_param: { [key: string]: string | number | boolean } = {
                 maxResults: 2000,
                 orderBy: 'startTime',
                 singleEvents: true,

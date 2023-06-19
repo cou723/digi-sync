@@ -11,10 +11,10 @@ test('getEndTime', () => {
 })
 
 test('getQueryRange', () => {
-    const year = 2020;
+    const year = 2020
     expect(utils.getQuarterRange(year, '1q')).toEqual({
         start: dayjs(`${year}-4-1`),
-        end:  dayjs(`${year}-6-9T23:59:59`),
+        end: dayjs(`${year}-6-9T23:59:59`),
     })
 })
 

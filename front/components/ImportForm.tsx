@@ -6,6 +6,7 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
+    LinearProgress
 } from '@mui/material'
 import dayjs from 'dayjs'
 import { Session } from 'next-auth'
@@ -146,7 +147,7 @@ export default function ImportForm() {
         for (const class_event of class_events) {
             addEventToGoogleCal(class_event.start, class_event.title)
             await new Promise(function (resolve) {
-                setTimeout(resolve, 300)
+                setTimeout(resolve, 330)
             })
         }
         if (class_events.length == 0) {
@@ -322,6 +323,9 @@ export default function ImportForm() {
                     ? 'Googleアカウントにログインしてください'
                     : 'Google Calendarにインポート'}
             </NonTextTransformButton>
+
+            <LinearProgress variant="determinate" value={appState=='import'?((importCount/totalImportCount)*100):0} />
+            {appState == 'import'?"インポート中...":""}
             <AllDeleteButton disabled={appState == 'unauthenticated'} />
         </Stack>
     )

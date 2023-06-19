@@ -1,9 +1,8 @@
-import {FormInputs} from '../types/formInputs'
+import dayjs from 'dayjs'
+import * as yup from 'yup'
+import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
-import {
-    getQuarterRange,
-    getNowAcademicYear,
-} from './utils'
+import { getQuarterRange, getNowAcademicYear } from './utils'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
 
@@ -23,21 +22,18 @@ export function excludeOutOfImportRange(
         parseInt(formState.importYear),
         formState.importRange,
     )
-    const start = start_date.getTime()
-    const end = end_date.getTime()
+    const start = start_date.unix()
+    const end = end_date.unix()
     return class_events.filter((class_event) => {
-        const start_date = new Date(class_event.start).getTime()
+        const start_date = dayjs(class_event.start).unix()
         return start_date > start && start_date < end
     })
 }
 
-export async function fetchClassEventList(
-    formState: FormInputs,
-    setAppState: (s: 'unauthenticated' | 'ready' | 'connect portal' | 'import') => void,
-): Promise<RawClassEvent[]> {
-    setAppState('connect portal')
-    let res
+export async function fetchClassEventList(formState: FormInputs): Promise<RawClassEvent[]> {
+    let res: Response
     let event_list: RawClassEvent[]
+    console.log('send', formState)
     const query_param_obj = {
         importYear: formState.importYear,
         importRange: formState.importRange,
@@ -49,20 +45,23 @@ export async function fetchClassEventList(
         res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + '/class_events?' + query_param_str, {
             method: 'GET',
         })
+
+        if (!res.ok) throw new Error()
         event_list = await res.json()
-        console.log('res', res)
     } catch {
-        throw new Error('サーバーに接続できませんでした')
+        throw new Error('デジキャンに接続できませんでした')
     }
-    if (res.status_code == '401' && res.detail == 'user id or password is invalid')
-        throw new Error('ユーザー名またはパスワードが違います')
     return event_list
 }
 
 export const getSelectableYearList = (): number[] => {
-    return new Array<number>(
-        new Date().getFullYear() - 1,
-        new Date().getFullYear(),
-        new Date().getFullYear() + 1,
-    )
+    return new Array<number>(dayjs().year() - 1, dayjs().year(), dayjs().year() + 1)
+}
+
+export const FORM_SCHEMA_SHAPE = {
+    importYear: yup.number(),
+    importRange: yup.string().required('インポートする範囲を選択してください'),
+    username: yup.string().required('入力してください'),
+    password: yup.string().required('入力してください'),
+    ignoreOtherEvents: yup.boolean(),
 }

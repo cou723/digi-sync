@@ -1,4 +1,4 @@
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
 type ClassType = 'eventJugyo' | 'eventDuring'
 
@@ -36,3 +36,5 @@ export class ClassEvent {
         return JSON.stringify(this)
     }
 }
+
+export type Range = { start: Dayjs; end: Dayjs }

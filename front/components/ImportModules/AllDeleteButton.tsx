@@ -13,14 +13,11 @@ import { useEffect, useState } from 'react'
 import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject } from '../../libs/utils'
 import type { CalendarList, Calendar, Event } from '../../types/gapiCalendar'
 
-type Props = {
-    disabled: boolean
-}
 let delete_event_url_list: string[]
 
 type CalendarId = string
 
-export default function AllDeleteButton({ disabled }: Props) {
+export default function AllDeleteButton({ disabled }) {
     const [isShowDialog, setIsShowDialog] = useState(false)
     const [deleteEventCout, setDeleteEventCout] = useState(0)
     const [deleteStatus, setDeleteStatus] = useState<
@@ -39,16 +36,11 @@ export default function AllDeleteButton({ disabled }: Props) {
     ): Promise<Map<CalendarId, Event[]>> => {
         const all_events: Map<CalendarId, Event[]> = new Map()
         for (const calendar of all_calendar_list) {
-            const query_param = {
+            const query_param: { [key: string]: string | number | boolean } = {
                 maxResults: 2000,
                 orderBy: 'startTime',
                 singleEvents: true,
             }
-            console.log(
-                `https://www.googleapis.com/calendar/v3/calendars/${
-                    calendar.id
-                }/events?${encodeQueryData(query_param)}`,
-            )
 
             const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
                 calendar.id
@@ -122,10 +114,8 @@ export default function AllDeleteButton({ disabled }: Props) {
         setDeleteCount(0)
         handleClose()
         if (!session) return
-        console.log()
         for (const delete_url of delete_event_url_list) {
-            console.log(delete_url)
-            fetch(delete_url, {
+            await fetch(delete_url, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${session.accessToken}`,
@@ -142,7 +132,11 @@ export default function AllDeleteButton({ disabled }: Props) {
 
     return (
         <>
-            <Button disabled={deleteStatus != 'ready'} color='error' onClick={onAllDeleteClick}>
+            <Button
+                disabled={deleteStatus != 'ready' || disabled}
+                color='error'
+                onClick={onAllDeleteClick}
+            >
                 {
                     {
                         unauthenticated: 'Googleアカウントにログインしてください',

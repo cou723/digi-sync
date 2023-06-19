@@ -1,49 +1,53 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Button,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
     Stack,
+    Button,
 } from '@mui/material'
-import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 import {
-    excludeOutOfImportRange,
     fetchClassEventList,
-    INIT_REQUIRE_VALUE_LIST,
+    FORM_SCHEMA_SHAPE,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
 } from '../libs/importFormCommons'
 import { ConvertToIcalMap } from '../libs/table-to-ical/ConvertToIcal'
 import { DownloadBrowser } from '../libs/table-to-ical/DownloadBrowser'
-import { FormInputs } from '../types/formInputs'
+import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
-import DHUPortalData from './ImportModules/DHUPortalData'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
+import { RhfTextField } from './ImportModules/RhfTextField'
 
 export interface API_RETURN_EventList {
     events: RawClassEvent[]
 }
 
+const schema = yup.object().shape(FORM_SCHEMA_SHAPE)
+
 export function ImportIcalForm() {
     const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE)
 
-    const [importRangeError, setImportRangeError] = useState<string>('')
-    const [dhuPortalInputError, setDhuPortalInputError] = useState({
-        username: '',
-        password: '',
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormInputs>({
+        resolver: yupResolver(schema),
     })
 
-    const [appState, setAppState] = useState<
-        'unauthenticated' | 'ready' | 'connect portal' | 'import'
-    >('unauthenticated')
+    const [appState, setAppState] = useState<'ready' | 'connect portal'>('ready')
 
     const selectableYears: Array<number> = getSelectableYearList()
 
     useEffect(() => {
-        if (appState == 'import') {
+        if (appState == 'connect portal') {
             window.onbeforeunload = function () {
                 return 'Are you sure you want to leave this page?'
             }
@@ -72,71 +76,20 @@ export function ImportIcalForm() {
         })
     }
 
-    const onImportClick = async () => {
-        resetErrorMessage()
-
-        if (existsStateEmpty()) {
-            setErrorMessages()
-            return
-        }
-
+    const onSubmit = async (inputs: FormInputs) => {
+        setAppState('connect portal')
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList(formState, setAppState)
-            console.log('data ', class_event_list)
+            class_event_list = await fetchClassEventList(inputs)
         } catch (e: any) {
             alert(e.message)
             console.log(e)
             setAppState('ready')
             return
         }
-        setAppState('import')
-        if (formState.ignoreOtherEvents) {
-            class_event_list = class_event_list.filter(
-                (e: RawClassEvent) => e.className.indexOf('eventJugyo') !== -1,
-            )
-        }
-        class_event_list = excludeOutOfImportRange(formState, class_event_list)
         const IcalTimeTable: any = ConvertToIcalMap(class_event_list)
         if (IcalTimeTable != null) DownloadBrowser(IcalTimeTable)
         setAppState('ready')
-    }
-
-    function existsStateEmpty() {
-        for (const input_label of Object.keys(formState)) {
-            if (
-                INIT_REQUIRE_VALUE_LIST.includes(input_label) &&
-                FORM_STATE_DEFAULT_VALUE[input_label] == formState[input_label]
-            )
-                return true
-        }
-        return false
-    }
-
-    function resetErrorMessage() {
-        setImportRangeError(FORM_STATE_DEFAULT_VALUE.importRange)
-        setDhuPortalInputError({
-            username: FORM_STATE_DEFAULT_VALUE.username,
-            password: FORM_STATE_DEFAULT_VALUE.password,
-        })
-    }
-
-    function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_DEFAULT_VALUE.importRange) {
-            setImportRangeError('インポート範囲が指定されていません')
-        }
-        let username_error_msg = ''
-        if (formState.username == FORM_STATE_DEFAULT_VALUE.username) {
-            username_error_msg = 'ユーザー名を入力してください'
-        }
-        let password_error_msg = ''
-        if (formState.password == FORM_STATE_DEFAULT_VALUE.password) {
-            password_error_msg = 'パスワードを入力してください'
-        }
-        setDhuPortalInputError({
-            username: username_error_msg,
-            password: password_error_msg,
-        })
     }
 
     return (
@@ -144,10 +97,12 @@ export function ImportIcalForm() {
             <FormControl margin='normal'>
                 <InputLabel id='import-year-label'>インポート年度</InputLabel>
                 <Select
+                    {...register('importYear', { required: true, valueAsNumber: true })}
                     value={formState.importYear}
                     onChange={handleSelectChange}
                     name='importYear'
                     labelId='import-year-label'
+                    label='インポート先カレンダー'
                     margin='dense'
                 >
                     {selectableYears.map((selectableYear: number, i: number) => (
@@ -158,30 +113,41 @@ export function ImportIcalForm() {
                 </Select>
             </FormControl>
             <ImportRange
-                disabled={false}
-                error={importRangeError}
+                register={register}
+                errorMessage={errors.importRange?.message}
                 value={formState.importRange}
                 onChange={handleSelectChange}
             />
-            <DHUPortalData
-                disabled={false}
-                error={dhuPortalInputError}
-                username={formState.username}
-                password={formState.password}
-                onChange={handleInputChange}
-            />
-            <ImportOptions
-                disabled={false}
-                value={formState.ignoreOtherEvents}
-                onChange={handleInputChange}
-            />
+            <Stack spacing={1}>
+                <RhfTextField
+                    name='username'
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    label='デジキャン ユーザーネーム'
+                />
+                <RhfTextField
+                    name='password'
+                    type='password'
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.password}
+                    label='デジキャン パスワード'
+                />
+            </Stack>
+            <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <br />
             <Button
-                disabled={appState == 'connect portal' || appState == 'import'}
+                sx={{ textTransform: 'none' }}
+                disabled={appState == 'connect portal'}
                 variant='contained'
-                onClick={onImportClick}
+                onClick={handleSubmit(onSubmit)}
             >
-                {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' : 'インポート'}
+                {appState == 'connect portal'
+                    ? 'デジキャンから読み込んでいます...'
+                    : '.icalでダウンロード'}
             </Button>
         </Stack>
     )

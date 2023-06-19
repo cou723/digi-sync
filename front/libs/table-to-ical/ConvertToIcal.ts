@@ -3,9 +3,8 @@ import { API_RETURN_EventList } from '../../components/ImportIcalForm'
 import FormDateToIcal from './FormDateToIcal'
 
 export const ConvertToIcalMap = (FormData: API_RETURN_EventList['events']) => {
+    console.log(FormData)
     return FormData.map((value) => {
-        console.log(value)
-
         if (value.title.length > 0) {
             return FormDateToIcal(value)
         }

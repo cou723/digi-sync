@@ -1,12 +1,12 @@
 import { Checkbox, FormControlLabel } from '@mui/material'
 
 type Props = {
-    disabled: boolean
+    disabled?: boolean
     value: boolean
     onChange: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void
 }
 
-export default function ImportOptions({ disabled, value, onChange }: Props) {
+export default function ImportOptions({ disabled = false, value, onChange }: Props) {
     return (
         <FormControlLabel
             disabled={disabled}

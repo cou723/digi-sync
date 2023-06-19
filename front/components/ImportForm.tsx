@@ -1,37 +1,47 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
-    Button,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
     Stack,
+    Button,
+    LinearProgress,
 } from '@mui/material'
+import dayjs from 'dayjs'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as yup from 'yup'
 import {
     excludeOutOfImportRange,
     fetchClassEventList,
-    INIT_REQUIRE_VALUE_LIST,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
+    FORM_SCHEMA_SHAPE,
 } from '../libs/importFormCommons'
 import {
     encodeQueryData,
-    getEndTime,
+    getClassEndTimeString,
     GetEventsErrorObject,
     getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
-import { GoogleFormInputs } from '../types/formInputs'
+import { GoogleFormInputs } from '../types/formInputsTypes'
 import type { CalendarList, Event } from '../types/gapiCalendar'
 import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
-import DHUPortalData from './ImportModules/DHUPortalData'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
+import { RhfTextField } from './ImportModules/RhfTextField'
 import ToCalendar from './ImportModules/ToCalendar'
+
+const schema = yup.object().shape({
+    ...FORM_SCHEMA_SHAPE,
+    toCalendar: yup.string().required('インポート先のカレンダーを選択してください'),
+})
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -46,11 +56,12 @@ export default function ImportForm() {
     const [importCount, setImportCount] = useState<number>(0)
     const [totalImportCount, setTotalImportCount] = useState<number>(0)
 
-    const [importRangeError, setImportRangeError] = useState<string>('')
-    const [calendarInputError, setCalendarInputError] = useState<string>('')
-    const [dhuPortalInputError, setDhuPortalInputError] = useState({
-        username: '',
-        password: '',
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<GoogleFormInputs>({
+        resolver: yupResolver(schema),
     })
 
     const [appState, setAppState] = useState<
@@ -96,76 +107,30 @@ export default function ImportForm() {
         })
     }
 
-    const onImportClick = async () => {
-        resetErrorMessage()
-
-        if (existsStateEmpty()) {
-            setErrorMessages()
-            return
-        }
+    const onSubmit = async (inputs: GoogleFormInputs) => {
+        setAppState('connect portal')
 
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList(formState, setAppState)
+            inputs.importYear = formState.importYear
+            class_event_list = await fetchClassEventList(inputs)
         } catch (e) {
             setAppState('ready')
             return
         }
         setAppState('import')
         let class_events: RawClassEvent[] = class_event_list
-        if (formState.ignoreOtherEvents) {
+        if (inputs.ignoreOtherEvents) {
             class_events = class_event_list.filter(
                 (class_event) => class_event.className.indexOf('eventJugyo') !== -1,
             )
         }
         setImportCount(0)
-        class_events = excludeOutOfImportRange(formState, class_events)
+        class_events = excludeOutOfImportRange(inputs, class_events)
         await postToGoogleCalendar(class_events)
         setAppState('ready')
     }
 
-    function existsStateEmpty() {
-        for (const input_label of Object.keys(formState)) {
-            if (
-                INIT_REQUIRE_VALUE_LIST.includes(input_label) &&
-                FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE[input_label] == formState[input_label]
-            )
-                return true
-        }
-        return false
-    }
-
-    function resetErrorMessage() {
-        setImportRangeError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange)
-        setCalendarInputError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar)
-        setDhuPortalInputError({
-            username: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username,
-            password: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password,
-        })
-    }
-
-    function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange) {
-            setImportRangeError('インポート範囲が指定されていません')
-        }
-        if (formState.toCalendar == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar) {
-            setCalendarInputError('インポート先のカレンダーが指定されていません')
-        }
-        let username_error_msg = ''
-        if (formState.username == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username) {
-            username_error_msg = 'ユーザー名を入力してください'
-        }
-        let password_error_msg = ''
-        if (formState.password == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password) {
-            password_error_msg = 'パスワードを入力してください'
-        }
-        setDhuPortalInputError({
-            username: username_error_msg,
-            password: password_error_msg,
-        })
-    }
-
-    // class_eventsをgoogleに追加する
     const postToGoogleCalendar = async (class_events: RawClassEvent[]) => {
         if (!session) return
         let already_posted_event_list: Event[]
@@ -182,7 +147,7 @@ export default function ImportForm() {
         for (const class_event of class_events) {
             addEventToGoogleCal(class_event.start, class_event.title)
             await new Promise(function (resolve) {
-                setTimeout(resolve, 300)
+                setTimeout(resolve, 330)
             })
         }
         if (class_events.length == 0) {
@@ -199,7 +164,7 @@ export default function ImportForm() {
             formState.importRange,
         )
         do {
-            let query_param: object
+            let query_param: { [key: string]: string | number | boolean }
             if (next_page_token != '') query_param = { pageToken: next_page_token }
             else {
                 query_param = {
@@ -233,6 +198,7 @@ export default function ImportForm() {
 
     async function addEventToGoogleCal(start: string, title: string) {
         if (!(session && session.user)) return
+        console.log(`add ${start} ${title}`)
         const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`
         const res = await fetch(google_api_url, {
             method: 'POST',
@@ -241,7 +207,7 @@ export default function ImportForm() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                end: { dateTime: getEndTime(start) },
+                end: { dateTime: getClassEndTimeString(start) },
                 start: { dateTime: start },
                 summary: title,
                 description: '#created_by_dp2gc',
@@ -269,8 +235,7 @@ export default function ImportForm() {
             }
             const is_class_title_same = class_event.title == already_posted_event.summary
             const is_start_time_same =
-                new Date(class_event.start).toISOString() ==
-                new Date(already_posted_event.start.dateTime).toISOString()
+                dayjs(class_event.start) == dayjs(already_posted_event.start.dateTime)
             if (is_class_title_same && is_start_time_same) {
                 return true
             }
@@ -279,10 +244,11 @@ export default function ImportForm() {
     }
 
     return (
-        <Stack spacing={2} component='form' autoComplete='off' action='/import'>
+        <Stack spacing={2} component='form' action='/import'>
             <FormControl margin='normal'>
                 <InputLabel id='import-year-label'>インポート年度</InputLabel>
                 <Select
+                    {...register('importYear', { required: true, valueAsNumber: true })}
                     disabled={appState != 'ready'}
                     value={formState.importYear}
                     onChange={handleSelectChange}
@@ -299,25 +265,41 @@ export default function ImportForm() {
                 </Select>
             </FormControl>
             <ImportRange
+                register={register}
                 disabled={appState != 'ready'}
-                error={importRangeError}
+                errorMessage={errors.importRange?.message}
                 value={formState.importRange}
                 onChange={handleSelectChange}
             />
             <ToCalendar
+                register={register}
                 disabled={appState != 'ready'}
-                error={calendarInputError}
+                errorMessage={errors.toCalendar?.message}
                 value={formState.toCalendar}
                 onChange={handleSelectChange}
                 setAccessToken={setAccessToken}
             />
-            <DHUPortalData
-                disabled={appState != 'ready'}
-                error={dhuPortalInputError}
-                username={formState.username}
-                password={formState.password}
-                onChange={handleInputChange}
-            />
+            <Stack spacing={1}>
+                <RhfTextField
+                    name='username'
+                    disabled={appState != 'ready'}
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    label='デジキャン ユーザーネーム'
+                />
+                <RhfTextField
+                    name='password'
+                    type='password'
+                    disabled={appState != 'ready'}
+                    register={register}
+                    error_message={errors.password?.message}
+                    onChange={handleInputChange}
+                    value={formState.password}
+                    label='デジキャン パスワード'
+                />
+            </Stack>
             <ImportOptions
                 disabled={appState != 'ready'}
                 value={formState.ignoreOtherEvents}
@@ -326,20 +308,28 @@ export default function ImportForm() {
             <input type='hidden' name='accessToken' value={accessToken} />
             <br />
             <Button
+                sx={{ textTransform: 'none' }}
                 disabled={
                     appState == 'unauthenticated' ||
                     appState == 'connect portal' ||
                     appState == 'import'
                 }
                 variant='contained'
-                onClick={onImportClick}
+                type='submit'
+                onClick={handleSubmit(onSubmit)}
             >
                 {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' : ''}
                 {appState == 'import' ? `(${importCount}件/${totalImportCount}件)` : ''}
                 {appState == 'unauthenticated'
                     ? 'Googleアカウントにログインしてください'
-                    : 'インポート'}
+                    : 'Google Calendarにインポート'}
             </Button>
+
+            <LinearProgress
+                variant='determinate'
+                value={appState == 'import' ? (importCount / totalImportCount) * 100 : 0}
+            />
+            {appState == 'import' ? 'インポート中...' : ''}
             <AllDeleteButton disabled={appState == 'unauthenticated'} />
         </Stack>
     )

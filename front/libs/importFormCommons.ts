@@ -1,6 +1,7 @@
 import { FormInputs } from '../types/formInputs'
 import { RawClassEvent } from '../types/types'
 import { getQuarterRange, getNowAcademicYear } from './utils'
+import * as yup from 'yup'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
 
@@ -29,11 +30,7 @@ export function excludeOutOfImportRange(
     })
 }
 
-export async function fetchClassEventList(
-    formState: FormInputs,
-    setAppState: (s: 'unauthenticated' | 'ready' | 'connect portal' | 'import') => void,
-): Promise<RawClassEvent[]> {
-    setAppState('connect portal')
+export async function fetchClassEventList(formState: FormInputs): Promise<RawClassEvent[]> {
     let res: Response
     let event_list: RawClassEvent[]
     const query_param_obj = {
@@ -63,4 +60,13 @@ export const getSelectableYearList = (): number[] => {
         new Date().getFullYear(),
         new Date().getFullYear() + 1,
     )
+}
+
+export const FORM_SCHEMA_SHAPE = {
+    importYear: yup.number(),
+    importRange: yup.string().required('インポートする範囲を選択してください'),
+
+    username: yup.string().required('入力してください'),
+    password: yup.string().required('入力してください'),
+    ignoreOtherEvents: yup.boolean(),
 }

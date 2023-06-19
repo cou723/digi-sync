@@ -18,6 +18,7 @@ import {
     fetchClassEventList,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
+    FORM_SCHEMA_SHAPE,
 } from '../libs/importFormCommons'
 import {
     encodeQueryData,
@@ -36,12 +37,8 @@ import { RhfTextField } from './ImportModules/RhfTextField'
 import ToCalendar from './ImportModules/ToCalendar'
 
 const schema = yup.object().shape({
-    importYear: yup.number(),
-    importRange: yup.string().required('インポートする範囲を選択してください'),
+    ...FORM_SCHEMA_SHAPE,
     toCalendar: yup.string().required('インポート先のカレンダーを選択してください'),
-    username: yup.string().required('入力してください'),
-    password: yup.string().required('入力してください'),
-    ignoreOtherEvents: yup.boolean(),
 })
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
@@ -111,10 +108,11 @@ export default function ImportForm() {
 
     const onSubmit = async (inputs: GoogleFormInputs) => {
         console.log(inputs)
+        setAppState('connect portal')
 
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList(inputs, setAppState)
+            class_event_list = await fetchClassEventList(inputs)
         } catch (e) {
             setAppState('ready')
             return

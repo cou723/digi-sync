@@ -14,6 +14,7 @@ import * as yup from 'yup'
 import {
     excludeOutOfImportRange,
     fetchClassEventList,
+    FORM_SCHEMA_SHAPE,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
 } from '../libs/importFormCommons'
@@ -29,13 +30,7 @@ export interface API_RETURN_EventList {
     events: RawClassEvent[]
 }
 
-const schema = yup.object().shape({
-    importYear: yup.number(),
-    importRange: yup.string().required('インポートする範囲を選択してください'),
-    username: yup.string().required('入力してください'),
-    password: yup.string().required('入力してください'),
-    ignoreOtherEvents: yup.boolean(),
-})
+const schema = yup.object().shape(FORM_SCHEMA_SHAPE)
 
 export function ImportIcalForm() {
     const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE)
@@ -48,14 +43,12 @@ export function ImportIcalForm() {
         resolver: yupResolver(schema),
     })
 
-    const [appState, setAppState] = useState<
-        'unauthenticated' | 'ready' | 'connect portal' | 'import'
-    >('unauthenticated')
+    const [appState, setAppState] = useState<'ready' | 'connect portal'>('ready')
 
     const selectableYears: Array<number> = getSelectableYearList()
 
     useEffect(() => {
-        if (appState == 'import') {
+        if (appState == 'connect portal') {
             window.onbeforeunload = function () {
                 return 'Are you sure you want to leave this page?'
             }
@@ -85,9 +78,10 @@ export function ImportIcalForm() {
     }
 
     const onSubmit = async (inputs: FormInputs) => {
+        setAppState('connect portal')
         let class_event_list: RawClassEvent[]
         try {
-            class_event_list = await fetchClassEventList(inputs, setAppState)
+            class_event_list = await fetchClassEventList(inputs)
             console.log('data ', class_event_list)
         } catch (e: any) {
             alert(e.message)
@@ -95,13 +89,6 @@ export function ImportIcalForm() {
             setAppState('ready')
             return
         }
-        if (class_event_list) setAppState('import')
-        if (inputs.ignoreOtherEvents) {
-            class_event_list = class_event_list.filter(
-                (e: RawClassEvent) => e.className.indexOf('eventJugyo') !== -1,
-            )
-        }
-        class_event_list = excludeOutOfImportRange(inputs, class_event_list)
         const IcalTimeTable: any = ConvertToIcalMap(class_event_list)
         if (IcalTimeTable != null) DownloadBrowser(IcalTimeTable)
         setAppState('ready')

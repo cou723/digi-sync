@@ -17,7 +17,7 @@ let delete_event_url_list: string[]
 
 type CalendarId = string
 
-export default function AllDeleteButton() {
+export default function AllDeleteButton({ disabled }) {
     const [isShowDialog, setIsShowDialog] = useState(false)
     const [deleteEventCout, setDeleteEventCout] = useState(0)
     const [deleteStatus, setDeleteStatus] = useState<
@@ -139,7 +139,11 @@ export default function AllDeleteButton() {
 
     return (
         <>
-            <Button disabled={deleteStatus != 'ready'} color='error' onClick={onAllDeleteClick}>
+            <Button
+                disabled={deleteStatus != 'ready' || disabled}
+                color='error'
+                onClick={onAllDeleteClick}
+            >
                 {
                     {
                         unauthenticated: 'Googleアカウントにログインしてください',

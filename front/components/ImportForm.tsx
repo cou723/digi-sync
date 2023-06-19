@@ -63,7 +63,7 @@ export default function ImportForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormInputs>({
+    } = useForm<GoogleFormInputs>({
         resolver: yupResolver(schema),
     })
 
@@ -111,7 +111,7 @@ export default function ImportForm() {
         })
     }
 
-    const onSubmit = async (inputs: FormInputs) => {
+    const onSubmit = async (inputs: GoogleFormInputs) => {
         console.log(inputs)
 
         let class_event_list: RawClassEvent[]

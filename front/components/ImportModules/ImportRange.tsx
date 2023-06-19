@@ -10,13 +10,19 @@ import { ReactNode } from 'react'
 
 type Props = {
     register: any
-    disabled: boolean
+    disabled?: boolean
     errorMessage: string
     value: string
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
 }
 
-export default function Component({ register,disabled, errorMessage, value, onChange }: Props) {
+export default function Component({
+    register,
+    disabled = false,
+    errorMessage,
+    value,
+    onChange,
+}: Props) {
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='import-q-label'>インポートするクオーター</InputLabel>

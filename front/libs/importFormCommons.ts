@@ -1,7 +1,8 @@
+import dayjs from 'dayjs'
+import * as yup from 'yup'
 import { FormInputs } from '../types/formInputs'
 import { RawClassEvent } from '../types/types'
 import { getQuarterRange, getNowAcademicYear } from './utils'
-import * as yup from 'yup'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
 
@@ -21,11 +22,11 @@ export function excludeOutOfImportRange(
         parseInt(formState.importYear),
         formState.importRange,
     )
-    const start = start_date.getTime()
-    const end = end_date.getTime()
+    const start = start_date.unix()
+    const end = end_date.unix()
     console.log('class_events', class_events)
     return class_events.filter((class_event) => {
-        const start_date = new Date(class_event.start).getTime()
+        const start_date = dayjs(class_event.start).unix()
         return start_date > start && start_date < end
     })
 }
@@ -56,9 +57,9 @@ export async function fetchClassEventList(formState: FormInputs): Promise<RawCla
 
 export const getSelectableYearList = (): number[] => {
     return new Array<number>(
-        new Date().getFullYear() - 1,
-        new Date().getFullYear(),
-        new Date().getFullYear() + 1,
+        dayjs().year() - 1,
+        dayjs().year(),
+        dayjs().year() + 1,
     )
 }
 

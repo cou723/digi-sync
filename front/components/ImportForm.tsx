@@ -22,7 +22,7 @@ import {
 } from '../libs/importFormCommons'
 import {
     encodeQueryData,
-    getEndTime,
+    getClassEndTimeString,
     GetEventsErrorObject,
     getQuarterRange,
     isGetEventErrorObject,
@@ -163,7 +163,7 @@ export default function ImportForm() {
             formState.importRange,
         )
         do {
-            let query_param: object
+            let query_param: { [key: string]: string | number | boolean }
             if (next_page_token != '') query_param = { pageToken: next_page_token }
             else {
                 query_param = {
@@ -205,7 +205,7 @@ export default function ImportForm() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                end: { dateTime: getEndTime(start) },
+                end: { dateTime: getClassEndTimeString(start) },
                 start: { dateTime: start },
                 summary: title,
                 description: '#created_by_dp2gc',
@@ -233,8 +233,7 @@ export default function ImportForm() {
             }
             const is_class_title_same = class_event.title == already_posted_event.summary
             const is_start_time_same =
-                new Date(class_event.start).toISOString() ==
-                new Date(already_posted_event.start.dateTime).toISOString()
+                dayjs(class_event.start) == dayjs(already_posted_event.start.dateTime)
             if (is_class_title_same && is_start_time_same) {
                 return true
             }

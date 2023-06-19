@@ -6,6 +6,7 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
+    Button,
 } from '@mui/material'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -15,7 +16,6 @@ import {
     FORM_SCHEMA_SHAPE,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
-    NonTextTransformButton
 } from '../libs/importFormCommons'
 import { ConvertToIcalMap } from '../libs/table-to-ical/ConvertToIcal'
 import { DownloadBrowser } from '../libs/table-to-ical/DownloadBrowser'
@@ -139,13 +139,16 @@ export function ImportIcalForm() {
             </Stack>
             <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <br />
-            <NonTextTransformButton
+            <Button
+                sx={{ textTransform: 'none' }}
                 disabled={appState == 'connect portal'}
                 variant='contained'
                 onClick={handleSubmit(onSubmit)}
             >
-                {appState == 'connect portal' ? 'デジキャンから読み込んでいます...' :  '.icalでダウンロード'}
-            </NonTextTransformButton>
+                {appState == 'connect portal'
+                    ? 'デジキャンから読み込んでいます...'
+                    : '.icalでダウンロード'}
+            </Button>
         </Stack>
     )
 }

@@ -6,7 +6,8 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    LinearProgress
+    Button,
+    LinearProgress,
 } from '@mui/material'
 import dayjs from 'dayjs'
 import { Session } from 'next-auth'
@@ -20,7 +21,6 @@ import {
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
     FORM_SCHEMA_SHAPE,
-    NonTextTransformButton
 } from '../libs/importFormCommons'
 import {
     encodeQueryData,
@@ -307,7 +307,8 @@ export default function ImportForm() {
             />
             <input type='hidden' name='accessToken' value={accessToken} />
             <br />
-            <NonTextTransformButton
+            <Button
+                sx={{ textTransform: 'none' }}
                 disabled={
                     appState == 'unauthenticated' ||
                     appState == 'connect portal' ||
@@ -322,10 +323,13 @@ export default function ImportForm() {
                 {appState == 'unauthenticated'
                     ? 'Googleアカウントにログインしてください'
                     : 'Google Calendarにインポート'}
-            </NonTextTransformButton>
+            </Button>
 
-            <LinearProgress variant="determinate" value={appState=='import'?((importCount/totalImportCount)*100):0} />
-            {appState == 'import'?"インポート中...":""}
+            <LinearProgress
+                variant='determinate'
+                value={appState == 'import' ? (importCount / totalImportCount) * 100 : 0}
+            />
+            {appState == 'import' ? 'インポート中...' : ''}
             <AllDeleteButton disabled={appState == 'unauthenticated'} />
         </Stack>
     )

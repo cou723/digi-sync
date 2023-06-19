@@ -22,7 +22,7 @@ export default function Header() {
                                 variant='text'
                                 key={page.display}
                                 onClick={() => router.push(page.link)}
-                                sx={{ my: 1, color: 'white' }}
+                                sx={{ my: 1, color: 'white', textTransform: 'none' }}
                             >
                                 {page.display}
                             </Button>

@@ -1,4 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod'
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
     Button,
     FormControl,
@@ -7,18 +7,16 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    FormHelperText,
     TextField,
 } from '@mui/material'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
+import * as yup from 'yup'
 import {
     excludeOutOfImportRange,
     fetchClassEventList,
-    INIT_REQUIRE_VALUE_LIST,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
 } from '../libs/importFormCommons'
@@ -29,25 +27,24 @@ import {
     getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
-import { GoogleFormInputs } from '../types/formInputs'
+import { FormInputs, GoogleFormInputs } from '../types/formInputs'
 import type { CalendarList, Event } from '../types/gapiCalendar'
-import { RawClassEvent } from '../types/types'
+import { RawClassEvent} from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
-import DHUPortalData from './ImportModules/DHUPortalData'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
 import ToCalendar from './ImportModules/ToCalendar'
 
-const schema = z.object({
-    importYear: z.number(),
-    importRange: z.string().min(1,{message:"入力してください"}),
-    toCalendar: z.string().min(1,{message:"入力してください"}),
-    username: z.string().min(1,{message:"入力してください"}),
-    password: z.string().min(1,{message:"入力してください"}),
-    ignoreOtherEvents: z.boolean(),
+const schema = yup.object().shape({
+    importYear: yup.number(),
+    importRange: yup.string().required('インポートする範囲を選択してください'),
+    toCalendar: yup.string().required('インポート先のカレンダーを選択してください'),
+    username: yup.string().required('入力してください'),
+    password: yup.string().required('入力してください'),
+    ignoreOtherEvents: yup.boolean(),
 })
 
-type Schema = z.infer<typeof schema>
+
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -62,19 +59,12 @@ export default function ImportForm() {
     const [importCount, setImportCount] = useState<number>(0)
     const [totalImportCount, setTotalImportCount] = useState<number>(0)
 
-    const [importRangeError, setImportRangeError] = useState<string>('')
-    const [calendarInputError, setCalendarInputError] = useState<string>('')
-    const [dhuPortalInputError, setDhuPortalInputError] = useState({
-        username: '',
-        password: '',
-    })
-
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<Schema>({
-        resolver: zodResolver(schema),
+    } = useForm<FormInputs>({
+        resolver: yupResolver(schema),
     })
 
     const [appState, setAppState] = useState<
@@ -114,15 +104,15 @@ export default function ImportForm() {
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
-        console.log(errors);
+        console.log(errors)
         setFormState({
             ...formState,
             [event.target.name]: value,
         })
     }
 
-    const onSubmit = async (inputs:Schema) => {
-        console.log(inputs);
+    const onSubmit = async (inputs: FormInputs) => {
+        console.log(inputs)
 
         let class_event_list: RawClassEvent[]
         try {
@@ -144,48 +134,6 @@ export default function ImportForm() {
         setAppState('ready')
     }
 
-    function existsStateEmpty() {
-        for (const input_label of Object.keys(formState)) {
-            if (
-                INIT_REQUIRE_VALUE_LIST.includes(input_label) &&
-                FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE[input_label] == formState[input_label]
-            )
-                return true
-        }
-        return false
-    }
-
-    function resetErrorMessage() {
-        setImportRangeError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange)
-        setCalendarInputError(FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar)
-        setDhuPortalInputError({
-            username: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username,
-            password: FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password,
-        })
-    }
-
-    function setErrorMessages() {
-        if (formState.importRange == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.importRange) {
-            setImportRangeError('インポート範囲が指定されていません')
-        }
-        if (formState.toCalendar == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.toCalendar) {
-            setCalendarInputError('インポート先のカレンダーが指定されていません')
-        }
-        let username_error_msg = ''
-        if (formState.username == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.username) {
-            username_error_msg = 'ユーザー名を入力してください'
-        }
-        let password_error_msg = ''
-        if (formState.password == FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE.password) {
-            password_error_msg = 'パスワードを入力してください'
-        }
-        setDhuPortalInputError({
-            username: username_error_msg,
-            password: password_error_msg,
-        })
-    }
-
-    // class_eventsをgoogleに追加する
     const postToGoogleCalendar = async (class_events: RawClassEvent[]) => {
         if (!session) return
         let already_posted_event_list: Event[]

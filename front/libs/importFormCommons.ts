@@ -1,9 +1,6 @@
-import {FormInputs} from '../types/formInputs'
+import { FormInputs } from '../types/formInputs'
 import { RawClassEvent } from '../types/types'
-import {
-    getQuarterRange,
-    getNowAcademicYear,
-} from './utils'
+import { getQuarterRange, getNowAcademicYear } from './utils'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
 
@@ -25,7 +22,7 @@ export function excludeOutOfImportRange(
     )
     const start = start_date.getTime()
     const end = end_date.getTime()
-    console.log("class_events",class_events)
+    console.log('class_events', class_events)
     return class_events.filter((class_event) => {
         const start_date = new Date(class_event.start).getTime()
         return start_date > start && start_date < end
@@ -37,7 +34,7 @@ export async function fetchClassEventList(
     setAppState: (s: 'unauthenticated' | 'ready' | 'connect portal' | 'import') => void,
 ): Promise<RawClassEvent[]> {
     setAppState('connect portal')
-    let res:Response
+    let res: Response
     let event_list: RawClassEvent[]
     const query_param_obj = {
         importYear: formState.importYear,
@@ -51,8 +48,7 @@ export async function fetchClassEventList(
             method: 'GET',
         })
 
-        if(!res.ok)
-            throw new Error();
+        if (!res.ok) throw new Error()
         event_list = await res.json()
         console.log('res', res)
     } catch {

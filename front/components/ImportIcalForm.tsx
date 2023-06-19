@@ -7,10 +7,8 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    TextField,
 } from '@mui/material'
-import { RhfTextField } from './ImportModules/RhfTextField'
-import React, { ChangeEvent,  useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import {
@@ -25,6 +23,7 @@ import { FormInputs } from '../types/formInputs'
 import { RawClassEvent } from '../types/types'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
+import { RhfTextField } from './ImportModules/RhfTextField'
 
 export interface API_RETURN_EventList {
     events: RawClassEvent[]
@@ -38,7 +37,6 @@ const schema = yup.object().shape({
     ignoreOtherEvents: yup.boolean(),
 })
 
-
 export function ImportIcalForm() {
     const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE)
 
@@ -49,7 +47,6 @@ export function ImportIcalForm() {
     } = useForm<FormInputs>({
         resolver: yupResolver(schema),
     })
-
 
     const [appState, setAppState] = useState<
         'unauthenticated' | 'ready' | 'connect portal' | 'import'
@@ -98,8 +95,7 @@ export function ImportIcalForm() {
             setAppState('ready')
             return
         }
-        if(class_event_list)
-        setAppState('import')
+        if (class_event_list) setAppState('import')
         if (inputs.ignoreOtherEvents) {
             class_event_list = class_event_list.filter(
                 (e: RawClassEvent) => e.className.indexOf('eventJugyo') !== -1,
@@ -138,28 +134,25 @@ export function ImportIcalForm() {
                 onChange={handleSelectChange}
             />
             <Stack spacing={1}>
-            <RhfTextField
-                    name = 'username'
-                    register = {register}
-                    error_message = {errors.username?.message}
-                    onChange = {handleInputChange}
-                    value = {formState.username}
-                    label = 'デジキャン ユーザーネーム'
+                <RhfTextField
+                    name='username'
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    label='デジキャン ユーザーネーム'
                 />
                 <RhfTextField
-                    name = 'password'
-                    type = 'password'
-                    register = {register}
-                    error_message = {errors.username?.message}
-                    onChange = {handleInputChange}
-                    value = {formState.password}
-                    label = 'デジキャン パスワード'
+                    name='password'
+                    type='password'
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.password}
+                    label='デジキャン パスワード'
                 />
             </Stack>
-            <ImportOptions
-                value={formState.ignoreOtherEvents}
-                onChange={handleInputChange}
-            />
+            <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
             <br />
             <Button
                 disabled={appState == 'connect portal'}

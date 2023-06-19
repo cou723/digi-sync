@@ -13,14 +13,11 @@ import { useEffect, useState } from 'react'
 import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject } from '../../libs/utils'
 import type { CalendarList, Calendar, Event } from '../../types/gapiCalendar'
 
-type Props = {
-    disabled: boolean
-}
 let delete_event_url_list: string[]
 
 type CalendarId = string
 
-export default function AllDeleteButton({ disabled }: Props) {
+export default function AllDeleteButton() {
     const [isShowDialog, setIsShowDialog] = useState(false)
     const [deleteEventCout, setDeleteEventCout] = useState(0)
     const [deleteStatus, setDeleteStatus] = useState<

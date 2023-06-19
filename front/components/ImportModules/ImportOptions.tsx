@@ -6,7 +6,7 @@ type Props = {
     onChange: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void
 }
 
-export default function ImportOptions({ disabled=false, value, onChange }: Props) {
+export default function ImportOptions({ disabled = false, value, onChange }: Props) {
     return (
         <FormControlLabel
             disabled={disabled}

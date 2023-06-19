@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import {TextField}from '@mui/material'
+import { TextField } from '@mui/material'
 
 type Props = {
     name: string
@@ -7,9 +6,9 @@ type Props = {
     disabled?: boolean
     register: any
     error_message?: string
-    onChange: any
+    onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
     value: string
-    label?:string
+    label?: string
 }
 
 export function RhfTextField({

@@ -70,7 +70,7 @@ export function isGetEventErrorObject(obj: object): obj is GetEventsErrorObject 
 }
 
 export function getNowAcademicYear(): number {
-    const thisMonth = new Date().getMonth();
-    if (thisMonth >= 1 && thisMonth <= 2) return new Date().getFullYear() - 1;
-    return new Date().getFullYear();
+    const thisMonth = new Date().getMonth()
+    if (thisMonth >= 1 && thisMonth <= 2) return new Date().getFullYear() - 1
+    return new Date().getFullYear()
 }

@@ -7,9 +7,7 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    TextField,
 } from '@mui/material'
-import { RhfTextField } from './ImportModules/RhfTextField'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -28,12 +26,13 @@ import {
     getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
-import { FormInputs, GoogleFormInputs } from '../types/formInputs'
+import { GoogleFormInputs } from '../types/formInputs'
 import type { CalendarList, Event } from '../types/gapiCalendar'
 import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
+import { RhfTextField } from './ImportModules/RhfTextField'
 import ToCalendar from './ImportModules/ToCalendar'
 
 const schema = yup.object().shape({
@@ -283,23 +282,23 @@ export default function ImportForm() {
             />
             <Stack spacing={1}>
                 <RhfTextField
-                    name = 'username'
-                    disabled = {appState != 'ready'}
-                    register = {register}
-                    error_message = {errors.username?.message}
-                    onChange = {handleInputChange}
-                    value = {formState.username}
-                    label = 'デジキャン ユーザーネーム'
+                    name='username'
+                    disabled={appState != 'ready'}
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    label='デジキャン ユーザーネーム'
                 />
                 <RhfTextField
-                    name = 'password'
-                    type = 'password'
-                    disabled = {appState != 'ready'}
-                    register = {register}
-                    error_message = {errors.username?.message}
-                    onChange = {handleInputChange}
-                    value = {formState.username}
-                    label = 'デジキャン パスワード'
+                    name='password'
+                    type='password'
+                    disabled={appState != 'ready'}
+                    register={register}
+                    error_message={errors.username?.message}
+                    onChange={handleInputChange}
+                    value={formState.username}
+                    label='デジキャン パスワード'
                 />
             </Stack>
             <ImportOptions

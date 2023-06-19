@@ -8,5 +8,5 @@ export type FormInputs = {
 }
 
 export type GoogleFormInputs = {
-    toCalendar: string;
-} & FormInputs;
+    toCalendar: string
+} & FormInputs

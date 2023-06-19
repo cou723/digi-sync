@@ -191,9 +191,10 @@ function generateCookie(param: { j_session_id: string }): string {
     return `HttpOnly; JSESSIONID = ${param.j_session_id}; _ga = GA1.1.1861578561.1676779041; _ga_CNQG4KE1EB = GS1.1.1676779040.1.1.1676779053.47.0.0`
 }
 
-function formatBody(body: string): string {
-    return body.replace(/[a-zA-Z0-9<>=":_/()?.;,%'&{}$#\- \n]/g, '')
-}
+// for debug
+// function formatBody(body: string): string {
+//     return body.replace(/[a-zA-Z0-9<>=":_/()?.;,%'&{}$#\- \n]/g, '')
+// }
 
 async function getSessionData(username: string, password: string): Promise<SessionData> {
     const session_data = new SessionData()

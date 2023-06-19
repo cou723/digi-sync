@@ -9,6 +9,7 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
+import { RhfTextField } from './ImportModules/RhfTextField'
 import React, { ChangeEvent,  useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -137,29 +138,22 @@ export function ImportIcalForm() {
                 onChange={handleSelectChange}
             />
             <Stack spacing={1}>
-                <TextField
-                    {...register('username', { required: true })}
-                    error={'username' in errors}
-                    onChange={handleInputChange}
-                    value={formState.username}
-                    name='username'
-                    id='standard-basic'
-                    label='デジキャン ユーザーネーム'
-                    variant='standard'
-                    helperText={errors.username?.message}
+            <RhfTextField
+                    name = 'username'
+                    register = {register}
+                    error_message = {errors.username?.message}
+                    onChange = {handleInputChange}
+                    value = {formState.username}
+                    label = 'デジキャン ユーザーネーム'
                 />
-                <TextField
-                    {...register('password', { required: true })}
-                    error={'password' in errors}
-                    type='password'
-                    onChange={handleInputChange}
-                    value={formState.password}
-                    required
-                    name='password'
-                    id='standard-basic'
-                    label='デジキャン パスワード'
-                    variant='standard'
-                    helperText={errors.password?.message}
+                <RhfTextField
+                    name = 'password'
+                    type = 'password'
+                    register = {register}
+                    error_message = {errors.username?.message}
+                    onChange = {handleInputChange}
+                    value = {formState.password}
+                    label = 'デジキャン パスワード'
                 />
             </Stack>
             <ImportOptions
@@ -168,6 +162,7 @@ export function ImportIcalForm() {
             />
             <br />
             <Button
+                disabled={appState == 'connect portal'}
                 variant='contained'
                 onClick={handleSubmit(onSubmit)}
             >

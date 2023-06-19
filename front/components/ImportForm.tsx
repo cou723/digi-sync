@@ -1,4 +1,4 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Button,
     FormControl,
@@ -9,6 +9,7 @@ import {
     Stack,
     TextField,
 } from '@mui/material'
+import { RhfTextField } from './ImportModules/RhfTextField'
 import { Session } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -29,7 +30,7 @@ import {
 } from '../libs/utils'
 import { FormInputs, GoogleFormInputs } from '../types/formInputs'
 import type { CalendarList, Event } from '../types/gapiCalendar'
-import { RawClassEvent} from '../types/types'
+import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRange'
@@ -43,8 +44,6 @@ const schema = yup.object().shape({
     password: yup.string().required('入力してください'),
     ignoreOtherEvents: yup.boolean(),
 })
-
-
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -283,31 +282,24 @@ export default function ImportForm() {
                 setAccessToken={setAccessToken}
             />
             <Stack spacing={1}>
-                <TextField
-                    {...register('username', { required: true })}
-                    disabled={appState != 'ready'}
-                    error={'username' in errors}
-                    onChange={handleInputChange}
-                    value={formState.username}
-                    name='username'
-                    id='standard-basic'
-                    label='デジキャン ユーザーネーム'
-                    variant='standard'
-                    helperText={errors.username?.message}
+                <RhfTextField
+                    name = 'username'
+                    disabled = {appState != 'ready'}
+                    register = {register}
+                    error_message = {errors.username?.message}
+                    onChange = {handleInputChange}
+                    value = {formState.username}
+                    label = 'デジキャン ユーザーネーム'
                 />
-                <TextField
-                    {...register('password', { required: true })}
-                    disabled={appState != 'ready'}
-                    error={'password' in errors}
-                    type='password'
-                    onChange={handleInputChange}
-                    value={formState.password}
-                    required
-                    name='password'
-                    id='standard-basic'
-                    label='デジキャン パスワード'
-                    variant='standard'
-                    helperText={errors.password?.message}
+                <RhfTextField
+                    name = 'password'
+                    type = 'password'
+                    disabled = {appState != 'ready'}
+                    register = {register}
+                    error_message = {errors.username?.message}
+                    onChange = {handleInputChange}
+                    value = {formState.username}
+                    label = 'デジキャン パスワード'
                 />
             </Stack>
             <ImportOptions

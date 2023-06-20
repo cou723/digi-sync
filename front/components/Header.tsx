@@ -1,4 +1,5 @@
-import { AppBar, Button, Container, Box, Toolbar } from '@mui/material'
+import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from '@mui/material'
+import theme from 'libs/colorTheme'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import FloatMenu from './FloatMenu'
@@ -12,18 +13,7 @@ const pages = [
 ]
 
 export default function Header() {
-    const [width, setWidth] = useState(null)
-    const updateWidth = () => {
-        setWidth(window.innerWidth)
-    }
-    useEffect(() => {
-        window.addEventListener(`resize`, updateWidth, {
-            capture: false,
-            passive: true,
-        })
-
-        return () => window.removeEventListener(`resize`, updateWidth)
-    })
+    const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
     const router = useRouter()
     return (
@@ -32,7 +22,7 @@ export default function Header() {
                 <Toolbar disableGutters>
                     <Logo />
 
-                    {!(width == null || width > 740) ? (
+                    {!matches ? (
                         <FloatMenu pages={pages} />
                     ) : (
                         <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>

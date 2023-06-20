@@ -21,10 +21,10 @@ export default class ImportRange {
     }
 
     getMonthList(): number[] {
-        const _1q_list = [4, 6]
-        const _2q_list = [6, 8]
-        const _3q_list = [8, 10]
-        const _4q_list = [10, 3]
+        const _1q_list = [4, 5, 6]
+        const _2q_list = [6, 7, 8]
+        const _3q_list = [8, 9, 10]
+        const _4q_list = [10, 11, 12, 1, 2, 3]
 
         if (this.range == '1q') return _1q_list
         else if (this.range == '2q') return _2q_list

@@ -1,13 +1,16 @@
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
-import React from 'react'
+import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import { useTranslation } from "next-i18next";
+import React from "react";
+import { UseFormRegister } from "react-hook-form";
+import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
 
 type Props = {
-    register: any
-    appState: string
-    value: string
-    onChange: (event: any) => void
-    selectableYears: number[]
-}
+    register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;
+    appState: string;
+    value: string;
+    onChange: (event: SelectChangeEvent<string>) => void;
+    selectableYears: number[];
+};
 
 const ImportYear = React.memo(function ImportYear({
     register,
@@ -16,17 +19,20 @@ const ImportYear = React.memo(function ImportYear({
     onChange,
     selectableYears,
 }: Props) {
+    const { t } = useTranslation();
     return (
         <FormControl margin='normal'>
-            <InputLabel id='import-year-label'>インポート年度</InputLabel>
+            <InputLabel id='import-year-label'>
+                {t("components.importModules.importYear.label")}
+            </InputLabel>
             <Select
-                {...register('importYear', { required: true, valueAsNumber: true })}
-                disabled={appState != 'ready'}
+                {...register("importYear", { required: true, valueAsNumber: true })}
+                disabled={appState != "ready"}
                 value={value}
                 onChange={onChange}
                 name='importYear'
                 labelId='import-year-label'
-                label='インポート年度'
+                label={t("components.importModules.importYear.label")}
                 margin='dense'
             >
                 {selectableYears.map((selectableYear: number, i: number) => (
@@ -36,6 +42,6 @@ const ImportYear = React.memo(function ImportYear({
                 ))}
             </Select>
         </FormControl>
-    )
-})
-export default ImportYear
+    );
+});
+export default ImportYear;

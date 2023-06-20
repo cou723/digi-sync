@@ -1,10 +1,10 @@
 export type ConvertTimeToMinAndHoursArgsType = {
-    time: string
-}
+    time: string;
+};
 export type ConvertTimeToMinAndHoursReturnType = {
-    hour: number
-    minute: number
-}
+    hour: number;
+    minute: number;
+};
 
 /*
  * time に 12:34 って渡すと hour : 12 min : 34 って返す
@@ -12,8 +12,8 @@ export type ConvertTimeToMinAndHoursReturnType = {
 const ConvertTimeToMinAndHours = (
     Args: ConvertTimeToMinAndHoursArgsType,
 ): ConvertTimeToMinAndHoursReturnType => {
-    const TimeSlite = Args.time.split(':')
-    return { hour: parseInt(TimeSlite[0]), minute: parseInt(TimeSlite[1]) }
-}
+    const TimeSlite = Args.time.split(":");
+    return { hour: parseInt(TimeSlite[0]), minute: parseInt(TimeSlite[1]) };
+};
 
-export default ConvertTimeToMinAndHours
+export default ConvertTimeToMinAndHours;

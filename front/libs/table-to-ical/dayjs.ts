@@ -1,12 +1,12 @@
-import dayjs, { Dayjs } from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import weekday from 'dayjs/plugin/weekday'
+import dayjs, { Dayjs } from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import weekday from "dayjs/plugin/weekday";
 
-dayjs.extend(weekday)
-dayjs.extend(timezone)
-dayjs.extend(utc)
-dayjs.tz.setDefault(dayjs.tz.guess())
+dayjs.extend(weekday);
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.tz.setDefault(dayjs.tz.guess());
 
-const dayjsWrapper = dayjs
-export { dayjsWrapper, Dayjs }
+const dayjsWrapper = dayjs;
+export { dayjsWrapper, Dayjs };

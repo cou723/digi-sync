@@ -1,21 +1,21 @@
-import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from '@mui/material'
-import theme from 'libs/colorTheme'
-import { useRouter } from 'next/router'
-import React from 'react'
-import FloatMenu from './FloatMenu'
-import LoginBtn from './HeaderModules/LoginBtn'
-import Logo from './HeaderModules/Logo'
+import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from "@mui/material";
+import theme from "libs/colorTheme";
+import { useRouter } from "next/router";
+import React from "react";
+import FloatMenu from "./FloatMenu";
+import LoginBtn from "./HeaderModules/LoginBtn";
+import Logo from "./HeaderModules/Logo";
 
 const pages = [
-    { display: 'Google Calendarへ', link: '/' },
-    { display: 'そのほかのカレンダーへ', link: '/ical' },
-    { display: 'Q&A', link: '/q_and_a' },
-]
+    { display: "Google Calendarへ", link: "/" },
+    { display: "そのほかのカレンダーへ", link: "/ical" },
+    { display: "Q&A", link: "/q_and_a" },
+];
 
 export default React.memo(function Header() {
-    const matches = useMediaQuery(theme.breakpoints.up('sm'))
+    const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
-    const router = useRouter()
+    const router = useRouter();
     return (
         <AppBar position='static'>
             <Container maxWidth='xl'>
@@ -25,13 +25,13 @@ export default React.memo(function Header() {
                     {!matches ? (
                         <FloatMenu pages={pages} />
                     ) : (
-                        <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>
+                        <Box sx={{ flexGrow: 1, display: { md: "flex" } }}>
                             {pages.map((page) => (
                                 <Button
                                     variant='text'
                                     key={page.display}
                                     onClick={() => router.push(page.link)}
-                                    sx={{ my: 1, color: 'white', textTransform: 'none' }}
+                                    sx={{ my: 1, color: "white", textTransform: "none" }}
                                 >
                                     {page.display}
                                 </Button>
@@ -42,5 +42,5 @@ export default React.memo(function Header() {
                 </Toolbar>
             </Container>
         </AppBar>
-    )
-})
+    );
+});

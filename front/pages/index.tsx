@@ -1,23 +1,25 @@
-import { Alert, Container, Link } from '@mui/material'
-import { useSession } from 'next-auth/react'
-import HEAD from '../components/Head'
-import ImportForm from '../components/ImportForm'
+import { Alert, Container, Link } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useTranslation } from "next-i18next";
+import HEAD from "../components/Head";
+import ImportForm from "../components/ImportForm";
 
 export default function Home() {
-    const { status: authStatus } = useSession()
+    const { t } = useTranslation();
+    const { status: authStatus } = useSession();
     return (
         <>
             <HEAD />
             <Container sx={{ pt: 2 }} maxWidth='sm'>
-                <Link href='/ical'>Googleカレンダー以外にインポートする場合はこちら</Link>
-                {authStatus == 'unauthenticated' && (
+                <Link href='/ical'>{t("pages.index.link")}</Link>
+                {authStatus == "unauthenticated" && (
                     <Alert severity='error'>
-                        GoogleアカウントでログインしないとGoogleカレンダーにインポートする機能は使えません。icalでダウンロードしたい方は
-                        <Link href='/ical'>こちら</Link>
+                        {t("pages.index.error")}
+                        <Link href='/ical'>{t("pages.index.here")}</Link>
                     </Alert>
                 )}
                 <ImportForm />
             </Container>
         </>
-    )
+    );
 }

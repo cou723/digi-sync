@@ -1,43 +1,43 @@
-import LunchDiningIcon from '@mui/icons-material/LunchDining'
-import { Drawer, List, ListItem, ListItemButton, Fab } from '@mui/material'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import LunchDiningIcon from "@mui/icons-material/LunchDining";
+import { Drawer, List, ListItem, ListItemButton, Fab } from "@mui/material";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 type Props = {
-    pages: { display: string; link: string }[]
-}
+    pages: { display: string; link: string }[];
+};
 
 const style = {
     margin: 0,
-    top: 'auto',
+    top: "auto",
     right: 20,
     bottom: 20,
-    left: 'auto',
-}
+    left: "auto",
+};
 
 export default React.memo(function FloatMenu({ pages }: Props) {
-    const [isOpenDrawer, setIsOpenDrawer] = useState(false)
-    const router = useRouter()
+    const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+    const router = useRouter();
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
-            event.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' ||
-                (event as React.KeyboardEvent).key === 'Shift')
+            event.type === "keydown" &&
+            ((event as React.KeyboardEvent).key === "Tab" ||
+                (event as React.KeyboardEvent).key === "Shift")
         ) {
-            return
+            return;
         }
 
-        setIsOpenDrawer(open)
-    }
+        setIsOpenDrawer(open);
+    };
 
     function onClick() {
-        setIsOpenDrawer(!isOpenDrawer)
+        setIsOpenDrawer(!isOpenDrawer);
     }
 
     return (
         <>
             <Fab
-                sx={{ position: 'fixed' }}
+                sx={{ position: "fixed" }}
                 style={style}
                 onClick={onClick}
                 color='primary'
@@ -63,6 +63,5 @@ export default React.memo(function FloatMenu({ pages }: Props) {
                 </List>
             </Drawer>
         </>
-    )
-}
-)
+    );
+});

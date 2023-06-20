@@ -32,23 +32,21 @@ export default function Header() {
                 <Toolbar disableGutters>
                     <Logo />
 
-                    {width > 740 ? (
-                        <>
-                            <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>
-                                {pages.map((page) => (
-                                    <Button
-                                        variant='text'
-                                        key={page.display}
-                                        onClick={() => router.push(page.link)}
-                                        sx={{ my: 1, color: 'white', textTransform: 'none' }}
-                                    >
-                                        {page.display}
-                                    </Button>
-                                ))}
-                            </Box>
-                        </>
-                    ) : (
+                    {!(width == null || width > 740) ? (
                         <FloatMenu pages={pages} />
+                    ) : (
+                        <Box sx={{ flexGrow: 1, display: { md: 'flex' } }}>
+                            {pages.map((page) => (
+                                <Button
+                                    variant='text'
+                                    key={page.display}
+                                    onClick={() => router.push(page.link)}
+                                    sx={{ my: 1, color: 'white', textTransform: 'none' }}
+                                >
+                                    {page.display}
+                                </Button>
+                            ))}
+                        </Box>
                     )}
                     <LoginBtn />
                 </Toolbar>

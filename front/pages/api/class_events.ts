@@ -33,29 +33,6 @@ type QueryParams = {
     importRange: ImportRange
 }
 
-async function fetchClassEventsOneMonth(
-    month: number,
-    session_data: SessionData,
-): Promise<ClassEvent[]> {
-    if (month < 1 || month > 12) throw Error('Invalid month')
-    const this_year = dayjs().year()
-    const dhuPortalRes = await fetch(API_URL, {
-        body: generateBody(this_year, month, session_data),
-        headers: generateHeaders(session_data.j_session_id),
-        method: 'POST',
-    })
-
-    if (!dhuPortalRes.ok) throw Error('Failed to fetch class events from DHU Portal.')
-
-    let class_events: ClassEvent[]
-    try {
-        class_events = (await parseClassEvents(dhuPortalRes)).events
-    } catch {
-        throw Error('Failed to parse class events from DHU Portal. Maybe your login is failing.')
-    }
-    return class_events
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') return res.status(405).json({ error: 'Method Not Allowed' })
 
@@ -83,6 +60,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }
     return res.status(200).json(class_events)
+}
+
+async function fetchClassEventsOneMonth(
+    month: number,
+    session_data: SessionData,
+): Promise<ClassEvent[]> {
+    if (month < 1 || month > 12) throw Error('Invalid month')
+    const this_year = dayjs().year()
+    const dhuPortalRes = await fetch(API_URL, {
+        body: generateBody(this_year, month, session_data),
+        headers: generateHeaders(session_data.j_session_id),
+        method: 'POST',
+    })
+
+    if (!dhuPortalRes.ok) throw Error('Failed to fetch class events from DHU Portal.')
+
+    let class_events: ClassEvent[]
+    try {
+        class_events = (await parseClassEvents(dhuPortalRes)).events
+    } catch {
+        throw Error('Failed to parse class events from DHU Portal. Maybe your login is failing.')
+    }
+    console.log(month,class_events.length)
+    return class_events
 }
 
 function urlToQueryParameter(res: NextApiResponse, req: NextApiRequest): QueryParams | undefined {

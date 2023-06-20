@@ -1,7 +1,7 @@
 import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from '@mui/material'
 import theme from 'libs/colorTheme'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import React from 'react'
 import FloatMenu from './FloatMenu'
 import LoginBtn from './HeaderModules/LoginBtn'
 import Logo from './HeaderModules/Logo'
@@ -12,8 +12,8 @@ const pages = [
     { display: 'Q&A', link: '/q_and_a' },
 ]
 
-export default function Header() {
-    const matches = useMediaQuery(theme.breakpoints.up('sm'));
+export default React.memo(function Header() {
+    const matches = useMediaQuery(theme.breakpoints.up('sm'))
 
     const router = useRouter()
     return (
@@ -43,4 +43,4 @@ export default function Header() {
             </Container>
         </AppBar>
     )
-}
+})

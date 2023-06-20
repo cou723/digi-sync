@@ -1,7 +1,7 @@
 import LunchDiningIcon from '@mui/icons-material/LunchDining'
 import { Drawer, List, ListItem, ListItemButton, Fab } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 type Props = {
     pages: { display: string; link: string }[]
@@ -15,7 +15,7 @@ const style = {
     left: 'auto',
 }
 
-export default function FloatMenu({ pages }: Props) {
+export default React.memo(function FloatMenu({ pages }: Props) {
     const [isOpenDrawer, setIsOpenDrawer] = useState(false)
     const router = useRouter()
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -65,3 +65,4 @@ export default function FloatMenu({ pages }: Props) {
         </>
     )
 }
+)

@@ -6,7 +6,7 @@ import {
     Select,
     SelectChangeEvent,
 } from '@mui/material'
-import { ReactNode } from 'react'
+import React,{ ReactNode } from 'react'
 
 type Props = {
     register: any
@@ -16,7 +16,7 @@ type Props = {
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
 }
 
-export default function ImportRangeSelect({
+const ImportRangeSelect = React.memo(function ImportRangeSelect({
     register,
     disabled = false,
     errorMessage,
@@ -49,3 +49,6 @@ export default function ImportRangeSelect({
         </FormControl>
     )
 }
+)
+export default ImportRangeSelect
+;

@@ -19,14 +19,14 @@ type Props = {
     setAccessToken: (accessToken: string) => void
 }
 
-const ToCalendar = ({
+const ToCalendar = React.memo(function ToCalendar({
     register,
     disabled,
     errorMessage,
     value,
     onChange,
     setAccessToken,
-}: Props) => {
+}: Props) {
     const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([])
     const { data: session } = useSession()
 
@@ -82,6 +82,6 @@ const ToCalendar = ({
             <FormHelperText>{errorMessage}</FormHelperText>
         </FormControl>
     )
-}
+})
 
 export default ToCalendar

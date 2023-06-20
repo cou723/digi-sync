@@ -23,7 +23,7 @@ import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRange from './ImportModules/ImportRangeSelect'
-import { RhfTextField } from './ImportModules/RhfTextField'
+import RhfTextField from './ImportModules/RhfTextField'
 
 export interface API_RETURN_EventList {
     events: RawClassEvent[]
@@ -45,20 +45,6 @@ export function ImportIcalForm() {
     const [appState, setAppState] = useState<'ready' | 'connect portal'>('ready')
 
     const selectableYears: Array<number> = getSelectableYearList()
-
-    useEffect(() => {
-        if (appState == 'connect portal') {
-            window.onbeforeunload = function () {
-                return 'Are you sure you want to leave this page?'
-            }
-        } else {
-            window.onbeforeunload = null
-        }
-
-        return () => {
-            window.onbeforeunload = null
-        }
-    }, [appState])
 
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const value = event.target.value

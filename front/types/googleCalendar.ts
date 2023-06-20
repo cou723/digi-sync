@@ -14,14 +14,16 @@ import { RawClassEvent } from './types'
 export async function postToGoogleCalendar(
     session: Session,
     class_events: RawClassEvent[],
+    count_setter,
     total_count_setter,
     inputs: FormInputs,
-):Promise<void> {
+): Promise<void> {
+    count_setter(0)
     if (!session) return
 
     let already_posted_event_list: Event[]
     try {
-        already_posted_event_list = await getAlreadyPostedEvents(session.accessToken,inputs)
+        already_posted_event_list = await getAlreadyPostedEvents(session.accessToken, inputs)
 
         class_events = class_events.filter(
             (class_event) => !isEventDuplicated(already_posted_event_list, class_event),

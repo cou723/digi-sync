@@ -1,21 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    Stack,
-    Button,
-    LinearProgress,
-} from '@mui/material'
+import { SelectChangeEvent, Stack, Button, LinearProgress } from '@mui/material'
+import useBeforeUnload from 'hooks/import-hook'
 import { useSession } from 'next-auth/react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { postToGoogleCalendar } from 'types/googleCalendar'
 import * as yup from 'yup'
 import {
-    excludeOutOfImportRange,
     fetchClassEventList,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
@@ -26,8 +17,9 @@ import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
 import ImportOptions from './ImportModules/ImportOptions'
 import ImportRangeSelect from './ImportModules/ImportRangeSelect'
-import { RhfTextField } from './ImportModules/RhfTextField'
-import ToCalendar from './ImportModules/ToCalendar'
+import ImportYearSelect from './ImportModules/ImportYearSelect'
+import RhfTextField from './ImportModules/RhfTextField'
+import ToCalendarSelect from './ImportModules/ToCalendar'
 
 const schema = yup.object().shape({
     ...FORM_SCHEMA_SHAPE,
@@ -59,6 +51,8 @@ export default function ImportForm() {
         'unauthenticated' | 'ready' | 'connect portal' | 'import'
     >('unauthenticated')
 
+    useBeforeUnload(appState)
+
     const selectableYears: Array<number> = getSelectableYearList()
 
     const { data: session, status: authStatus } = useSession()
@@ -67,20 +61,6 @@ export default function ImportForm() {
         if (authStatus == 'unauthenticated') setAppState('unauthenticated')
         else setAppState('ready')
     }, [authStatus])
-
-    useEffect(() => {
-        if (appState == 'import') {
-            window.onbeforeunload = function () {
-                return 'Are you sure you want to leave this page?'
-            }
-        } else {
-            window.onbeforeunload = null
-        }
-
-        return () => {
-            window.onbeforeunload = null
-        }
-    }, [appState])
 
     const handleSelectChange = (event: SelectChangeEvent<string>) => {
         const value = event.target.value
@@ -109,6 +89,7 @@ export default function ImportForm() {
             setAppState('ready')
             return
         }
+
         setAppState('import')
         let class_events: RawClassEvent[] = class_event_list
         if (inputs.ignoreOtherEvents) {
@@ -116,33 +97,28 @@ export default function ImportForm() {
                 (class_event) => class_event.className.indexOf('eventJugyo') !== -1,
             )
         }
-        setImportCount(0)
-        class_events = excludeOutOfImportRange(inputs, class_events)
-        await postToGoogleCalendar(session, class_events, setTotalImportCount, inputs)
+
+        // class_events = excludeOutOfImportRange(inputs, class_events)
+        await postToGoogleCalendar(
+            session,
+            class_events,
+            setImportCount,
+            setTotalImportCount,
+            inputs,
+        )
+
         setAppState('ready')
     }
 
     return (
         <Stack spacing={2} component='form' action='/import'>
-            <FormControl margin='normal'>
-                <InputLabel id='import-year-label'>インポート年度</InputLabel>
-                <Select
-                    {...register('importYear', { required: true, valueAsNumber: true })}
-                    disabled={appState != 'ready'}
-                    value={formState.importYear}
-                    onChange={handleSelectChange}
-                    name='importYear'
-                    labelId='import-year-label'
-                    label='インポート先カレンダー'
-                    margin='dense'
-                >
-                    {selectableYears.map((selectableYear: number, i: number) => (
-                        <MenuItem value={selectableYear} key={i}>
-                            {selectableYear}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
+            <ImportYearSelect
+                register={register}
+                value={formState.importYear}
+                appState={appState}
+                selectableYears={selectableYears}
+                onChange={handleSelectChange}
+            />
             <ImportRangeSelect
                 register={register}
                 disabled={appState != 'ready'}
@@ -150,7 +126,7 @@ export default function ImportForm() {
                 value={formState.importRange}
                 onChange={handleSelectChange}
             />
-            <ToCalendar
+            <ToCalendarSelect
                 register={register}
                 disabled={appState != 'ready'}
                 errorMessage={errors.toCalendar?.message}
@@ -188,11 +164,7 @@ export default function ImportForm() {
             <br />
             <Button
                 sx={{ textTransform: 'none' }}
-                disabled={
-                    appState == 'unauthenticated' ||
-                    appState == 'connect portal' ||
-                    appState == 'import'
-                }
+                disabled={appState !== 'ready'}
                 variant='contained'
                 type='submit'
                 onClick={handleSubmit(onSubmit)}

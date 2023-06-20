@@ -1,16 +1,9 @@
-import {
-    AppBar,
-    Button,
-    Container,
-    Box,
-    Toolbar,
-} from '@mui/material'
+import { AppBar, Button, Container, Box, Toolbar } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import FloatMenu from './FloatMenu'
 import LoginBtn from './HeaderModules/LoginBtn'
 import Logo from './HeaderModules/Logo'
-
 
 const pages = [
     { display: 'Google Calendarへ', link: '/' },
@@ -31,7 +24,6 @@ export default function Header() {
 
         return () => window.removeEventListener(`resize`, updateWidth)
     })
-
 
     const router = useRouter()
     return (
@@ -56,7 +48,7 @@ export default function Header() {
                             </Box>
                         </>
                     ) : (
-                        <FloatMenu pages={pages}/>
+                        <FloatMenu pages={pages} />
                     )}
                     <LoginBtn />
                 </Toolbar>

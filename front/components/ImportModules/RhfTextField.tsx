@@ -11,7 +11,7 @@ type Props = {
     label?: string
 }
 
-export function RhfTextField({
+export default function RhfTextField({
     name,
     type = 'text',
     disabled = false,

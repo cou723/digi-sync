@@ -1,11 +1,5 @@
 import LunchDiningIcon from '@mui/icons-material/LunchDining'
-import {
-    Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    Fab,
-} from '@mui/material'
+import { Drawer, List, ListItem, ListItemButton, Fab } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 

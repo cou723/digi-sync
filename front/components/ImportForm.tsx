@@ -341,7 +341,7 @@ export default function ImportForm() {
                 {appState == 'import' ? `(${importCount}件/${totalImportCount}件)` : ''}
                 {appState == 'unauthenticated'
                     ? 'Googleアカウントにログインしてください'
-                    : 'Google Calendarにインポート'}
+                    : 'Google Calendarと同期する'}
             </Button>
 
             <LinearProgress

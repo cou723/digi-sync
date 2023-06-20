@@ -19,9 +19,9 @@ export function excludeOutOfImportRange(
     formState: FormInputs,
     class_events: RawClassEvent[],
 ): RawClassEvent[] {
-    const { start, end } = new ImportRange(
-        formState.importRange,
-    ).getQuarterRange(parseInt(formState.importYear))
+    const { start, end } = new ImportRange(formState.importRange).getQuarterRange(
+        parseInt(formState.importYear),
+    )
 
     const start_unix = start.unix()
     const end_unix = end.unix()

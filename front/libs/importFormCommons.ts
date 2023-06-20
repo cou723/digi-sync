@@ -1,8 +1,9 @@
 import dayjs from 'dayjs'
 import * as yup from 'yup'
 import { FormInputs } from '../types/formInputsTypes'
+import ImportRange from '../types/importRange'
 import { RawClassEvent } from '../types/types'
-import { getQuarterRange, getNowAcademicYear } from './utils'
+import { getNowAcademicYear } from './utils'
 
 export const INIT_REQUIRE_VALUE_LIST = ['importRange', 'toCalendar', 'username', 'password']
 
@@ -18,29 +19,32 @@ export function excludeOutOfImportRange(
     formState: FormInputs,
     class_events: RawClassEvent[],
 ): RawClassEvent[] {
-    const { start: start_date, end: end_date } = getQuarterRange(
-        parseInt(formState.importYear),
+    const { start, end } = new ImportRange(
         formState.importRange,
-    )
-    const start = start_date.unix()
-    const end = end_date.unix()
+    ).getQuarterRange(parseInt(formState.importYear))
+
+    const start_unix = start.unix()
+    const end_unix = end.unix()
+
     return class_events.filter((class_event) => {
         const start_date = dayjs(class_event.start).unix()
-        return start_date > start && start_date < end
+        return start_date > start_unix && start_date < end_unix
     })
 }
 
 export async function fetchClassEventList(formState: FormInputs): Promise<RawClassEvent[]> {
     let res: Response
     let event_list: RawClassEvent[]
-    console.log('send', formState)
+
     const query_param_obj = {
         importYear: formState.importYear,
         importRange: formState.importRange,
         username: formState.username,
         password: formState.password,
     }
+
     const query_param_str = new URLSearchParams(query_param_obj).toString()
+
     try {
         res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + '/class_events?' + query_param_str, {
             method: 'GET',

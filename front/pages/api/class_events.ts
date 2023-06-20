@@ -1,18 +1,14 @@
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { XMLParser } from 'fast-xml-parser'
 import { JSDOM } from 'jsdom'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ClassEvent, RawClassEvent as NonTypedClassEvent } from '../../types/types'
+import ImportRange  from '../../types/importRange'
+import { ClassEvent, RawClassEvent  } from '../../types/types'
 import 'dayjs/locale/ja'
 
 const jsdom = new JSDOM()
 const html_parser = new jsdom.window.DOMParser()
 const xml_parser = new XMLParser()
-
-type TimeRange = {
-    end: dayjs.Dayjs
-    start: dayjs.Dayjs
-}
 
 class SessionData {
     j_session_id: string
@@ -130,7 +126,7 @@ async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }
         (x: string) => x.includes('events'),
     )[0]
 
-    let non_typed_class_events: NonTypedClassEvent[]
+    let non_typed_class_events: RawClassEvent[]
     try {
         non_typed_class_events = JSON.parse(json_class_events).events
     } catch (e) {
@@ -258,40 +254,4 @@ function extractJSessionId(cookie: string | null): string {
         return jsessionid
     }
     return ''
-}
-
-type ImportRangeString = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q'
-
-class ImportRange {
-    range: ImportRangeString
-    constructor(range: string) {
-        if (!this.isImportRangeString(range)) throw new Error('Invalid range')
-        this.range = range
-    }
-
-    isImportRangeString(value: string): value is ImportRangeString {
-        return (
-            value === '1q' ||
-            value === '2q' ||
-            value === '3q' ||
-            value === '4q' ||
-            value === '1q_and_2q' ||
-            value === '3q_and_4q'
-        )
-    }
-
-    getMonthList(): number[] {
-        const _1q_list = [4, 6]
-        const _2q_list = [6, 8]
-        const _3q_list = [8, 10]
-        const _4q_list = [10, 3]
-
-        if (this.range == '1q') return _1q_list
-        else if (this.range == '2q') return _2q_list
-        else if (this.range == '3q') return _3q_list
-        else if (this.range == '4q') return _4q_list
-        else if (this.range == '1q_and_2q') return _1q_list.concat(_2q_list)
-        else if (this.range == '3q_and_4q') return _3q_list.concat(_4q_list)
-        throw new Error('Invalid range')
-    }
 }

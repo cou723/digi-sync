@@ -93,7 +93,7 @@ export interface CalendarList {
      */
     nextSyncToken?: string | undefined
 
-    items: Event[]
+    items: CalendarListEntry[]
 }
 
 // The type of notification. Possible values are:
@@ -109,7 +109,7 @@ type NotificationType =
     // An agenda with the events of the day (sent out in the morning).
     | 'agenda'
 
-interface CalendarListEntry {
+export interface CalendarListEntry {
     kind: 'calendar#calendarListEntry'
     etag: etag
     id: string

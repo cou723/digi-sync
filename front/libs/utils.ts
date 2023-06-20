@@ -14,7 +14,7 @@ export function encodeQueryData(data: { [key: string]: string | number | boolean
     return searchParams.toString()
 }
 
-export function getClassEndTimeString(class_start_string: string): string {
+export function getClassEndTime(class_start_string: string): string {
     const class_start_time = dayjs(class_start_string)
     class_start_time.add(90, 'minute')
     return class_start_time.add(90, 'minute').utc().format('YYYY-MM-DDTHH:mm:ssZZ')

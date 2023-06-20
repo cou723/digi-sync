@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import ImportRange from '../types/importRange'
 import * as utils from './utils'
 
 test('encodeQueryData', () => {
@@ -7,29 +8,29 @@ test('encodeQueryData', () => {
 })
 
 test('getEndTime', () => {
-    expect(utils.getClassEndTimeString('2020-01-01T00:00:00+0000')).toBe('2020-01-01T01:30:00+0000')
+    expect(utils.getClassEndTime('2020-01-01T00:00:00+0000')).toBe('2020-01-01T01:30:00+0000')
 })
 
 test('getQueryRange', () => {
     const year = 2020
-    expect(utils.getQuarterRange(year, '1q')).toEqual({
+    expect(new ImportRange('1q').getQuarterRange(year)).toEqual({
         start: dayjs(`${year}-4-1`),
-        end: dayjs(`${year}-6-9T23:59:59`),
+        end: dayjs(`${year}-6-1`),
     })
 })
 
 test('getQuarterRanges', () => {
     const year = 2022
-    expect(utils.getQuarterRanges(year)).toEqual({
+    expect(ImportRange.getQuarterRanges(year)).toEqual({
         _1q_start: dayjs(`${year}-4-1`),
-        _2q_start: dayjs(`${year}-6-10`),
+        _2q_start: dayjs(`${year}-6-1`),
         _3q_start: dayjs(`${year}-9-1`),
-        _4q_start: dayjs(`${year}-11-25`),
+        _4q_start: dayjs(`${year}-11-1`),
 
-        _1q_end: dayjs(`${year}-6-9T23:59:59`),
-        _2q_end: dayjs(`${year}-8-31T23:59:59`),
-        _3q_end: dayjs(`${year}-11-24T23:59:59`),
-        _4q_end: dayjs(`${year + 1}-3-31T23:59:59`),
+        _1q_end: dayjs(`${year}-6-1`),
+        _2q_end: dayjs(`${year}-9-1`),
+        _3q_end: dayjs(`${year}-11-1`),
+        _4q_end: dayjs(`${year + 1}-3-1`),
     })
 })
 

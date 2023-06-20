@@ -50,7 +50,9 @@ const ToCalendar = ({
             }
             const calendar_list_entry: CalendarList = data
 
-            const my_calendar_list = calendar_list_entry.items.filter((calendar) => calendar.accessRole === 'owner')
+            const my_calendar_list = calendar_list_entry.items.filter(
+                (calendar) => calendar.accessRole === 'owner',
+            )
             setCalendars(my_calendar_list)
             setAccessToken(session.accessToken)
         })()

@@ -36,6 +36,7 @@ export async function postToGoogleCalendar(
     total_count_setter(class_events.length)
     for (const class_event of class_events) {
         addEventToGoogleCal(class_event.start, class_event.title, session, inputs)
+        count_setter((prev) => prev + 1)
         await new Promise(function (resolve) {
             setTimeout(resolve, 310)
         })

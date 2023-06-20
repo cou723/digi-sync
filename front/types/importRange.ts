@@ -1,6 +1,6 @@
-import dayjs ,{Dayjs}from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { Range } from '../types/types'
-export type ImportRangeString = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q';
+export type ImportRangeString = '1q' | '2q' | '3q' | '4q' | '1q_and_2q' | '3q_and_4q'
 
 export default class ImportRange {
     range: ImportRangeString
@@ -35,7 +35,7 @@ export default class ImportRange {
         throw new Error('Invalid range')
     }
 
-    getQuarterRanges(year: number): {
+    static getQuarterRanges(year: number): {
         _1q_start: Dayjs
         _2q_start: Dayjs
         _3q_start: Dayjs
@@ -59,7 +59,7 @@ export default class ImportRange {
     }
 
     getQuarterRange(year: number): Range {
-        const r = this.getQuarterRanges(year)
+        const r = ImportRange.getQuarterRanges(year)
         if (this.range == '1q') return { start: r._1q_start, end: r._1q_end }
         else if (this.range == '2q') return { start: r._2q_start, end: r._2q_end }
         else if (this.range == '3q') return { start: r._3q_start, end: r._3q_end }
@@ -67,5 +67,4 @@ export default class ImportRange {
         else if (this.range == '1q_and_2q') return { start: r._1q_start, end: r._2q_end }
         return { start: r._3q_start, end: r._4q_end }
     }
-
 }

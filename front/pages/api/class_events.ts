@@ -2,8 +2,8 @@ import dayjs from 'dayjs'
 import { XMLParser } from 'fast-xml-parser'
 import { JSDOM } from 'jsdom'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import ImportRange  from '../../types/importRange'
-import { ClassEvent, RawClassEvent  } from '../../types/types'
+import ImportRange from '../../types/importRange'
+import { ClassEvent, RawClassEvent } from '../../types/types'
 import 'dayjs/locale/ja'
 
 const jsdom = new JSDOM()

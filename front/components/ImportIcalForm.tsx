@@ -22,7 +22,7 @@ import { DownloadBrowser } from '../libs/table-to-ical/DownloadBrowser'
 import { FormInputs } from '../types/formInputsTypes'
 import { RawClassEvent } from '../types/types'
 import ImportOptions from './ImportModules/ImportOptions'
-import ImportRange from './ImportModules/ImportRange'
+import ImportRange from './ImportModules/ImportRangeSelect'
 import { RhfTextField } from './ImportModules/RhfTextField'
 
 export interface API_RETURN_EventList {

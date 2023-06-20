@@ -16,7 +16,7 @@ type Props = {
     onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void
 }
 
-export default function Component({
+export default function ImportRangeSelect({
     register,
     disabled = false,
     errorMessage,

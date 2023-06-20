@@ -6,12 +6,13 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    LinearProgress,
     Fade,
 } from '@mui/material'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject } from '../../libs/utils'
-import type { CalendarList, Calendar, Event } from '../../types/gapiCalendar'
+import type { Events, Calendar, Event } from '../../types/gapiCalendar'
 
 let delete_event_url_list: string[]
 
@@ -52,7 +53,7 @@ export default function AllDeleteButton({ disabled }) {
                     'Content-Type': 'application/json',
                 },
             })
-            const res: CalendarList | GetEventsErrorObject = await raw_response.json()
+            const res: Events | GetEventsErrorObject = await raw_response.json()
             if (isGetEventErrorObject(res)) {
                 console.error(res)
                 continue
@@ -112,10 +113,9 @@ export default function AllDeleteButton({ disabled }) {
         setIsShowDialog(false)
         setDeleteStatus('deleting')
         setDeleteCount(0)
-        handleClose()
         if (!session) return
         for (const delete_url of delete_event_url_list) {
-            await fetch(delete_url, {
+            fetch(delete_url, {
                 method: 'DELETE',
                 headers: {
                     Authorization: `Bearer ${session.accessToken}`,
@@ -143,13 +143,18 @@ export default function AllDeleteButton({ disabled }) {
                         ready: 'デジシンクによって追加した予定をすべて消す',
                         deleting: `${deleteCount}件削除済み`,
                         getting_calendar:
-                            'カレンダーからデジシンクによって追加された予定を検索中(30秒ほどかかります)',
+                            'カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)',
                     }[deleteStatus]
                 }
                 <Fade in={deleteStatus == 'getting_calendar'}>
                     <CircularProgress />
                 </Fade>
             </Button>
+            <LinearProgress
+                style={{ display: deleteStatus == 'deleting' ? 'inline' : 'none' }}
+                variant='determinate'
+                value={(deleteCount / deleteEventCout) * 100}
+            />
             <Dialog
                 open={isShowDialog}
                 aria-labelledby='alert-dialog-title'

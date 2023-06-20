@@ -8,11 +8,7 @@ import {
 } from '@mui/material'
 import { signOut, useSession } from 'next-auth/react'
 import React, { ReactNode, useEffect, useState } from 'react'
-
-type Calendar = {
-    id: string
-    summary: string
-}
+import { CalendarList, CalendarListEntry } from 'types/gapiCalendar'
 
 type Props = {
     register: any
@@ -31,7 +27,7 @@ const ToCalendar = ({
     onChange,
     setAccessToken,
 }: Props) => {
-    const [calendars, setCalendars] = useState<Array<Calendar>>([])
+    const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([])
     const { data: session } = useSession()
 
     useEffect(() => {
@@ -52,7 +48,10 @@ const ToCalendar = ({
                 signOut()
                 return
             }
-            setCalendars(data.items)
+            const calendar_list_entry: CalendarList = data
+
+            const my_calendar_list = calendar_list_entry.items.filter((calendar) => calendar.accessRole === 'owner')
+            setCalendars(my_calendar_list)
             setAccessToken(session.accessToken)
         })()
     }, [session, setAccessToken])

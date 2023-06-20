@@ -26,15 +26,15 @@ import {
     encodeQueryData,
     getClassEndTimeString,
     GetEventsErrorObject,
-    getQuarterRange,
     isGetEventErrorObject,
 } from '../libs/utils'
 import { GoogleFormInputs } from '../types/formInputsTypes'
-import type { CalendarList, Event } from '../types/gapiCalendar'
+import type { Events, Event } from '../types/gapiCalendar'
+import ImportRange from '../types/importRange'
 import { RawClassEvent } from '../types/types'
 import AllDeleteButton from './ImportModules/AllDeleteButton'
 import ImportOptions from './ImportModules/ImportOptions'
-import ImportRange from './ImportModules/ImportRange'
+import ImportRangeSelect from './ImportModules/ImportRangeSelect'
 import { RhfTextField } from './ImportModules/RhfTextField'
 import ToCalendar from './ImportModules/ToCalendar'
 
@@ -133,9 +133,11 @@ export default function ImportForm() {
 
     const postToGoogleCalendar = async (class_events: RawClassEvent[]) => {
         if (!session) return
+
         let already_posted_event_list: Event[]
         try {
             already_posted_event_list = await getAlreadyPostedEvents(session)
+
             class_events = class_events.filter(
                 (class_event) => !isEventDuplicated(already_posted_event_list, class_event),
             )
@@ -143,25 +145,33 @@ export default function ImportForm() {
             alert('Google Calendarに登録されている既存の予定の取得に失敗しました')
             return
         }
+
         setTotalImportCount(class_events.length)
         for (const class_event of class_events) {
             addEventToGoogleCal(class_event.start, class_event.title)
             await new Promise(function (resolve) {
-                setTimeout(resolve, 330)
+                setTimeout(resolve, 310)
             })
         }
+
         if (class_events.length == 0) {
+            setAppState('ready')
             alert(`すべての予定がGoogle Calendarに追加されていたので、インポートしませんでした`)
-        } else alert(`${class_events.length}件のインポートに成功しました`)
+        } else {
+            // プログレスバーのアニメーションのために待機
+            await new Promise(function (resolve) {
+                setTimeout(resolve, 1000)
+            })
+            alert(`${class_events.length}件のインポートに成功しました`)
+        }
     }
 
     async function getAlreadyPostedEvents(session: Session) {
-        let res: CalendarList | GetEventsErrorObject
+        let res: Events | GetEventsErrorObject
         let next_page_token = ''
         const already_posted_events: Array<Event> = []
-        const { start, end } = getQuarterRange(
+        const { start, end } = new ImportRange(formState.importRange).getQuarterRange(
             parseInt(formState.importYear),
-            formState.importRange,
         )
         do {
             let query_param: { [key: string]: string | number | boolean }
@@ -175,9 +185,11 @@ export default function ImportForm() {
                     singleEvents: true,
                 }
             }
+
             const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
                 formState.toCalendar
             }/events?${encodeQueryData(query_param)}`
+
             const raw_response = await fetch(google_api_url, {
                 method: 'GET',
                 headers: {
@@ -185,20 +197,25 @@ export default function ImportForm() {
                     'Content-Type': 'application/json',
                 },
             })
+
             res = await raw_response.json()
+
             if (isGetEventErrorObject(res)) {
                 console.error(res)
                 throw Error(`status ${res.error.code}`)
             }
-            if (res.nextPageToken) next_page_token = res.nextPageToken
+
             already_posted_events.push(...res.items)
+
+            if (res.nextPageToken) next_page_token = res.nextPageToken
         } while (res.nextPageToken !== undefined)
+
         return already_posted_events
     }
 
     async function addEventToGoogleCal(start: string, title: string) {
         if (!(session && session.user)) return
-        console.log(`add ${start} ${title}`)
+        // console.log(`add ${start} ${title}`)
         const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${formState.toCalendar}/events`
         const res = await fetch(google_api_url, {
             method: 'POST',
@@ -233,9 +250,11 @@ export default function ImportForm() {
             if (!already_posted_event.start.dateTime) {
                 continue
             }
-            const is_class_title_same = class_event.title == already_posted_event.summary
+            const is_class_title_same =
+                class_event.title.trim() == already_posted_event.summary.trim()
             const is_start_time_same =
-                dayjs(class_event.start) == dayjs(already_posted_event.start.dateTime)
+                dayjs(class_event.start).toString() ==
+                dayjs(already_posted_event.start.dateTime).toString()
             if (is_class_title_same && is_start_time_same) {
                 return true
             }
@@ -264,7 +283,7 @@ export default function ImportForm() {
                     ))}
                 </Select>
             </FormControl>
-            <ImportRange
+            <ImportRangeSelect
                 register={register}
                 disabled={appState != 'ready'}
                 errorMessage={errors.importRange?.message}
@@ -326,6 +345,7 @@ export default function ImportForm() {
             </Button>
 
             <LinearProgress
+                style={{ display: appState == 'import' ? 'inline' : 'none' }}
                 variant='determinate'
                 value={appState == 'import' ? (importCount / totalImportCount) * 100 : 0}
             />

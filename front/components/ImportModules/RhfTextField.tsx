@@ -1,4 +1,5 @@
 import { TextField } from '@mui/material'
+import React from 'react'
 
 type Props = {
     name: string
@@ -11,7 +12,7 @@ type Props = {
     label?: string
 }
 
-export default function RhfTextField({
+export default React.memo(function RhfTextField({
     name,
     type = 'text',
     disabled = false,
@@ -37,4 +38,4 @@ export default function RhfTextField({
             helperText={error_message}
         />
     )
-}
+})

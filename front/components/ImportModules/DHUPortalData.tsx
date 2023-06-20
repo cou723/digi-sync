@@ -1,5 +1,6 @@
 import { FormHelperText, Stack, TextField } from '@mui/material'
 import { ChangeEvent } from 'react'
+import React from 'react'
 
 type Props = {
     disabled: boolean
@@ -14,7 +15,7 @@ type Error = {
     password: string
 }
 
-export default function DHUPortalData({ disabled, error, username, password, onChange }: Props) {
+const DHUPortalData = React.memo(function DHUPortalData({ disabled, error, username, password, onChange }: Props) {
     return (
         <Stack spacing={1}>
             <TextField
@@ -45,3 +46,5 @@ export default function DHUPortalData({ disabled, error, username, password, onC
         </Stack>
     )
 }
+)
+export default DHUPortalData;

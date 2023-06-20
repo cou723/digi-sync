@@ -1,5 +1,5 @@
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
-import { FormInputs } from 'types/formInputsTypes'
+import React from 'react'
 
 type Props = {
     register: any
@@ -9,7 +9,7 @@ type Props = {
     selectableYears: number[]
 }
 
-export default function ImportYear({
+const ImportYear = React.memo(function ImportYear({
     register,
     appState,
     value,
@@ -37,4 +37,5 @@ export default function ImportYear({
             </Select>
         </FormControl>
     )
-}
+})
+export default ImportYear

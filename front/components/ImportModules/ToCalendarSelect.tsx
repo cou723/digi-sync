@@ -30,7 +30,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
     onChange,
     setAccessToken,
 }: Props) {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
     const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
     const { data: session } = useSession();
 
@@ -65,7 +65,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='to-calendar-list-label'>
-                {t("components.importModules.toCalendarSelect.label")}
+                {t("ImportModules.ToCalendarSelect.label")}
             </InputLabel>
             <Select
                 {...register("toCalendar")}
@@ -76,7 +76,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
                 required
                 name='toCalendar'
                 labelId='to-calendar-list-label'
-                label={t("components.importModules.toCalendarSelect.label")}
+                label={t("ImportModules.ToCalendarSelect.label")}
                 margin='dense'
             >
                 {calendars.map((calendar) => (

@@ -25,7 +25,8 @@ type Props = {
 type CalendarId = string;
 
 const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props) {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
+    const { t: cc } = useTranslation("common");
     const [isShowDialog, setIsShowDialog] = useState(false);
     const [deleteEventCout, setDeleteEventCout] = useState(0);
     const [deleteStatus, setDeleteStatus] = useState<
@@ -146,14 +147,10 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
             >
                 {
                     {
-                        unauthenticated: t(
-                            "components.ImportModules.AllDeleteButton.unauthenticated",
-                        ),
-                        ready: t("components.ImportModules.AllDeleteButton.label"),
-                        deleting: `${deleteCount}${t("common.unit")}${t(
-                            "components.ImportModules.AllDeleteButton.deleted",
-                        )}`,
-                        getting_calendar: t("components.ImportModules.AllDeleteButton.searching"),
+                        unauthenticated: t("ImportModules.AllDeleteButton.unauthenticated"),
+                        ready: t("ImportModules.AllDeleteButton.label"),
+                        deleting: `${deleteCount}${cc("unit")}${t("ImportModules.AllDeleteButton.deleted")}`,
+                        getting_calendar: t("ImportModules.AllDeleteButton.searching"),
                     }[deleteStatus]
                 }
                 <Fade in={deleteStatus == "getting_calendar"}>
@@ -170,25 +167,19 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
             >
-                <DialogTitle id='alert-dialog-title'>
-                    {t("components.ImportModules.AllDeleteButton.title")}
-                </DialogTitle>
+                <DialogTitle id='alert-dialog-title'>{t("ImportModules.AllDeleteButton.title")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id='alert-dialog-description'>
-                        {`${t(
-                            "components.ImportModules.AllDeleteButton.events_added_by_digisync",
-                        )}(${deleteEventCout} ${t("common.unit")})${t(
-                            "components.ImportModules.AllDeleteButton.delete",
-                        )}`}
+                        {`${t("ImportModules.AllDeleteButton.events_added_by_digisync")}(${deleteEventCout} ${cc(
+                            "unit",
+                        )})${t("ImportModules.AllDeleteButton.delete")}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} autoFocus>
-                        {t("common.no")}
+                        {cc("no")}
                     </Button>
-                    <Button onClick={allDelete}>
-                        {t("components.ImportModules.AllDeleteButton.yes_delete")}
-                    </Button>
+                    <Button onClick={allDelete}>{t("ImportModules.AllDeleteButton.yes_delete")}</Button>
                 </DialogActions>
             </Dialog>
         </>

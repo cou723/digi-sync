@@ -7,7 +7,7 @@ export default function Logo() {
     const { t } = useTranslation("common");
     return (
         <Box sx={{ mt: 1, display: "block", mr: 2, flexGrow: 1 }}>
-            <Image src={LogoImage} alt={t("common.digi_sync")} height='40' />
+            <Image src={LogoImage} alt={t("digi_sync")} height='40' />
         </Box>
     );
 }

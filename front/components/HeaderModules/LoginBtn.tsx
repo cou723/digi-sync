@@ -15,18 +15,18 @@ const ColorButton = styled(Button)<ButtonProps>(() => ({
 }));
 
 export default function LoginBtn() {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
     const { status } = useSession();
     if (status == "authenticated") {
         return (
             <ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signOut()} size='large'>
-                {t("components.HeaderModules.sign_out")}
+                {t("HeaderModules.sign_out")}
             </ColorButton>
         );
     }
     return (
         <ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signIn("google")} size='large'>
-            {t("components.HeaderModules.sign_in_with_google")}
+            {t("HeaderModules.sign_in_with_google")}
         </ColorButton>
     );
 }

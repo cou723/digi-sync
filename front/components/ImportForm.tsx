@@ -1,9 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectChangeEvent, Stack, Button, LinearProgress } from "@mui/material";
+import useBeforeUnload from "hooks/import-hook";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { postToGoogleCalendar } from "types/googleCalendar";
 import * as yup from "yup";
 import {
     fetchClassEventList,
@@ -19,8 +21,6 @@ import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
 import ImportYearSelect from "./ImportModules/ImportYearSelect";
 import RhfTextField from "./ImportModules/RhfTextField";
 import ToCalendarSelect from "./ImportModules/ToCalendarSelect";
-import useBeforeUnload from "hooks/import-hook";
-import { postToGoogleCalendar } from "types/googleCalendar";
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -28,7 +28,8 @@ const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
 } as GoogleFormInputs;
 
 export default function ImportForm() {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
+    const { t: ct } = useTranslation("common");
     const schema = yup.object().shape({
         ...FORM_SCHEMA_SHAPE,
         toCalendar: yup.string().required(t("importForm.toCalendar.choose_calendar")),
@@ -146,7 +147,7 @@ export default function ImportForm() {
                     error_message={errors.username?.message}
                     onChange={handleInputChange}
                     value={formState.username}
-                    label={t("common.digican_username")}
+                    label={ct("digican_username")}
                 />
                 <RhfTextField
                     name='password'
@@ -156,7 +157,7 @@ export default function ImportForm() {
                     error_message={errors.password?.message}
                     onChange={handleInputChange}
                     value={formState.password}
-                    label={t("common.digican_password")}
+                    label={ct("digican_password")}
                 />
             </Stack>
             <ImportOptions
@@ -173,15 +174,13 @@ export default function ImportForm() {
                 type='submit'
                 onClick={handleSubmit(onSubmit)}
             >
-                {appState == "connect portal"
-                    ? `${t("components.ImportForm.loading_from_digican")}...`
-                    : ""}
+                {appState == "connect portal" ? `${t("ImportForm.loading_from_digican")}...` : ""}
                 {appState == "import"
-                    ? `(${importCount} ${t("common.unit")}/${totalImportCount} ${t("common.unit")})`
+                    ? `(${importCount} ${ct("unit")}/${totalImportCount} ${ct("unit")})`
                     : ""}
                 {appState == "unauthenticated"
-                    ? t("components.ImportForm.please_log_in_with_google")
-                    : t("components.ImportForm.sync_google_calendar")}
+                    ? t("ImportForm.please_log_in_with_google")
+                    : t("ImportForm.sync_google_calendar")}
             </Button>
 
             <LinearProgress
@@ -189,7 +188,7 @@ export default function ImportForm() {
                 variant='determinate'
                 value={appState == "import" ? (importCount / totalImportCount) * 100 : 0}
             />
-            {appState == "import" ? `${t("components.ImportForm.importing")}...` : ""}
+            {appState == "import" ? `${t("ImportForm.importing")}...` : ""}
             <AllDeleteButton disabled={appState == "unauthenticated"} />
         </Stack>
     );

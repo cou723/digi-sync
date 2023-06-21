@@ -1,17 +1,25 @@
 import { Container, Link } from "@mui/material";
+import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import HEAD from "../components/Head";
 import { ImportIcalForm } from "../components/ImportIcalForm";
 
 export default function Home() {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("common/pages");
     return (
         <>
             <HEAD />
             <Container sx={{ pt: 2 }} maxWidth='sm'>
-                <Link href='/'>{t("pages.ical.link")}</Link>
+                <Link href='/'>{t("ical.link")}</Link>
                 <ImportIcalForm />
             </Container>
         </>
     );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+    props: {
+        ...(await serverSideTranslations(locale!, ["common","components","pages"])),
+    },
+});

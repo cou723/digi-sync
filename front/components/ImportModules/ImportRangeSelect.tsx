@@ -26,11 +26,12 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
     value,
     onChange,
 }: Props) {
-    const { t } = useTranslation("common");
+    const {  t } = useTranslation("components");
+    const { t:cc } = useTranslation("common");
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='import-q-label'>
-                {t("components.ImportModules.ImportRangeSelect.label")}
+                {t("ImportModules.ImportRangeSelect.label")}
             </InputLabel>
             <Select
                 {...register("importRange")}
@@ -41,23 +42,23 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
                 required
                 name='importRange'
                 labelId='import-q-label'
-                label={t("components.ImportModules.ImportRangeSelect.label")}
+                label={t("ImportModules.ImportRangeSelect.label")}
                 margin='dense'
             >
                 <MenuItem value='1q'>
-                    {t("components.ImportModules.ImportRangeSelect.first_quarter")}
+                    {t("ImportModules.ImportRangeSelect.first_quarter")}
                 </MenuItem>
                 <MenuItem value='2q'>
-                    {t("components.ImportModules.ImportRangeSelect.second_quarter")}
+                    {t("ImportModules.ImportRangeSelect.second_quarter")}
                 </MenuItem>
                 <MenuItem value='3q'>
-                    {t("components.ImportModules.ImportRangeSelect.third_quarter")}
+                    {t("ImportModules.ImportRangeSelect.third_quarter")}
                 </MenuItem>
                 <MenuItem value='4q'>
-                    {t("components.ImportModules.ImportRangeSelect.fourth_quarter")}
+                    {t("ImportModules.ImportRangeSelect.fourth_quarter")}
                 </MenuItem>
-                <MenuItem value='1q_and_2q'>{t("common.first_semester")}</MenuItem>
-                <MenuItem value='3q_and_4q'>{t("common.second_semester")}</MenuItem>
+                <MenuItem value='1q_and_2q'>{cc("first_semester")}</MenuItem>
+                <MenuItem value='3q_and_4q'>{cc("second_semester")}</MenuItem>
             </Select>
             <FormHelperText>{errorMessage}</FormHelperText>
         </FormControl>

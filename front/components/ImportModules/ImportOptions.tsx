@@ -13,7 +13,7 @@ const ImportOptions = React.memo(function ImportOptions({
     value,
     onChange,
 }: Props) {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
     return (
         <FormControlLabel
             disabled={disabled}
@@ -26,7 +26,7 @@ const ImportOptions = React.memo(function ImportOptions({
                     defaultChecked
                 />
             }
-            label={t("components.importModules.importOptions.label")}
+            label={t("ImportModules.ImportOptions.label")}
         />
     );
 });

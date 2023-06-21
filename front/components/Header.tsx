@@ -1,19 +1,19 @@
 import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from "@mui/material";
+import theme from "libs/colorTheme";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import FloatMenu from "./FloatMenu";
 import LoginBtn from "./HeaderModules/LoginBtn";
 import Logo from "./HeaderModules/Logo";
-import theme from "libs/colorTheme";
 
 export default React.memo(function Header() {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
 
     const pages = [
-        { display: "Google Calendarへ", link: "/" },
-        { display: "そのほかのカレンダーへ", link: "/ical" },
-        { display: "Q&A", link: "/q_and_a" },
+        { display: t("Header.to_google_calendar"), link: "/" },
+        { display: t("Header.to_ical"), link: "/ical" },
+        { display: "FAQ", link: "/q_and_a" },
     ];
     const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
@@ -23,7 +23,6 @@ export default React.memo(function Header() {
             <Container maxWidth='xl'>
                 <Toolbar disableGutters>
                     <Logo />
-                    {t("test")}
                     {!matches ? (
                         <FloatMenu pages={pages} />
                     ) : (

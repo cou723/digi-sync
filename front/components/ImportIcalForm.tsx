@@ -23,7 +23,8 @@ import { DownloadBrowser } from "../libs/table-to-ical/DownloadBrowser";
 import { FormInputs } from "../types/formInputsTypes";
 import { RawClassEvent } from "../types/types";
 import ImportOptions from "./ImportModules/ImportOptions";
-import ImportRange from "./ImportModules/ImportRangeSelect";
+import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
+import ImportYearSelect from "./ImportModules/ImportYearSelect";
 import RhfTextField from "./ImportModules/RhfTextField";
 
 export interface API_RETURN_EventList {
@@ -33,7 +34,8 @@ export interface API_RETURN_EventList {
 const schema = yup.object().shape(FORM_SCHEMA_SHAPE);
 
 export function ImportIcalForm() {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
+    const { t: cc } = useTranslation("common");
     const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE);
 
     const {
@@ -70,7 +72,7 @@ export function ImportIcalForm() {
         try {
             class_event_list = await fetchClassEventList(
                 inputs,
-                t("components.ImportModules.cannot_connect_digican"),
+                t("ImportForm.cannot_connect_digican"),
             );
         } catch (e: any) {
             alert(e.message);
@@ -85,27 +87,14 @@ export function ImportIcalForm() {
 
     return (
         <Stack spacing={2} component='form' autoComplete='off' action='/import'>
-            <FormControl margin='normal'>
-                <InputLabel id='import-year-label'>
-                    {t("components.ImportForm.year_of_import")}
-                </InputLabel>
-                <Select
-                    {...register("importYear", { required: true, valueAsNumber: true })}
-                    value={formState.importYear}
-                    onChange={handleSelectChange}
-                    name='importYear'
-                    labelId='import-year-label'
-                    label={t("components.ImportModules.year_of_import")}
-                    margin='dense'
-                >
-                    {selectableYears.map((selectableYear: number, i: number) => (
-                        <MenuItem value={selectableYear} key={i}>
-                            {selectableYear}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            <ImportRange
+            <ImportYearSelect
+                register={register}
+                value={formState.importYear}
+                appState={appState}
+                selectableYears={selectableYears}
+                onChange={handleSelectChange}
+            />
+            <ImportRangeSelect
                 register={register}
                 errorMessage={errors.importRange?.message}
                 value={formState.importRange}
@@ -119,7 +108,7 @@ export function ImportIcalForm() {
                     error_message={errors.username?.message}
                     onChange={handleInputChange}
                     value={formState.username}
-                    label={t("common.digican_username")}
+                    label={cc("digican_username")}
                 />
                 <RhfTextField
                     name='password'
@@ -129,7 +118,7 @@ export function ImportIcalForm() {
                     error_message={errors.password?.message}
                     onChange={handleInputChange}
                     value={formState.password}
-                    label={t("common.digican_password")}
+                    label={cc("digican_password")}
                 />
             </Stack>
             <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
@@ -141,8 +130,8 @@ export function ImportIcalForm() {
                 onClick={handleSubmit(onSubmit)}
             >
                 {appState == "connect portal"
-                    ? t("components.ImportForm.importing") + "..."
-                    : t("components.ImportForm.download_with_ical")}
+                    ? t("ImportForm.importing") + "..."
+                    : t("ImportForm.download_with_ical")}
             </Button>
         </Stack>
     );

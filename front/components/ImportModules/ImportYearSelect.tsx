@@ -12,18 +12,18 @@ type Props = {
     selectableYears: number[];
 };
 
-const ImportYear = React.memo(function ImportYear({
+const ImportYear = React.memo(function ImportYearSelect({
     register,
     appState,
     value,
     onChange,
     selectableYears,
 }: Props) {
-    const { t } = useTranslation("common");
+    const { t } = useTranslation("components");
     return (
         <FormControl margin='normal'>
             <InputLabel id='import-year-label'>
-                {t("components.importModules.importYear.label")}
+                {t("ImportModules.ImportYearSelect.label")}
             </InputLabel>
             <Select
                 {...register("importYear", { required: true, valueAsNumber: true })}
@@ -32,7 +32,7 @@ const ImportYear = React.memo(function ImportYear({
                 onChange={onChange}
                 name='importYear'
                 labelId='import-year-label'
-                label={t("components.importModules.importYear.label")}
+                label={t("ImportModules.ImportYearSelect.label")}
                 margin='dense'
             >
                 {selectableYears.map((selectableYear: number, i: number) => (

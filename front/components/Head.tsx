@@ -11,7 +11,7 @@ const CommonMeta = () => {
 
     return (
         <Head>
-            <title> {t("common.digi_sync")}</title>
+            <title> {t("digi_sync")}</title>
             <meta name='description' content={description} />
             <meta name='twitter:card' content='summary_large_image' />
             <meta property='og:title' content={title} />

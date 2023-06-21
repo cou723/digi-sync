@@ -4,7 +4,7 @@ import HEAD from "../components/Head";
 import { ImportIcalForm } from "../components/ImportIcalForm";
 
 export default function Home() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     return (
         <>
             <HEAD />

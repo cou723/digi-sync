@@ -26,7 +26,7 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
     value,
     onChange,
 }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='import-q-label'>

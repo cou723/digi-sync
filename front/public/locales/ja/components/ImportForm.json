@@ -1,0 +1,11 @@
+{
+    "year_of_import": "インポート年度",
+    "destination_calendar": "インポート先",
+    "loading_from_digican": "デジキャンから読み込んでいます",
+    "download_with_ical": ".icalでダウンロード",
+    "choose_calendar": "インポート先のカレンダーを選択してください",
+    "importing": "インポート中",
+    "please_log_in_with_google": "Googleアカウントにログインしてください",
+    "sync_google_calendar": "Googleカレンダーと同期",
+    "cannot_connect_digican": "デジキャンに接続できませんでした"
+}

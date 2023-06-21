@@ -33,7 +33,7 @@ export interface API_RETURN_EventList {
 const schema = yup.object().shape(FORM_SCHEMA_SHAPE);
 
 export function ImportIcalForm() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE);
 
     const {

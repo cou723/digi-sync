@@ -13,7 +13,7 @@ const ImportOptions = React.memo(function ImportOptions({
     value,
     onChange,
 }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     return (
         <FormControlLabel
             disabled={disabled}

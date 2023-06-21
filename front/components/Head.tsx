@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useTranslation } from "next-i18next";
 
 const CommonMeta = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const title = t("common.digi_sync");
     const description = t("common.Head.description");
     const url = "https://dp2gc.vercel.app";

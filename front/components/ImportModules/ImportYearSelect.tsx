@@ -19,7 +19,7 @@ const ImportYear = React.memo(function ImportYear({
     onChange,
     selectableYears,
 }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     return (
         <FormControl margin='normal'>
             <InputLabel id='import-year-label'>

@@ -30,7 +30,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
     onChange,
     setAccessToken,
 }: Props) {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
     const { data: session } = useSession();
 

@@ -8,7 +8,7 @@ type QA = {
 };
 
 export default function QAndA() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const question_list = t("q_and_a");
     return (
         <Container sx={{ py: 2 }} maxWidth='sm'>

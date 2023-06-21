@@ -15,7 +15,7 @@ const ColorButton = styled(Button)<ButtonProps>(() => ({
 }));
 
 export default function LoginBtn() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const { status } = useSession();
     if (status == "authenticated") {
         return (

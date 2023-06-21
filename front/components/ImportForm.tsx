@@ -1,11 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectChangeEvent, Stack, Button, LinearProgress } from "@mui/material";
-import useBeforeUnload from "hooks/import-hook";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { postToGoogleCalendar } from "types/googleCalendar";
 import * as yup from "yup";
 import {
     fetchClassEventList,
@@ -21,6 +19,8 @@ import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
 import ImportYearSelect from "./ImportModules/ImportYearSelect";
 import RhfTextField from "./ImportModules/RhfTextField";
 import ToCalendarSelect from "./ImportModules/ToCalendarSelect";
+import useBeforeUnload from "hooks/import-hook";
+import { postToGoogleCalendar } from "types/googleCalendar";
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -28,7 +28,7 @@ const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
 } as GoogleFormInputs;
 
 export default function ImportForm() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("common");
     const schema = yup.object().shape({
         ...FORM_SCHEMA_SHAPE,
         toCalendar: yup.string().required(t("importForm.toCalendar.choose_calendar")),

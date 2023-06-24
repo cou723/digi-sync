@@ -141,7 +141,7 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
     return (
         <>
             <Button
-                style={{"textTransform": "none"}}
+                style={{ textTransform: "none" }}
                 disabled={deleteStatus != "ready" || disabled}
                 color='error'
                 onClick={onAllDeleteClick}
@@ -150,7 +150,9 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
                     {
                         unauthenticated: t("ImportModules.AllDeleteButton.unauthenticated"),
                         ready: t("ImportModules.AllDeleteButton.label"),
-                        deleting: `${deleteCount}${cc("unit")}${t("ImportModules.AllDeleteButton.deleted")}`,
+                        deleting: `${deleteCount}${cc("unit")}${t(
+                            "ImportModules.AllDeleteButton.deleted",
+                        )}`,
                         getting_calendar: t("ImportModules.AllDeleteButton.searching"),
                     }[deleteStatus]
                 }
@@ -168,19 +170,25 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
             >
-                <DialogTitle id='alert-dialog-title'>{t("ImportModules.AllDeleteButton.title")}</DialogTitle>
+                <DialogTitle id='alert-dialog-title'>
+                    {t("ImportModules.AllDeleteButton.title")}
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText id='alert-dialog-description'>
-                        {`${t("ImportModules.AllDeleteButton.events_added_by_digisync")}(${deleteEventCout} ${cc(
-                            "unit",
-                        )})${t("ImportModules.AllDeleteButton.delete")}`}
+                        {`${t(
+                            "ImportModules.AllDeleteButton.events_added_by_digisync",
+                        )}(${deleteEventCout} ${cc("unit")})${t(
+                            "ImportModules.AllDeleteButton.delete",
+                        )}`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} autoFocus>
                         {cc("no")}
                     </Button>
-                    <Button onClick={allDelete}>{t("ImportModules.AllDeleteButton.yes_delete")}</Button>
+                    <Button onClick={allDelete}>
+                        {t("ImportModules.AllDeleteButton.yes_delete")}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>

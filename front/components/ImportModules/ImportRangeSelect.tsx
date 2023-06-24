@@ -26,8 +26,8 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
     value,
     onChange,
 }: Props) {
-    const {  t } = useTranslation("components");
-    const { t:cc } = useTranslation("common");
+    const { t } = useTranslation("components");
+    const { t: cc } = useTranslation("common");
     return (
         <FormControl fullWidth margin='normal'>
             <InputLabel id='import-q-label'>
@@ -45,15 +45,11 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
                 label={t("ImportModules.ImportRangeSelect.label")}
                 margin='dense'
             >
-                <MenuItem value='1q'>
-                    {t("ImportModules.ImportRangeSelect.first_quarter")}
-                </MenuItem>
+                <MenuItem value='1q'>{t("ImportModules.ImportRangeSelect.first_quarter")}</MenuItem>
                 <MenuItem value='2q'>
                     {t("ImportModules.ImportRangeSelect.second_quarter")}
                 </MenuItem>
-                <MenuItem value='3q'>
-                    {t("ImportModules.ImportRangeSelect.third_quarter")}
-                </MenuItem>
+                <MenuItem value='3q'>{t("ImportModules.ImportRangeSelect.third_quarter")}</MenuItem>
                 <MenuItem value='4q'>
                     {t("ImportModules.ImportRangeSelect.fourth_quarter")}
                 </MenuItem>

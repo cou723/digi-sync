@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import { Typography } from "@mui/material";
 
 export default function homepage() {
     return (
@@ -6,5 +6,5 @@ export default function homepage() {
             <Typography>このアプリケーションについて</Typography>
             <Typography></Typography>
         </>
-    )
+    );
 }

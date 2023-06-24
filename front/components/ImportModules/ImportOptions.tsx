@@ -1,14 +1,19 @@
-import { Checkbox, FormControlLabel } from '@mui/material'
-import React from 'react'
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { useTranslation } from "next-i18next";
+import React from "react";
 
 type Props = {
-    disabled?: boolean
-    value: boolean
-    onChange: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void
-}
+    disabled?: boolean;
+    value: boolean;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
+};
 
-
-const ImportOptions = React.memo(function ImportOptions({ disabled = false, value, onChange }: Props) {
+const ImportOptions = React.memo(function ImportOptions({
+    disabled = false,
+    value,
+    onChange,
+}: Props) {
+    const { t } = useTranslation("components");
     return (
         <FormControlLabel
             disabled={disabled}
@@ -21,10 +26,9 @@ const ImportOptions = React.memo(function ImportOptions({ disabled = false, valu
                     defaultChecked
                 />
             }
-            label='授業以外をインポートしない'
+            label={t("ImportModules.ImportOptions.label")}
         />
-    )
-}
-)
+    );
+});
 
-export default ImportOptions ;
+export default ImportOptions;

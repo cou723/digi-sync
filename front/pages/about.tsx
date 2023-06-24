@@ -1,4 +1,4 @@
-import { Typography, Container } from '@mui/material'
+import { Typography, Container } from "@mui/material";
 
 export default function about() {
     return (
@@ -20,5 +20,5 @@ export default function about() {
                 </Typography>
             </Container>
         </>
-    )
+    );
 }

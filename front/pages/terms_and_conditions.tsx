@@ -1,4 +1,4 @@
-import { Typography, Container } from '@mui/material'
+import { Typography, Container } from "@mui/material";
 
 export default function privacy_policy() {
     return (
@@ -12,5 +12,5 @@ export default function privacy_policy() {
                 </Typography>
             </Container>
         </>
-    )
+    );
 }

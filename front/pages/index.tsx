@@ -13,7 +13,6 @@ export default function Home() {
         <>
             <HEAD />
             <Container sx={{ pt: 2 }} maxWidth='sm'>
-                <Link href='/ical'>{t("index.link")}</Link>
                 {authStatus == "unauthenticated" && (
                     <Alert severity='error'>
                         {t("index.error")}

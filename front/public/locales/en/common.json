@@ -1,100 +1,11 @@
 {
-    "test": "testing",
-    "common": {
-        "digi_sync": "デジシンク",
-        "first_semester": "前期",
-        "second_semester": "後期",
-        "month": "月",
-        "quarter": "クオーター",
-        "no": "いいえ",
-        "digican_username": "デジキャン ユーザーネーム",
-        "digican_password": "デジキャン パスワード",
-        "unit": "件"
-    },
-    "components": {
-        "Head": {
-            "description": "「デジシンク」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。"
-        },
-        "ImportForm": {
-            "year_of_import": "インポート年度",
-            "destination_calendar": "インポート先",
-            "loading_from_digican": "デジキャンから読み込んでいます",
-            "download_with_ical": ".icalでダウンロード",
-            "choose_calendar": "インポート先のカレンダーを選択してください",
-            "importing": "インポート中",
-            "please_log_in_with_google": "Googleアカウントにログインしてください",
-            "sync_google_calendar": "Googleカレンダーと同期",
-            "cannot_connect_digican": "デジキャンに接続できませんでした"
-        },
-        "HeaderModules": {
-            "sign_out": "ログアウト",
-            "sign_in_with_google": "Googleでログイン"
-        },
-        "ImportModules": {
-            "AllDeleteButton": {
-                "unauthenticated": "Googleアカウントにログインしてください",
-                "label": "デジシンクによって追加した予定をすべて消す",
-                "searching": "カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)",
-                "title": "予定を削除しますか？",
-                "yes_delete": "はい、削除します",
-                "events_added_by_digisync": "デジシンクによって追加された予定",
-                "delete": "を削除します",
-                "deteletd": "削除済み"
-            },
-            "ToCalendarSelect": {
-                "label": "インポート先カレンダー"
-            },
-            "ImportYearSelect": {
-                "label": "インポート年度"
-            },
-            "ImportRangeSelect": {
-                "label": "インポートするクオーター",
-                "first_quarter": "1クオーター(4月～5月)",
-                "second_quarter": "2クオーター(6月～7月)",
-                "third_quarter": "3クオーター(9月～11月)",
-                "fourth_quarter": "4クオーター(12月～3月)"
-            },
-            "ImportOptions": {
-                "label": "授業以外をインポートしない"
-            }
-        }
-    },
-    "libs": {
-        "importFormCommons": {
-            "please_choose_range": "インポートする範囲を選択してください",
-            "pease_input": "入力してください"
-        }
-    },
-    "pages": {
-        "ical": {
-            "link": "Googleカレンダーにインポートする場合はこちら"
-        },
-        "index": {
-            "link": "Googleカレンダーにインポートする場合はこちら",
-            "here": "こちら",
-            "error": "GoogleアカウントでログインしないとGoogleカレンダーにインポートする機能は使えません。icalでダウンロードしたい方は"
-        },
-        "q_and_a": [
-            {
-                "question": "このサイトは何ですか？",
-                "answer": "デジキャンで表示される授業一覧を、Google Calendarに同期させたり、.ical形式でダウンロードすることができるサイトです。"
-            },
-            {
-                "question": "休講になった授業があるのですが、自動で削除されません",
-                "answer": "Google Calendarと常に同期しているわけではないので、休講になった授業を削除するには、再度同期を実行してください。\nなおその場合、Google Calendarに同期させた予定を削除する必要はありません。"
-            },
-            {
-                "question": "一度同期すれば同期し続けてくれるんですか？",
-                "answer": "いいえ。\nインポートしたその瞬間の授業予定を同期するので、\nその都度インポートしてください。また、すでに予定が追加されている\nカレンダーに対して予定を追加すると追加されていない予定のみを追加します。(Google Calendarへのインポートのみ)\nそのため、Google カレンダーにある予定を更新したい場合は再び同期を実行してもらえば、不足分を追加したり、休講になった授業を自動的に削除します。"
-            },
-            {
-                "question": "まちがえて別のカレンダーに予定を追加してしまいました",
-                "answer": "一括削除機能を使って予定を一括削除した後に、本来インポートしたかったカレンダーを選択したインポートしてください。"
-            },
-            {
-                "question": "カレンダー一覧に同期させたいカレンダーが表示されない",
-                "answer": "自分で編集できるGoogle Calendarしか表示させていないので、自分で編集できるカレンダーに変更してください。"
-            }
-        ]
-    }
+    "digi_sync": "Digi Sync",
+    "first_semester": "first semester",
+    "second_semester": "second semester",
+    "month": "month",
+    "quarter": "quarter",
+    "no": "No",
+    "digican_username": "digican username",
+    "digican_password": "digican password",
+    "unit": ""
 }

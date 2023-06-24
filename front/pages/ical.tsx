@@ -6,12 +6,11 @@ import HEAD from "../components/Head";
 import { ImportIcalForm } from "../components/ImportIcalForm";
 
 export default function Home() {
-    const { t } = useTranslation("common/pages");
+    const { t } = useTranslation("pages");
     return (
         <>
             <HEAD />
             <Container sx={{ pt: 2 }} maxWidth='sm'>
-                <Link href='/'>{t("ical.link")}</Link>
                 <ImportIcalForm />
             </Container>
         </>

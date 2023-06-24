@@ -141,6 +141,7 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
     return (
         <>
             <Button
+                style={{"textTransform": "none"}}
                 disabled={deleteStatus != "ready" || disabled}
                 color='error'
                 onClick={onAllDeleteClick}

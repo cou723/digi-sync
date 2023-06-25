@@ -3,8 +3,8 @@ import { useTranslation } from "next-i18next";
 
 const CommonMeta = () => {
     const { t } = useTranslation("common");
-    const title = t("common.digi_sync");
-    const description = t("common.Head.description");
+    const title = t("digi_sync");
+    const description = t("description");
     const url = "https://dp2gc.vercel.app";
     const type = "website";
     const imageUrl = "https://dp2gc.vercel.app/ogp_image.png";

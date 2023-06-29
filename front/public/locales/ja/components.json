@@ -19,7 +19,7 @@
         "importing": "インポート中",
         "please_log_in_with_google": "Googleアカウントにログインしてください",
         "sync_google_calendar": "Googleカレンダーと同期",
-        "cannot_connect_digican": "デジキャンに接続できませんでした",
+        "cannot_connect_digican": "デジキャンに接続できませんでした(ユーザーネーム、パスワードがあっているか今一度お確かめください)",
         "please_choose_range": "インポートする範囲を選択してください",
         "pease_input": "入力してください"
     },

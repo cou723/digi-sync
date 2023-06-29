@@ -91,6 +91,8 @@ export default function ImportForm() {
                 t("components.ImportModules.cannot_connect_digican"),
             );
         } catch (e) {
+            alert(t("ImportForm.cannot_connect_digican"));
+            console.log(e);
             setAppState("ready");
             return;
         }

@@ -19,7 +19,7 @@
         "importing": "Importing",
         "please_log_in_with_google": "Please Sign in with Google",
         "sync_google_calendar": "Sync Google Calendar",
-        "cannot_connect_digican": "Cannot connect to Digican",
+        "cannot_connect_digican": "Faild connect to digican (Please check your username and password)",
         "please_choose_range": "Select Import Range(1q, 2q, first semester, etc...)",
         "pease_input": "Please input"
     },

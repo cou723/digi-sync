@@ -4,11 +4,6 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Question from "../components/QAndA";
 
-type QA = {
-    question: string;
-    answer: string;
-};
-
 export default function QAndA() {
     const { t } = useTranslation("pages");
     return (

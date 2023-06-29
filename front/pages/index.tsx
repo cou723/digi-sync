@@ -8,7 +8,6 @@ import ImportForm from "../components/ImportForm";
 
 export default function Home() {
     const { t } = useTranslation("pages");
-    const { t: ct } = useTranslation("common");
     const { status: authStatus } = useSession();
     return (
         <>

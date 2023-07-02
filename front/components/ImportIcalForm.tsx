@@ -1,9 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-    SelectChangeEvent,
-    Stack,
-    Button,
-} from "@mui/material";
+import { SelectChangeEvent, Stack, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";

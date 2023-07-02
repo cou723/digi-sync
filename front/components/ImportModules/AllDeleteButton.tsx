@@ -24,7 +24,7 @@ type Props = {
 
 type CalendarId = string;
 
-const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props) {
+export default React.memo(function AllDeleteButton({ disabled }: Props) {
     const { t } = useTranslation("components");
     const { t: cc } = useTranslation("common");
     const [isShowDialog, setIsShowDialog] = useState(false);
@@ -194,4 +194,3 @@ const AllDeleteButton = React.memo(function AllDeleteButton({ disabled }: Props)
         </>
     );
 });
-export default AllDeleteButton;

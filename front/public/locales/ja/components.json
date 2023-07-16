@@ -32,7 +32,7 @@
             "yes_delete": "はい、削除します",
             "events_added_by_digisync": "デジシンクによって追加された予定",
             "delete": "を削除します",
-            "deteletd": "削除済み"
+            "deleted": "削除済み"
         },
         "ToCalendarSelect": {
             "label": "インポート先カレンダー"
@@ -48,7 +48,7 @@
             "fourth_quarter": "4クオーター(12月～3月)"
         },
         "ImportOptions": {
-            "label": "授業以外をインポートしない"
+            "label": "授業のみインポートする"
         }
     }
 }

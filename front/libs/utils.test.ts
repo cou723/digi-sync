@@ -8,7 +8,7 @@ test("encodeQueryData", () => {
 });
 
 test("getEndTime", () => {
-    expect(utils.getClassEndTime("2020-01-01T00:00:00+0000")).toBe("2020-01-01T01:30:00+0000");
+    expect(utils.getClassEndTime(dayjs("2020-01-01T00:00:00+0000"))).toBe("2020-01-01T01:30:00+0000");
 });
 
 test("getQueryRange", () => {

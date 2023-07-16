@@ -79,7 +79,9 @@ async function fetchClassEventsOneMonth(
     let class_events: ClassEvent[];
     try {
         class_events = (await parseClassEvents(dhuPortalRes)).events;
-    } catch {
+    } catch(e) {
+        console.log(e);
+
         throw Error("Failed to parse class events from DHU Portal. Maybe your login is failing.");
     }
     console.log(month, class_events.length);

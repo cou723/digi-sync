@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
     encodeQueryData,
     getClassEndTime,
@@ -10,17 +10,19 @@ import { Session } from "next-auth";
 import { FormInputs } from "./formInputsTypes";
 import { Events, Event } from "./gapiCalendar";
 import ImportRange from "./importRange";
-import { RawClassEvent } from "./types";
+import { ClassEvent, RawClassEvent } from "./types";
 
 export async function postToGoogleCalendar(
     session: Session,
-    class_events: RawClassEvent[],
+    raw_class_events: RawClassEvent[],
     count_setter,
     total_count_setter,
     inputs: FormInputs,
 ): Promise<void> {
     count_setter(0);
     if (!session) return;
+
+    let class_events = raw_class_events.map((raw_class_event) => new ClassEvent(raw_class_event));
 
     let already_posted_event_list: Event[];
     try {
@@ -35,12 +37,13 @@ export async function postToGoogleCalendar(
         return;
     }
 
+
     total_count_setter(class_events.length);
     for (const class_event of class_events) {
         addEventToGoogleCal(class_event.start, class_event.title, session, inputs);
         count_setter((prev) => prev + 1);
         await new Promise(function (resolve) {
-            setTimeout(resolve, 310);
+            setTimeout(resolve, 400);
         });
     }
 
@@ -103,7 +106,7 @@ export async function getAlreadyPostedEvents(accessToken: string, inputs: FormIn
 }
 
 async function addEventToGoogleCal(
-    start: string,
+    start: Dayjs,
     title: string,
     session: Session,
     inputs: FormInputs,
@@ -119,7 +122,7 @@ async function addEventToGoogleCal(
         },
         body: JSON.stringify({
             end: { dateTime: getClassEndTime(start) },
-            start: { dateTime: start },
+            start: { dateTime: start.utc().format("YYYY-MM-DDTHH:mm:ssZZ") },
             summary: title,
             description: "#created_by_dp2gc",
         }),
@@ -137,14 +140,13 @@ async function addEventToGoogleCal(
 // If we sort Event, we can bisect the search by date.
 function isEventDuplicated(
     already_posted_event_list: Event[],
-    class_event: RawClassEvent,
+    class_event: ClassEvent,
 ): boolean {
     for (const already_posted_event of already_posted_event_list) {
         if (!already_posted_event.start.dateTime) {
             continue;
         }
 
-        console.log(class_event, isRawClassEvent(class_event))
         const is_class_title_same = class_event.title.trim() == (already_posted_event.summary?already_posted_event.summary.trim():false);
         const is_start_time_same =
             dayjs(class_event.start).toString() ==

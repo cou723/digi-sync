@@ -113,7 +113,11 @@ export function ImportIcalForm() {
                     label={cc("digican_password")}
                 />
             </Stack>
-            <ImportOptions value={formState.ignoreOtherEvents} onChange={handleInputChange} />
+            <ImportOptions
+                register={register}
+                value={formState.ignoreOtherEvents}
+                onChange={handleInputChange}
+            />
             <br />
             <Button
                 sx={{ textTransform: "none" }}

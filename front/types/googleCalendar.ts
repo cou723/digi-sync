@@ -4,6 +4,7 @@ import {
     getClassEndTime,
     GetEventsErrorObject,
     isGetEventErrorObject,
+    isRawClassEvent,
 } from "libs/utils";
 import { Session } from "next-auth";
 import { FormInputs } from "./formInputsTypes";
@@ -29,6 +30,7 @@ export async function postToGoogleCalendar(
             (class_event) => !isEventDuplicated(already_posted_event_list, class_event),
         );
     } catch (e) {
+        console.log(e);
         alert("Google Calendarに登録されている既存の予定の取得に失敗しました");
         return;
     }
@@ -141,7 +143,9 @@ function isEventDuplicated(
         if (!already_posted_event.start.dateTime) {
             continue;
         }
-        const is_class_title_same = class_event.title.trim() == already_posted_event.summary.trim();
+
+        console.log(class_event, isRawClassEvent(class_event))
+        const is_class_title_same = class_event.title.trim() == (already_posted_event.summary?already_posted_event.summary.trim():false);
         const is_start_time_same =
             dayjs(class_event.start).toString() ==
             dayjs(already_posted_event.start.dateTime).toString();

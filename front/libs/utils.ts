@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { RawClassEvent } from "../types/types";
 dayjs.extend(utc);
 
 export function encodeQueryData(data: { [key: string]: string | number | boolean }) {
@@ -48,6 +49,19 @@ export function isGetEventErrorObject(obj: object): obj is GetEventsErrorObject 
         "domain" in obj.error.errors[0] &&
         "reason" in obj.error.errors[0] &&
         "message" in obj.error.errors[0]
+    );
+}
+
+export function isRawClassEvent(obj: object): obj is RawClassEvent {
+    if (!(typeof obj == "object" && obj)) return false;
+    return !!(
+        "id" in obj &&
+        "title" in obj &&
+        "start" in obj &&
+        "end" in obj &&
+        "allDay" in obj &&
+        "editable" in obj &&
+        "className" in obj
     );
 }
 

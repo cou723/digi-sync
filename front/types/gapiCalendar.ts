@@ -437,7 +437,7 @@ export interface Event {
     htmlLink: string;
     created: datetime;
     updated: datetime;
-    summary: string;
+    summary?: string;
     description: string;
     location?: string | undefined;
     colorId?: string | undefined;

@@ -54,6 +54,7 @@ export async function fetchClassEventList(
         });
 
         if (!res.ok) throw new Error();
+        // if ((await res.json()).map((e)=>!isRawClassEvent(e))) throw new Error();
         event_list = await res.json();
     } catch {
         throw new Error(error_message);

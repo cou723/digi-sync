@@ -32,7 +32,7 @@
             "yes_delete": "Yes, I'll remove it.",
             "events_added_by_digisync": "Schedule added by Digisync",
             "delete": "delete",
-            "deteletd": "Deleted"
+            "deleted": "Deleted"
         },
         "ToCalendarSelect": {
             "label": "Import Destination Calendar"

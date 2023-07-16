@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { RawClassEvent } from "../types/types";
 dayjs.extend(utc);
@@ -15,8 +15,7 @@ export function encodeQueryData(data: { [key: string]: string | number | boolean
     return searchParams.toString();
 }
 
-export function getClassEndTime(class_start_string: string): string {
-    const class_start_time = dayjs(class_start_string);
+export function getClassEndTime(class_start_time: Dayjs): string {
     class_start_time.add(90, "minute");
     return class_start_time.add(90, "minute").utc().format("YYYY-MM-DDTHH:mm:ssZZ");
 }
@@ -56,12 +55,19 @@ export function isRawClassEvent(obj: object): obj is RawClassEvent {
     if (!(typeof obj == "object" && obj)) return false;
     return !!(
         "id" in obj &&
+        typeof obj.id == "string" &&
         "title" in obj &&
+        typeof obj.title == "string" &&
         "start" in obj &&
+        typeof obj.start == "string" &&
         "end" in obj &&
+        typeof obj.end == "string" &&
         "allDay" in obj &&
+        typeof obj.allDay == "boolean" &&
         "editable" in obj &&
-        "className" in obj
+        typeof obj.editable == "boolean" &&
+        "className" in obj &&
+        (typeof obj.className == "string" || typeof obj.className == "object")
     );
 }
 

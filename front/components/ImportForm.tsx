@@ -32,7 +32,7 @@ export default function ImportForm() {
     const { t: ct } = useTranslation("common");
     const schema = yup.object().shape({
         ...FORM_SCHEMA_SHAPE,
-        toCalendar: yup.string().required(t("importForm.toCalendar.choose_calendar")),
+        toCalendar: yup.string().required(t("ImportForm.choose_calendar")),
     });
     const [formState, setFormState] = useState<GoogleFormInputs>(
         FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE,
@@ -73,11 +73,17 @@ export default function ImportForm() {
     };
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setFormState({
-            ...formState,
-            [event.target.name]: value,
-        });
+        if (event.target.name == "ignoreOtherEvents") {
+            setFormState({
+                ...formState,
+                [event.target.name]: event.target.checked,
+            });
+        } else {
+            setFormState({
+                ...formState,
+                [event.target.name]: event.target.value,
+            });
+        }
     };
 
     const onSubmit = async (inputs: GoogleFormInputs) => {
@@ -100,8 +106,8 @@ export default function ImportForm() {
         setAppState("import");
         let class_events: RawClassEvent[] = class_event_list;
         if (inputs.ignoreOtherEvents) {
-            class_events = class_event_list.filter(
-                (class_event) => class_event.className.indexOf("eventJugyo") !== -1,
+            class_events = class_events.filter((class_event) =>
+                class_event.className.includes("eventJugyo"),
             );
         }
 
@@ -163,6 +169,7 @@ export default function ImportForm() {
                 />
             </Stack>
             <ImportOptions
+                register={register}
                 disabled={appState != "ready"}
                 value={formState.ignoreOtherEvents}
                 onChange={handleInputChange}

@@ -10,9 +10,9 @@ export type ConvertDateToDayofWeekReturnType = number;
  *  土曜日 -> 6
  * **/
 const ConvertDateToDayofWeek = (
-    Args: ConvertDateToDayofWeekArgsType,
+	Args: ConvertDateToDayofWeekArgsType,
 ): ConvertDateToDayofWeekReturnType => {
-    return dayjsWrapper(Args).day();
+	return dayjsWrapper(Args).day();
 };
 
 export default ConvertDateToDayofWeek;

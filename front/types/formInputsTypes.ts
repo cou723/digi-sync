@@ -1,12 +1,12 @@
 export type FormInputs = {
-    importYear: string;
-    importRange: string;
-    username: string;
-    password: string;
-    ignoreOtherEvents: boolean;
-    [key: string]: string | boolean;
+	[key: string]: string | boolean;
+	ignoreOtherEvents: boolean;
+	importRange: string;
+	importYear: string;
+	password: string;
+	username: string;
 };
 
 export type GoogleFormInputs = {
-    toCalendar: string;
+	toCalendar: string;
 } & FormInputs;

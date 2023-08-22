@@ -1,54 +1,54 @@
 {
-    "Head": {
-        "description": "「デジシンク」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。"
-    },
-    "Header": {
-        "to_google_calendar": "Google Calendarへ",
-        "to_ical": ".icalでダウンロード"
-    },
-    "HeaderModules": {
-        "sign_out": "ログアウト",
-        "sign_in_with_google": "Googleでログイン"
-    },
-    "ImportForm": {
-        "year_of_import": "インポート年度",
-        "destination_calendar": "インポート先",
-        "loading_from_digican": "デジキャンから読み込んでいます",
-        "download_with_ical": ".icalでダウンロード",
-        "choose_calendar": "インポート先のカレンダーを選択してください",
-        "importing": "インポート中",
-        "please_log_in_with_google": "Googleアカウントにログインしてください",
-        "sync_google_calendar": "Googleカレンダーと同期",
-        "cannot_connect_digican": "デジキャンに接続できませんでした(ユーザーネーム、パスワードがあっているか今一度お確かめください)",
-        "please_choose_range": "インポートする範囲を選択してください",
-        "pease_input": "入力してください"
-    },
-    "ImportModules": {
-        "AllDeleteButton": {
-            "unauthenticated": "Googleアカウントにログインしてください",
-            "label": "デジシンクによって追加した予定をすべて消す",
-            "searching": "カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)",
-            "title": "予定を削除しますか？",
-            "yes_delete": "はい、削除します",
-            "events_added_by_digisync": "デジシンクによって追加された予定",
-            "delete": "を削除します",
-            "deleted": "削除済み"
-        },
-        "ToCalendarSelect": {
-            "label": "インポート先カレンダー"
-        },
-        "ImportYearSelect": {
-            "label": "インポート年度"
-        },
-        "ImportRangeSelect": {
-            "label": "インポートするクオーター",
-            "first_quarter": "1クオーター(4月～5月)",
-            "second_quarter": "2クオーター(6月～7月)",
-            "third_quarter": "3クオーター(9月～11月)",
-            "fourth_quarter": "4クオーター(12月～3月)"
-        },
-        "ImportOptions": {
-            "label": "授業のみインポートする"
-        }
-    }
+	"Head": {
+		"description": "「デジシンク」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。"
+	},
+	"Header": {
+		"to_google_calendar": "Google Calendarへ",
+		"to_ical": ".icalでダウンロード"
+	},
+	"HeaderModules": {
+		"sign_out": "ログアウト",
+		"sign_in_with_google": "Googleでログイン"
+	},
+	"ImportForm": {
+		"year_of_import": "インポート年度",
+		"destination_calendar": "インポート先",
+		"loading_from_digican": "デジキャンから読み込んでいます",
+		"download_with_ical": ".icalでダウンロード",
+		"choose_calendar": "インポート先のカレンダーを選択してください",
+		"importing": "インポート中",
+		"please_log_in_with_google": "Googleアカウントにログインしてください",
+		"sync_google_calendar": "Googleカレンダーと同期",
+		"cannot_connect_digican": "デジキャンに接続できませんでした(ユーザーネーム、パスワードがあっているか今一度お確かめください)",
+		"please_choose_range": "インポートする範囲を選択してください",
+		"pease_input": "入力してください"
+	},
+	"ImportModules": {
+		"AllDeleteButton": {
+			"unauthenticated": "Googleアカウントにログインしてください",
+			"label": "デジシンクによって追加した予定をすべて消す",
+			"searching": "カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)",
+			"title": "予定を削除しますか？",
+			"yes_delete": "はい、削除します",
+			"events_added_by_digisync": "デジシンクによって追加された予定",
+			"delete": "を削除します",
+			"deleted": "削除済み"
+		},
+		"ToCalendarSelect": {
+			"label": "インポート先カレンダー"
+		},
+		"ImportYearSelect": {
+			"label": "インポート年度"
+		},
+		"ImportRangeSelect": {
+			"label": "インポートするクオーター",
+			"first_quarter": "1クオーター(4月～5月)",
+			"second_quarter": "2クオーター(6月～7月)",
+			"third_quarter": "3クオーター(9月～11月)",
+			"fourth_quarter": "4クオーター(12月～3月)"
+		},
+		"ImportOptions": {
+			"label": "授業のみインポートする"
+		}
+	}
 }

@@ -5,29 +5,29 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 
 const ColorButton = styled(Button)<ButtonProps>(() => ({
-    textTransform: "none",
-    color: "#fff",
-    border: "1px solid",
-    borderColor: "#fff",
-    "&:hover": {
-        color: "#ff5a00",
-        backgroundColor: "#fff",
-    },
+	"&:hover": {
+		backgroundColor: "#fff",
+		color: "#ff5a00",
+	},
+	border: "1px solid",
+	borderColor: "#fff",
+	color: "#fff",
+	textTransform: "none",
 }));
 
 export default React.memo(function LoginBtn() {
-    const { t } = useTranslation("components");
-    const { status } = useSession();
-    if (status == "authenticated") {
-        return (
-            <ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signOut()} size='large'>
-                {t("HeaderModules.sign_out")}
-            </ColorButton>
-        );
-    }
-    return (
-        <ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signIn("google")} size='large'>
-            {t("HeaderModules.sign_in_with_google")}
-        </ColorButton>
-    );
+	const { t } = useTranslation("components");
+	const { status } = useSession();
+	if (status == "authenticated") {
+		return (
+			<ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signOut()} size='large'>
+				{t("HeaderModules.sign_out")}
+			</ColorButton>
+		);
+	}
+	return (
+		<ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signIn("google")} size='large'>
+			{t("HeaderModules.sign_in_with_google")}
+		</ColorButton>
+	);
 });

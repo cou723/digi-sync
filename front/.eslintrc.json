@@ -1,0 +1,45 @@
+{
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"unused-imports",
+		"@typescript-eslint/eslint-plugin",
+		"typescript-sort-keys",
+		"sort-keys-fix",
+		"import"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier",
+		"next/core-web-vitals"
+	],
+	"rules": {
+		"@typescript-eslint/no-explicit-any": "warn",
+		"@typescript-eslint/interface-name-prefix": "off",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"import/order": [
+			"error",
+			{
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index",
+					"object",
+					"type"
+				],
+				"newlines-between": "always",
+				"alphabetize": {
+					"order": "asc"
+				}
+			}
+		],
+		"import/no-duplicates": "error",
+		"sort-keys-fix/sort-keys-fix": "error",
+		"typescript-sort-keys/interface": "error",
+		"unused-imports/no-unused-imports": "error"
+	}
+}

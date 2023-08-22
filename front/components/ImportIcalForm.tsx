@@ -4,8 +4,8 @@ import { useTranslation } from "next-i18next";
 import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import { Digican } from "../libs/digican";
 import {
-    fetchClassEventList,
     FORM_SCHEMA_SHAPE,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
@@ -62,7 +62,7 @@ export function ImportIcalForm() {
         setAppState("connect portal");
         let class_event_list: RawClassEvent[];
         try {
-            class_event_list = await fetchClassEventList(
+            class_event_list = await Digican.fetchClassEvents(
                 inputs,
                 t("ImportForm.cannot_connect_digican"),
             );

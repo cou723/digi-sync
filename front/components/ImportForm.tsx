@@ -1,14 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectChangeEvent, Stack, Button, LinearProgress } from "@mui/material";
-import useBeforeUnload from "hooks/import-hook";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { postToGoogleCalendar } from "types/googleCalendar";
 import * as yup from "yup";
+import { Digican } from "../libs/digican";
 import {
-    fetchClassEventList,
     FORM_STATE_DEFAULT_VALUE,
     getSelectableYearList,
     FORM_SCHEMA_SHAPE,
@@ -21,6 +19,8 @@ import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
 import ImportYearSelect from "./ImportModules/ImportYearSelect";
 import RhfTextField from "./ImportModules/RhfTextField";
 import ToCalendarSelect from "./ImportModules/ToCalendarSelect";
+import useBeforeUnload from "hooks/import-hook";
+import { GoogleCalendar } from "libs/googleCalendar";
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
     ...FORM_STATE_DEFAULT_VALUE,
@@ -92,7 +92,7 @@ export default function ImportForm() {
         let class_event_list: RawClassEvent[];
         try {
             inputs.importYear = formState.importYear;
-            class_event_list = await fetchClassEventList(
+            class_event_list = await Digican.fetchClassEvents(
                 inputs,
                 t("components.ImportModules.cannot_connect_digican"),
             );
@@ -112,7 +112,7 @@ export default function ImportForm() {
         }
 
         // class_events = excludeOutOfImportRange(inputs, class_events)
-        await postToGoogleCalendar(
+        await GoogleCalendar.post(
             session,
             class_events,
             setImportCount,

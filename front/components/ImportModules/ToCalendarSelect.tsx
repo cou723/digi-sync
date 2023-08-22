@@ -6,12 +6,14 @@ import {
     Select,
     SelectChangeEvent,
 } from "@mui/material";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import React, { ReactNode, useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
+import { GoogleCalendar } from "libs/googleCalendar";
 import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
-import { CalendarList, CalendarListEntry } from "types/gapiCalendar";
+import { CalendarListEntry } from "types/gapiCalendar";
 
 type Props = {
     register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;
@@ -33,31 +35,11 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
     const { t } = useTranslation("components");
     const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
     const { data: session } = useSession();
+    const router = useRouter();
 
     useEffect(() => {
         (async () => {
-            let res: Response;
-            try {
-                if (!(session && session.user)) return;
-                res = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
-                    method: "GET",
-                    headers: { Authorization: `Bearer ${session.accessToken}` },
-                });
-            } catch (e) {
-                console.error(e);
-                return;
-            }
-            const data = await res.json();
-            if (data.error !== undefined && data.error.code >= 400) {
-                signOut();
-                return;
-            }
-            const calendar_list_entry: CalendarList = data;
-
-            const my_calendar_list = calendar_list_entry.items.filter(
-                (calendar) => calendar.accessRole === "owner",
-            );
-            setCalendars(my_calendar_list);
+            setCalendars(await GoogleCalendar.getMyCalendarList(session, signOut, router));
             setAccessToken(session.accessToken);
         })();
     }, [session, setAccessToken]);

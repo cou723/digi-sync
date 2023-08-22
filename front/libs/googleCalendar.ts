@@ -1,18 +1,102 @@
 import dayjs, { Dayjs } from "dayjs";
-import {
-    encodeQueryData,
-    getClassEndTime,
-    GetEventsErrorObject,
-    isGetEventErrorObject,
-    isRawClassEvent,
-} from "libs/utils";
 import { Session } from "next-auth";
-import { FormInputs } from "./formInputsTypes";
-import { Events, Event } from "./gapiCalendar";
-import ImportRange from "./importRange";
-import { ClassEvent, RawClassEvent } from "./types";
+import { FormInputs } from "../types/formInputsTypes";
+import ImportRange from "../types/importRange";
+import { ClassEvent, RawClassEvent } from "../types/types";
+import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject, getClassEndTime } from "./utils";
+import { Calendar, Events, Event, CalendarList, CalendarListEntry } from "types/gapiCalendar";
 
-export async function postToGoogleCalendar(
+export type CalendarId = string;
+
+// DigisyncEventsとは詳細欄に #created_by_dp2gc が含まれているイベントを指す
+async function getAllDigisyncEvents(session: Session): Promise<Map<CalendarId, Event[]>> {
+    const all_calendar_list: Calendar[] = await getAllCalendars(session);
+    const all_events: Map<CalendarId, Event[]> = new Map();
+
+    for (const calendar of all_calendar_list) {
+        const query_param: { [key: string]: string | number | boolean } = {
+            maxResults: 2000,
+            orderBy: "startTime",
+            singleEvents: true,
+        };
+
+        const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${calendar.id
+            }/events?${encodeQueryData(query_param)}`;
+        const raw_response = await fetch(google_api_url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+        const res: Events | GetEventsErrorObject = await raw_response.json();
+        if (isGetEventErrorObject(res)) {
+            console.error(res);
+            continue;
+        }
+        all_events.set(
+            calendar.id,
+            res.items.filter(
+                (event) => event.description && event.description.includes("#created_by_dp2gc"),
+            ),
+        );
+    }
+    return all_events;
+}
+
+async function deleteEvents(delete_event_url_list, session: Session, progressSetter) {
+    for (const delete_url of delete_event_url_list) {
+        fetch(delete_url, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+        progressSetter((deleteCount: number) => deleteCount + 1);
+        await new Promise(function (resolve) {
+            setTimeout(resolve, 250);
+        });
+    }
+}
+
+async function getAllCalendars(session: Session) {
+    const res: Response = await fetch(
+        "https://www.googleapis.com/calendar/v3/users/me/calendarList",
+        {
+            method: "GET",
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+        },
+    );
+    return (await res.json()).items;
+}
+
+async function getMyCalendarList(session: Session, signOut, router): Promise<CalendarListEntry[]> {
+    if (!(session && session.user)) {
+        router.push("/login");
+        return [];
+    }
+    try {
+        const res = await fetch("https://www.googleapis.com/calendar/v3/users/me/calendarList", {
+            method: "GET",
+            headers: { Authorization: `Bearer ${session.accessToken}` },
+        });
+        const data = await res.json();
+        if (data.error !== undefined && data.error.code >= 400) {
+            signOut();
+            router.push("/login");
+            return [];
+        }
+        const calendar_list_entry: CalendarList = data;
+
+        return calendar_list_entry.items.filter((calendar) => calendar.accessRole === "owner");
+    } catch (e: unknown) {
+        alert("カレンダーの取得に失敗しました。ページをリロードしてもう一度やり直してください。");
+        return [];
+    }
+}
+
+export async function post(
     session: Session,
     raw_class_events: RawClassEvent[],
     count_setter,
@@ -40,7 +124,7 @@ export async function postToGoogleCalendar(
 
     total_count_setter(class_events.length);
     for (const class_event of class_events) {
-        addEventToGoogleCal(class_event.start, class_event.title, session, inputs);
+        addEvent(class_event.start, class_event.title, session, inputs);
         count_setter((prev) => prev + 1);
         await new Promise(function (resolve) {
             setTimeout(resolve, 400);
@@ -78,9 +162,8 @@ export async function getAlreadyPostedEvents(accessToken: string, inputs: FormIn
             };
         }
 
-        const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
-            inputs.toCalendar
-        }/events?${encodeQueryData(query_param)}`;
+        const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${inputs.toCalendar
+            }/events?${encodeQueryData(query_param)}`;
 
         const raw_response = await fetch(google_api_url, {
             method: "GET",
@@ -105,7 +188,7 @@ export async function getAlreadyPostedEvents(accessToken: string, inputs: FormIn
     return already_posted_events;
 }
 
-async function addEventToGoogleCal(
+async function addEvent(
     start: Dayjs,
     title: string,
     session: Session,
@@ -147,7 +230,7 @@ function isEventDuplicated(
             continue;
         }
 
-        const is_class_title_same = class_event.title.trim() == (already_posted_event.summary?already_posted_event.summary.trim():false);
+        const is_class_title_same = class_event.title.trim() == (already_posted_event.summary ? already_posted_event.summary.trim() : false);
         const is_start_time_same =
             dayjs(class_event.start).toString() ==
             dayjs(already_posted_event.start.dateTime).toString();
@@ -157,3 +240,15 @@ function isEventDuplicated(
     }
     return false;
 }
+
+
+export const GoogleCalendar = {
+    deleteEvents,
+    getAllDigisyncEvents,
+    getAllCalendars,
+    getMyCalendarList,
+    post,
+    getAlreadyPostedEvents,
+    addEvent,
+    isEventDuplicated,
+};

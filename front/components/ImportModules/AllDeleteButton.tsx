@@ -13,8 +13,8 @@ import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import React from "react";
-import { encodeQueryData, GetEventsErrorObject, isGetEventErrorObject } from "../../libs/utils";
-import type { Events, Calendar, Event } from "../../types/gapiCalendar";
+import type { Event } from "../../types/gapiCalendar";
+import { GoogleCalendar, CalendarId } from "libs/googleCalendar";
 
 let delete_event_url_list: string[];
 
@@ -22,7 +22,6 @@ type Props = {
     disabled: boolean;
 };
 
-type CalendarId = string;
 
 export default React.memo(function AllDeleteButton({ disabled }: Props) {
     const { t } = useTranslation("components");
@@ -40,61 +39,13 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
         else setDeleteStatus("ready");
     }, [authStatus]);
 
-    const getAllGCalEvents = async (
-        all_calendar_list: Calendar[],
-    ): Promise<Map<CalendarId, Event[]>> => {
-        const all_events: Map<CalendarId, Event[]> = new Map();
-        for (const calendar of all_calendar_list) {
-            const query_param: { [key: string]: string | number | boolean } = {
-                maxResults: 2000,
-                orderBy: "startTime",
-                singleEvents: true,
-            };
-
-            const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
-                calendar.id
-            }/events?${encodeQueryData(query_param)}`;
-            const raw_response = await fetch(google_api_url, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${session.accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            const res: Events | GetEventsErrorObject = await raw_response.json();
-            if (isGetEventErrorObject(res)) {
-                console.error(res);
-                continue;
-            }
-            all_events.set(
-                calendar.id,
-                res.items.filter(
-                    (event) => event.description && event.description.includes("#created_by_dp2gc"),
-                ),
-            );
-        }
-        return all_events;
-    };
 
     const onAllDeleteClick = async () => {
         setDeleteStatus("getting_calendar");
         delete_event_url_list = [];
-        // すべてのカレンダーを取得
+
         if (!(session && session.user)) return;
-        const res: Response = await fetch(
-            "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-            {
-                method: "GET",
-                headers: { Authorization: `Bearer ${session.accessToken}` },
-            },
-        );
-        const all_calendar_list = (await res.json()).items;
-
-        // すべてのカレンダーの予定を取得
-        const all_events: Map<CalendarId, Event[]> = await getAllGCalEvents(all_calendar_list);
-
-        // 取得した予定の中から詳細に#created_by_dp2gcがあるものだけを残すようフィルタリング
-        const delete_events: Map<CalendarId, Event[]> = all_events;
+        const delete_events: Map<CalendarId, Event[]> = await GoogleCalendar.getAllDigisyncEvents(session);
         let delete_count = 0;
         delete_events.forEach((events) => {
             delete_count += events.length;
@@ -122,19 +73,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
         setDeleteStatus("deleting");
         setDeleteCount(0);
         if (!session) return;
-        for (const delete_url of delete_event_url_list) {
-            fetch(delete_url, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${session.accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            setDeleteCount((deleteCount) => deleteCount + 1);
-            await new Promise(function (resolve) {
-                setTimeout(resolve, 250);
-            });
-        }
+        await GoogleCalendar.deleteEvents(delete_event_url_list, session, setDeleteCount);
         setDeleteStatus("ready");
     };
 

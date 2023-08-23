@@ -1,5 +1,5 @@
 import { API_RETURN_EventList } from "../../components/importIcalForm";
-import { useClassTableIcalProps } from "../../hooks/ical-hook";
+import { useClassTableIcalProps } from "../../hooks/icalHook";
 
 import { dayjsWrapper } from "./dayjs";
 

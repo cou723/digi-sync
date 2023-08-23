@@ -1,5 +1,5 @@
 import ical from "ical-generator";
-import { useClassTableIcalProps } from "../../hooks/ical-hook";
+import { useClassTableIcalProps } from "../../hooks/icalHook";
 
 export const DownloadBrowser = (event: useClassTableIcalProps["init"]): string => {
 	const calendar = ical({ name: "授業の時間" });

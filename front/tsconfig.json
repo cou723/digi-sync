@@ -27,6 +27,12 @@
 		"jsx": "preserve",
 		"incremental": true
 	},
-	"include": ["types/next-auth.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", "next-i18next.config.js"],
+	"include": [
+		"types/next-auth.d.ts",
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"next-i18next.config.js"
+	],
 	"exclude": ["node_modules"]
 }

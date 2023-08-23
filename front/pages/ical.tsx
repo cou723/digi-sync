@@ -2,8 +2,8 @@ import { Container } from "@mui/material";
 import { GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import HEAD from "../components/Head";
-import { ImportIcalForm } from "../components/ImportIcalForm";
+import HEAD from "../components/head";
+import { ImportIcalForm } from "../components/importIcalForm";
 
 export default function Home() {
 	return (

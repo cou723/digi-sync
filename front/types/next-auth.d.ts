@@ -1,4 +1,7 @@
-
+// eslint-disable-next-line unused-imports/no-unused-imports
+import NextAuth from "next-auth";
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
 	/**

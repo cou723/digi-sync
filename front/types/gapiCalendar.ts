@@ -157,7 +157,7 @@ interface CalendarsInsertParameters {
 
 	location?: string | undefined;
 	// Calendars resource
-// Required Properties
+	// Required Properties
 	summary: string;
 	timeZone?: string | undefined;
 }
@@ -489,7 +489,7 @@ export interface Event {
 		timeZone?: string | undefined;
 	};
 	//     Whether the end time is actually unspecified. An end time is still provided for compatibility reasons, even if this attribute is set to True.
-// The default is False.
+	// The default is False.
 	endTimeUnspecified?: boolean | undefined;
 	etag: etag;
 

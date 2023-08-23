@@ -45,4 +45,4 @@ export class ClassEvent {
 	}
 }
 
-export type Range = { end: Dayjs, start: Dayjs; };
+export type Range = { end: Dayjs; start: Dayjs };

@@ -9,8 +9,6 @@ import useBeforeUnload from "hooks/import-hook";
 import { useCustomSession } from "hooks/useCustomSession";
 import { GoogleCalendar } from "libs/googleCalendar";
 
-
-
 import { Digican } from "../libs/digican";
 import {
 	FORM_STATE_DEFAULT_VALUE,

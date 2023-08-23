@@ -3,12 +3,14 @@ import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
+import { useCustomSession } from "hooks/useCustomSession";
+
 import HEAD from "../components/head";
 import ImportForm from "../components/importForm";
 
 export default function Home() {
 	const { t } = useTranslation("pages");
-	const { status: authStatus } = useCustomSession();
+	const { authStatus } = useCustomSession();
 	return (
 		<>
 			<HEAD />

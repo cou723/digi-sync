@@ -69,8 +69,7 @@ export function ImportIcalForm() {
 				t("ImportForm.cannot_connect_digican"),
 			);
 		} catch (e: unknown) {
-			if (e instanceof Error)
-				alert(e.message);
+			if (e instanceof Error) alert(e.message);
 			console.log(e);
 			setAppState("ready");
 			return;

@@ -5,7 +5,6 @@ import React from "react";
 
 import theme from "libs/colorTheme";
 
-
 import FloatMenu from "./floatMenu";
 import LoginBtn from "./headerModules/loginBtn";
 import Logo from "./headerModules/logo";

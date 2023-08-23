@@ -3,7 +3,7 @@ import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import Question from "../components/QAndA";
+import Question from "../components/qAndA";
 
 export default function QAndA() {
 	const { t } = useTranslation("pages");

@@ -14,7 +14,7 @@ import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 
 type Props = {
 	disabled?: boolean;
-	errorMessage: string;
+	errorMessage: string | undefined;
 	onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
 	register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;
 	value: string;
@@ -57,7 +57,7 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
 				<MenuItem value='1q_and_2q'>{cc("first_semester")}</MenuItem>
 				<MenuItem value='3q_and_4q'>{cc("second_semester")}</MenuItem>
 			</Select>
-			<FormHelperText>{errorMessage}</FormHelperText>
+			<FormHelperText disabled={!!errorMessage}>{errorMessage}</FormHelperText>
 		</FormControl>
 	);
 });

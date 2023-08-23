@@ -7,10 +7,7 @@ dayjs.extend(utc);
 export function encodeQueryData(data: { [key: string]: string | number | boolean }) {
 	const searchParams = new URLSearchParams();
 	for (const key in data) {
-		let value;
-		if (typeof data[key] === "number" || typeof data[key] === "boolean")
-			value = String(data[key]);
-		else value = data[key];
+		const value = String(data[key]);
 		searchParams.set(key, value);
 	}
 	return searchParams.toString();

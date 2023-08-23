@@ -7,7 +7,6 @@ import {
 	SelectChangeEvent,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import React, { ReactNode, useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
@@ -19,7 +18,7 @@ import { CalendarListEntry } from "@/types/gapiCalendar";
 
 type Props = {
 	disabled: boolean;
-	errorMessage: string;
+	errorMessage: string | undefined;
 	onChange: (event: SelectChangeEvent<string>, child: ReactNode) => void;
 	register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;
 	setAccessToken: (accessToken: string) => void;
@@ -41,7 +40,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 
 	useEffect(() => {
 		(async () => {
-			setCalendars(await GoogleCalendar.getMyCalendarList(session, signOut, router));
+			setCalendars(await GoogleCalendar.getMyCalendarList(session, router));
 			setAccessToken(session.accessToken);
 		})();
 	}, [router, session, setAccessToken]);
@@ -69,7 +68,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 					</MenuItem>
 				))}
 			</Select>
-			<FormHelperText>{errorMessage}</FormHelperText>
+			<FormHelperText disabled={!!errorMessage}>{errorMessage}</FormHelperText>
 		</FormControl>
 	);
 });

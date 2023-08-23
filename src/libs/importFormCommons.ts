@@ -39,9 +39,9 @@ export const getSelectableYearList = (): number[] => {
 };
 
 export const FORM_SCHEMA_SHAPE = {
-	ignoreOtherEvents: yup.boolean(),
+	ignoreOtherEvents: yup.boolean().required("入力してください"),
 	importRange: yup.string().required("インポートする範囲を選択してください"),
-	importYear: yup.number(),
+	importYear: yup.string().required("インポート年度を選択してください"),
 	password: yup.string().required("入力してください"),
 	username: yup.string().required("入力してください"),
 };

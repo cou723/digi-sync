@@ -24,6 +24,8 @@ import ImportYearSelect from "./importModules/importYearSelect";
 import RhfTextField from "./importModules/rhfTextField";
 import ToCalendarSelect from "./importModules/toCalendarSelect";
 
+export type ImportFormState = "unauthenticated" | "ready" | "connect portal" | "import";
+
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
 	...FORM_STATE_DEFAULT_VALUE,
 	toCalendar: "",
@@ -48,12 +50,10 @@ export default function ImportForm() {
 		handleSubmit,
 		formState: { errors },
 	} = useForm<GoogleFormInputs>({
-		resolver: yupResolver(schema),
+		resolver: yupResolver<GoogleFormInputs>(schema),
 	});
 
-	const [appState, setAppState] = useState<
-		"unauthenticated" | "ready" | "connect portal" | "import"
-	>("unauthenticated");
+	const [appState, setAppState] = useState<ImportFormState>("unauthenticated");
 
 	useBeforeUnload(appState);
 

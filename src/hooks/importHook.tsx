@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-export default function useBeforeUnload(appState) {
+import { ImportFormState } from "@/components/importForm";
+
+export default function useBeforeUnload(appState:ImportFormState) {
 	useEffect(() => {
 		function handleBeforeUnload() {
 			return "Are you sure you want to leave this page?";

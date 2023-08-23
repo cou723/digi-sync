@@ -1,5 +1,8 @@
 import dayjs, { Dayjs } from "dayjs";
+import { NextRouter } from "next/router";
 import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
+import { Dispatch, SetStateAction } from "react";
 
 import { FormInputs } from "@/types/formInputsTypes";
 import { Calendar, Events, Event, CalendarList, CalendarListEntry } from "@/types/gapiCalendar";
@@ -52,7 +55,11 @@ async function getAllDigisyncEvents(session: Session): Promise<Map<CalendarId, E
 	return all_events;
 }
 
-async function deleteEvents(delete_event_url_list, session: Session, progressSetter) {
+async function deleteEvents(
+	delete_event_url_list: string[],
+	session: Session,
+	progressSetter: Dispatch<SetStateAction<number>>,
+) {
 	for (const delete_url of delete_event_url_list) {
 		fetch(delete_url, {
 			headers: {
@@ -79,7 +86,7 @@ async function getAllCalendars(session: Session) {
 	return (await res.json()).items;
 }
 
-async function getMyCalendarList(session: Session, signOut, router): Promise<CalendarListEntry[]> {
+async function getMyCalendarList(session: Session, router:NextRouter): Promise<CalendarListEntry[]> {
 	if (!(session && session.user)) {
 		router.push("/login");
 		return [];
@@ -107,11 +114,11 @@ async function getMyCalendarList(session: Session, signOut, router): Promise<Cal
 export async function post(
 	session: Session,
 	raw_class_events: RawClassEvent[],
-	count_setter,
-	total_count_setter,
+	setCount: Dispatch<SetStateAction<number>>,
+	setTotalCount: Dispatch<SetStateAction<number>>,
 	inputs: FormInputs,
 ): Promise<void> {
-	count_setter(0);
+	setCount(0);
 	if (!session) return;
 
 	let class_events = raw_class_events.map((raw_class_event) => new ClassEvent(raw_class_event));
@@ -129,10 +136,10 @@ export async function post(
 		return;
 	}
 
-	total_count_setter(class_events.length);
+	setTotalCount(class_events.length);
 	for (const class_event of class_events) {
 		addEvent(class_event.start, class_event.title, session, inputs);
-		count_setter((prev) => prev + 1);
+		setCount((prev) => prev + 1);
 		await new Promise(function (resolve) {
 			setTimeout(resolve, 400);
 		});

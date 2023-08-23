@@ -74,9 +74,12 @@ export function ImportIcalForm() {
 			setAppState("ready");
 			return;
 		}
-		const IcalTimeTable = ConvertToIcalMap(class_event_list);
-		if (IcalTimeTable != null) DownloadBrowser(IcalTimeTable);
-		setAppState("ready");
+		try {
+			const IcalTimeTable = ConvertToIcalMap(class_event_list);
+			DownloadBrowser(IcalTimeTable);
+		} finally {
+			setAppState("ready");
+		}
 	};
 
 	return (

@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
+
 import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
 
 type Props = {

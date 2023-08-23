@@ -23,7 +23,7 @@
 		"please_choose_range": "インポートする範囲を選択してください",
 		"pease_input": "入力してください"
 	},
-	"ImportModules": {
+	"importModules": {
 		"AllDeleteButton": {
 			"unauthenticated": "Googleアカウントにログインしてください",
 			"label": "デジシンクによって追加した予定をすべて消す",

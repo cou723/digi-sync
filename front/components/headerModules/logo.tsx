@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import Image from "next/image";
 import { useTranslation } from "next-i18next";
+
 import LogoImage from "public/logo.svg";
 
 export default function Logo() {

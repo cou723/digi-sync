@@ -2,6 +2,7 @@ import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@m
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
+
 import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
 
 type Props = {
@@ -23,7 +24,7 @@ const ImportYear = React.memo(function ImportYearSelect({
 	return (
 		<FormControl margin='normal'>
 			<InputLabel id='import-year-label'>
-				{t("ImportModules.ImportYearSelect.label")}
+				{t("importModules.ImportYearSelect.label")}
 			</InputLabel>
 			<Select
 				{...register("importYear", { required: true, valueAsNumber: true })}
@@ -32,7 +33,7 @@ const ImportYear = React.memo(function ImportYearSelect({
 				onChange={onChange}
 				name='importYear'
 				labelId='import-year-label'
-				label={t("ImportModules.ImportYearSelect.label")}
+				label={t("importModules.ImportYearSelect.label")}
 				margin='dense'
 			>
 				{selectableYears.map((selectableYear: number, i: number) => (

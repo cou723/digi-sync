@@ -2,6 +2,7 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
 import { UseFormRegister } from "react-hook-form";
+
 import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
 
 type Props = {
@@ -31,7 +32,7 @@ const ImportOptions = React.memo(function ImportOptions({
 					defaultChecked
 				/>
 			}
-			label={t("ImportModules.ImportOptions.label")}
+			label={t("importModules.ImportOptions.label")}
 		/>
 	);
 });

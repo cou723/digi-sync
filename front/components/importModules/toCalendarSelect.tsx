@@ -6,12 +6,14 @@ import {
 	Select,
 	SelectChangeEvent,
 } from "@mui/material";
-import { GoogleCalendar } from "libs/googleCalendar";
 import { useRouter } from "next/router";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import React, { ReactNode, useEffect, useState } from "react";
 import { UseFormRegister } from "react-hook-form";
+
+import { useCustomSession } from "hooks/useCustomSession";
+import { GoogleCalendar } from "libs/googleCalendar";
 import { FormInputs, GoogleFormInputs } from "types/formInputsTypes";
 import { CalendarListEntry } from "types/gapiCalendar";
 
@@ -34,7 +36,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 }: Props) {
 	const { t } = useTranslation("components");
 	const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
-	const { data: session } = useSession();
+	const { session } = useCustomSession();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -42,12 +44,12 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 			setCalendars(await GoogleCalendar.getMyCalendarList(session, signOut, router));
 			setAccessToken(session.accessToken);
 		})();
-	}, [session, setAccessToken]);
+	}, [router, session, setAccessToken]);
 
 	return (
 		<FormControl fullWidth margin='normal'>
 			<InputLabel id='to-calendar-list-label'>
-				{t("ImportModules.ToCalendarSelect.label")}
+				{t("importModules.ToCalendarSelect.label")}
 			</InputLabel>
 			<Select
 				{...register("toCalendar")}
@@ -58,7 +60,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 				required
 				name='toCalendar'
 				labelId='to-calendar-list-label'
-				label={t("ImportModules.ToCalendarSelect.label")}
+				label={t("importModules.ToCalendarSelect.label")}
 				margin='dense'
 			>
 				{calendars.map((calendar) => (

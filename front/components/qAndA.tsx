@@ -5,7 +5,7 @@ type Props = {
 	question: string;
 };
 
-export default function QAndA({ question, answer }: Props) {
+const QAndA = ({ question, answer }: Props) => {
 	return (
 		<Container sx={{ py: 2 }} maxWidth='md'>
 			<Typography variant='h5' component='h2' gutterBottom>
@@ -16,4 +16,6 @@ export default function QAndA({ question, answer }: Props) {
 			</Typography>
 		</Container>
 	);
-}
+};
+
+export default QAndA;

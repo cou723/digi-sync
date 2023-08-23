@@ -1,13 +1,14 @@
 import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from "@mui/material";
-import theme from "libs/colorTheme";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import theme from "libs/colorTheme";
 
-import FloatMenu from "./FloatMenu";
-import LoginBtn from "./HeaderModules/LoginBtn";
-import Logo from "./HeaderModules/Logo";
+
+import FloatMenu from "./floatMenu";
+import LoginBtn from "./headerModules/loginBtn";
+import Logo from "./headerModules/logo";
 
 export default React.memo(function Header() {
 	const { t } = useTranslation("components");

@@ -113,12 +113,12 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 			>
 				{
 					{
-						unauthenticated: t("ImportModules.AllDeleteButton.unauthenticated"),
-						ready: t("ImportModules.AllDeleteButton.label"),
+						unauthenticated: t("importModules.AllDeleteButton.unauthenticated"),
+						ready: t("importModules.AllDeleteButton.label"),
 						deleting: `${deleteCount}${cc("unit")}${t(
-							"ImportModules.AllDeleteButton.deleted",
+							"importModules.AllDeleteButton.deleted",
 						)}`,
-						getting_calendar: t("ImportModules.AllDeleteButton.searching"),
+						getting_calendar: t("importModules.AllDeleteButton.searching"),
 					}[deleteStatus]
 				}
 				<Fade in={deleteStatus == "getting_calendar"}>
@@ -136,14 +136,14 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 				aria-describedby='alert-dialog-description'
 			>
 				<DialogTitle id='alert-dialog-title'>
-					{t("ImportModules.AllDeleteButton.title")}
+					{t("importModules.AllDeleteButton.title")}
 				</DialogTitle>
 				<DialogContent>
 					<DialogContentText id='alert-dialog-description'>
 						{`${t(
-							"ImportModules.AllDeleteButton.events_added_by_digisync",
+							"importModules.AllDeleteButton.events_added_by_digisync",
 						)}(${deleteEventCout} ${cc("unit")})${t(
-							"ImportModules.AllDeleteButton.delete",
+							"importModules.AllDeleteButton.delete",
 						)}`}
 					</DialogContentText>
 				</DialogContent>
@@ -152,7 +152,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 						{cc("no")}
 					</Button>
 					<Button onClick={allDelete}>
-						{t("ImportModules.AllDeleteButton.yes_delete")}
+						{t("importModules.AllDeleteButton.yes_delete")}
 					</Button>
 				</DialogActions>
 			</Dialog>

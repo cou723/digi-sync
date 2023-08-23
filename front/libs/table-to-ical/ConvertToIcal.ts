@@ -1,4 +1,4 @@
-import { API_RETURN_EventList } from "../../components/ImportIcalForm";
+import { API_RETURN_EventList } from "../../components/importIcalForm";
 
 import FormDateToIcal from "./FormDateToIcal";
 

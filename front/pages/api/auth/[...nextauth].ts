@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_ID || "";
@@ -10,13 +10,13 @@ if (GOOGLE_CLIENT_ID == "" || GOOGLE_CLIENT_SECRET == "") {
 	);
 }
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
 	callbacks: {
 		async jwt({ token, account }) {
 			if (account && account.access_token) token.accessToken = account.access_token;
 			return token;
 		},
-		async session({ session, token }) {
+		async session({ session, token }): Promise<Session> {
 			session.accessToken = token.accessToken;
 			return session;
 		},

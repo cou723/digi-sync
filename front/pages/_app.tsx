@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SessionProvider } from "next-auth/react";
 import { appWithTranslation } from "next-i18next";
 
-import Header from "../components/Header";
+import Header from "../components/header";
 import theme from "../libs/colorTheme";
 
 import type { AppProps } from "next/app";

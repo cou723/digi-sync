@@ -13,12 +13,12 @@ import {
 } from "../libs/importFormCommons";
 import { GoogleFormInputs } from "../types/formInputsTypes";
 import { RawClassEvent } from "../types/types";
-import AllDeleteButton from "./ImportModules/AllDeleteButton";
-import ImportOptions from "./ImportModules/ImportOptions";
-import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
-import ImportYearSelect from "./ImportModules/ImportYearSelect";
-import RhfTextField from "./ImportModules/RhfTextField";
-import ToCalendarSelect from "./ImportModules/ToCalendarSelect";
+import AllDeleteButton from "./importModules/AllDeleteButton";
+import ImportOptions from "./importModules/ImportOptions";
+import ImportRangeSelect from "./importModules/ImportRangeSelect";
+import ImportYearSelect from "./importModules/ImportYearSelect";
+import RhfTextField from "./importModules/RhfTextField";
+import ToCalendarSelect from "./importModules/ToCalendarSelect";
 import useBeforeUnload from "hooks/import-hook";
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
@@ -93,7 +93,7 @@ export default function ImportForm() {
 			inputs.importYear = formState.importYear;
 			class_event_list = await Digican.fetchClassEvents(
 				inputs,
-				t("components.ImportModules.cannot_connect_digican"),
+				t("components.importModules.cannot_connect_digican"),
 			);
 		} catch (e) {
 			alert(t("ImportForm.cannot_connect_digican"));

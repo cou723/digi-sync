@@ -1,15 +1,14 @@
 import { Alert, Container, Link } from "@mui/material";
 import { GetStaticProps } from "next";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
-import HEAD from "../components/Head";
-import ImportForm from "../components/ImportForm";
+import HEAD from "../components/head";
+import ImportForm from "../components/importForm";
 
 export default function Home() {
 	const { t } = useTranslation("pages");
-	const { status: authStatus } = useSession();
+	const { status: authStatus } = useCustomSession();
 	return (
 		<>
 			<HEAD />

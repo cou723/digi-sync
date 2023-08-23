@@ -1,9 +1,12 @@
 import { Button, ButtonProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import React from "react";
 
+import { useCustomSession } from "hooks/useCustomSession";
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const ColorButton = styled(Button)<ButtonProps>(() => ({
 	"&:hover": {
 		backgroundColor: "#fff",
@@ -17,8 +20,8 @@ const ColorButton = styled(Button)<ButtonProps>(() => ({
 
 export default React.memo(function LoginBtn() {
 	const { t } = useTranslation("components");
-	const { status } = useSession();
-	if (status == "authenticated") {
+	const { authStatus } = useCustomSession();
+	if (authStatus == "authenticated") {
 		return (
 			<ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signOut()} size='large'>
 				{t("HeaderModules.sign_out")}

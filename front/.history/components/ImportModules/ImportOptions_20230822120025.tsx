@@ -31,7 +31,7 @@ const ImportOptions = React.memo(function ImportOptions({
 					defaultChecked
 				/>
 			}
-			label={t("ImportModules.ImportOptions.label")}
+			label={t("importModules.ImportOptions.label")}
 		/>
 	);
 });

@@ -16,10 +16,10 @@ import { DownloadBrowser } from "../libs/table-to-ical/DownloadBrowser";
 import { FormInputs } from "../types/formInputsTypes";
 import { RawClassEvent } from "../types/types";
 
-import ImportOptions from "./ImportModules/ImportOptions";
-import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
-import ImportYearSelect from "./ImportModules/ImportYearSelect";
-import RhfTextField from "./ImportModules/RhfTextField";
+import ImportOptions from "./importModules/importOptions";
+import ImportRangeSelect from "./importModules/importRangeSelect";
+import ImportYearSelect from "./importModules/importYearSelect";
+import RhfTextField from "./importModules/rhfTextField";
 
 export interface API_RETURN_EventList {
 	events: RawClassEvent[];

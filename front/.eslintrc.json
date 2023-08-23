@@ -1,5 +1,15 @@
 {
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier",
+		"next/core-web-vitals"
+	],
 	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"project": "tsconfig.json",
+		"tslintRootDir": "."
+	},
 	"plugins": [
 		"unused-imports",
 		"@typescript-eslint/eslint-plugin",
@@ -7,20 +17,18 @@
 		"sort-keys-fix",
 		"import"
 	],
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"prettier",
-		"next/core-web-vitals"
-	],
 	"rules": {
-		"@typescript-eslint/no-explicit-any": "warn",
-		"@typescript-eslint/interface-name-prefix": "off",
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/interface-name-prefix": "off",
+		"@typescript-eslint/no-explicit-any": "warn",
+		"import/no-duplicates": "error",
 		"import/order": [
 			"error",
 			{
+				"alphabetize": {
+					"order": "asc"
+				},
 				"groups": [
 					"builtin",
 					"external",
@@ -31,13 +39,9 @@
 					"object",
 					"type"
 				],
-				"newlines-between": "always",
-				"alphabetize": {
-					"order": "asc"
-				}
+				"newlines-between": "always"
 			}
 		],
-		"import/no-duplicates": "error",
 		"sort-keys-fix/sort-keys-fix": "error",
 		"typescript-sort-keys/interface": "error",
 		"unused-imports/no-unused-imports": "error"

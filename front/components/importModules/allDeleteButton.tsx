@@ -1,3 +1,4 @@
+
 import {
     Button,
     CircularProgress,
@@ -9,19 +10,21 @@ import {
     LinearProgress,
     Fade,
 } from "@mui/material";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
-import { useEffect, useState } from "react";
-import React from "react";
-import {}
-import type { Events, Calendar, Event } from "../../types/gapiCalendar";
+import React, { useEffect, useState } from "react";
+
+import { useCustomSession } from "hooks/useCustomSession";
+import { GoogleCalendar, CalendarId } from "libs/googleCalendar";
+
+
+
+import type { Event } from "../../types/gapiCalendar";
 
 let delete_event_url_list: string[];
 
 type Props = {
     disabled: boolean;
 };
-
 
 export default React.memo(function AllDeleteButton({ disabled }: Props) {
     const { t } = useTranslation("components");
@@ -32,33 +35,21 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
         "unauthenticated" | "ready" | "getting_calendar" | "deleting"
     >("unauthenticated");
     const [deleteCount, setDeleteCount] = useState(0);
-    const { data: session, status: authStatus } = useSession();
+    const { session, authStatus } = useCustomSession();
 
     useEffect(() => {
         if (authStatus == "unauthenticated") setDeleteStatus("unauthenticated");
         else setDeleteStatus("ready");
     }, [authStatus]);
 
-
     const onAllDeleteClick = async () => {
         setDeleteStatus("getting_calendar");
         delete_event_url_list = [];
-        // すべてのカレンダーを取得
+
         if (!(session && session.user)) return;
-        const res: Response = await fetch(
-            "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-            {
-                method: "GET",
-                headers: { Authorization: `Bearer ${session.accessToken}` },
-            },
+        const delete_events: Map<CalendarId, Event[]> = await GoogleCalendar.getAllDigisyncEvents(
+            session,
         );
-        const all_calendar_list = (await res.json()).items;
-
-        // すべてのカレンダーの予定を取得
-        const all_events: Map<CalendarId, Event[]> = await getAllGCalEvents(all_calendar_list,session);
-
-        // 取得した予定の中から詳細に#created_by_dp2gcがあるものだけを残すようフィルタリング
-        const delete_events: Map<CalendarId, Event[]> = all_events;
         let delete_count = 0;
         delete_events.forEach((events) => {
             delete_count += events.length;
@@ -86,19 +77,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
         setDeleteStatus("deleting");
         setDeleteCount(0);
         if (!session) return;
-        for (const delete_url of delete_event_url_list) {
-            fetch(delete_url, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${session.accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            setDeleteCount((deleteCount) => deleteCount + 1);
-            await new Promise(function (resolve) {
-                setTimeout(resolve, 250);
-            });
-        }
+        await GoogleCalendar.deleteEvents(delete_event_url_list, session, setDeleteCount);
         setDeleteStatus("ready");
     };
 
@@ -112,12 +91,12 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
             >
                 {
                     {
-                        unauthenticated: t("importModules.AllDeleteButton.unauthenticated"),
-                        ready: t("importModules.AllDeleteButton.label"),
                         deleting: `${deleteCount}${cc("unit")}${t(
                             "importModules.AllDeleteButton.deleted",
                         )}`,
                         getting_calendar: t("importModules.AllDeleteButton.searching"),
+                        ready: t("importModules.AllDeleteButton.label"),
+                        unauthenticated: t("importModules.AllDeleteButton.unauthenticated"),
                     }[deleteStatus]
                 }
                 <Fade in={deleteStatus == "getting_calendar"}>

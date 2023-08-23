@@ -1,12 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectChangeEvent, Stack, Button, LinearProgress } from "@mui/material";
-import useBeforeUnload from "hooks/import-hook";
-import { GoogleCalendar } from "libs/googleCalendar";
-import { useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
+
+import useBeforeUnload from "hooks/import-hook";
+import { useCustomSession } from "hooks/useCustomSession";
+import { GoogleCalendar } from "libs/googleCalendar";
 
 
 
@@ -19,12 +20,12 @@ import {
 import { GoogleFormInputs } from "../types/formInputsTypes";
 import { RawClassEvent } from "../types/types";
 
-import AllDeleteButton from "./ImportModules/AllDeleteButton";
-import ImportOptions from "./ImportModules/ImportOptions";
-import ImportRangeSelect from "./ImportModules/ImportRangeSelect";
-import ImportYearSelect from "./ImportModules/ImportYearSelect";
-import RhfTextField from "./ImportModules/RhfTextField";
-import ToCalendarSelect from "./ImportModules/ToCalendarSelect";
+import AllDeleteButton from "./importModules/allDeleteButton";
+import ImportOptions from "./importModules/importOptions";
+import ImportRangeSelect from "./importModules/importRangeSelect";
+import ImportYearSelect from "./importModules/importYearSelect";
+import RhfTextField from "./importModules/rhfTextField";
+import ToCalendarSelect from "./importModules/toCalendarSelect";
 
 const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
 	...FORM_STATE_DEFAULT_VALUE,
@@ -61,7 +62,7 @@ export default function ImportForm() {
 
 	const selectableYears: Array<number> = getSelectableYearList();
 
-	const { data: session, status: authStatus } = useSession();
+	const { session, authStatus } = useCustomSession();
 
 	useEffect(() => {
 		if (authStatus == "unauthenticated") setAppState("unauthenticated");
@@ -98,7 +99,7 @@ export default function ImportForm() {
 			inputs.importYear = formState.importYear;
 			class_event_list = await Digican.fetchClassEvents(
 				inputs,
-				t("components.ImportModules.cannot_connect_digican"),
+				t("components.importModules.cannot_connect_digican"),
 			);
 		} catch (e) {
 			alert(t("ImportForm.cannot_connect_digican"));

@@ -23,7 +23,7 @@
 		"please_choose_range": "Select Import Range(1q, 2q, first semester, etc...)",
 		"pease_input": "Please input"
 	},
-	"ImportModules": {
+	"importModules": {
 		"AllDeleteButton": {
 			"unauthenticated": "Please Sign in with Google",
 			"label": "Delete all schedules in Google Calendar by DigiSync",

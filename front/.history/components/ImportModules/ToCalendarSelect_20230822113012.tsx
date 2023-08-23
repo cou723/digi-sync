@@ -47,7 +47,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 	return (
 		<FormControl fullWidth margin='normal'>
 			<InputLabel id='to-calendar-list-label'>
-				{t("ImportModules.ToCalendarSelect.label")}
+				{t("importModules.ToCalendarSelect.label")}
 			</InputLabel>
 			<Select
 				{...register("toCalendar")}
@@ -58,7 +58,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 				required
 				name='toCalendar'
 				labelId='to-calendar-list-label'
-				label={t("ImportModules.ToCalendarSelect.label")}
+				label={t("importModules.ToCalendarSelect.label")}
 				margin='dense'
 			>
 				{calendars.map((calendar) => (

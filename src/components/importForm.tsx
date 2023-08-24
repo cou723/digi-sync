@@ -137,6 +137,7 @@ export default function ImportForm() {
 			<br />
 			<Button
 				disabled={appState !== "ready"}
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				onClick={handleSubmit(onSubmit, (errors: any) => {
 					console.log(errors);
 				})}

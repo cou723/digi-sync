@@ -4,7 +4,7 @@ export default function NotFound() {
 	return (
 		<>
 			<Container maxWidth='md'>
-				<Typography variant='h4' component='h1'>
+				<Typography component='h1' variant='h4'>
 					404 Not Found
 				</Typography>
 			</Container>

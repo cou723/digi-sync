@@ -7,6 +7,7 @@ import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 import { RhfMuiCheckbox } from "./rhfMuiCheckbox";
 
 type Props = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 	disabled?: boolean;
 	register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;

@@ -13,6 +13,7 @@ if (GOOGLE_CLIENT_ID == "" || GOOGLE_CLIENT_SECRET == "") {
 
 export const authOptions: NextAuthOptions = {
 	callbacks: {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		async jwt({ token, account }: { account: any; token: JWT }) {
 			if (account && account.access_token) token.accessToken = account.access_token;
 			return token;

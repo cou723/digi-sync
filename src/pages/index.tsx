@@ -13,14 +13,14 @@ export default function Home() {
 	return (
 		<>
 			<HEAD />
-			<Container sx={{ pt: 2 }} maxWidth='sm'>
+			<Container maxWidth='sm' sx={{ pt: 2 }}>
 				{authStatus == "unauthenticated" && (
-					<Alert sx={{ mt: 2 }} severity='error'>
+					<Alert severity='error' sx={{ mt: 2 }}>
 						{t("index.error")}
 						<Link href='/ical'>{t("index.here")}</Link>
 					</Alert>
 				)}
-				<Alert sx={{ my: 2 }} severity='info'>
+				<Alert severity='info' sx={{ my: 2 }}>
 					このプロジェクトでは現在翻訳者を募集中です。
 					もし留学生の方で母国語に翻訳してくださる方がいたら
 					<Link href='https://twitter.com/coffeec91065940'>開発者のTwitter</Link>

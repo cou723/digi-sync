@@ -8,29 +8,29 @@ import Question from "@/components/qAndA";
 export default function QAndA() {
 	const { t } = useTranslation("pages");
 	return (
-		<Container sx={{ py: 2 }} maxWidth='sm'>
-			<Typography variant='h4' component='h1' gutterBottom>
+		<Container maxWidth='sm' sx={{ py: 2 }}>
+			<Typography component='h1' gutterBottom variant='h4'>
 				Q&A
 			</Typography>
 			<Question
-				question={t("q_and_a.what_this.question")}
 				answer={t("q_and_a.what_this.answer")}
+				question={t("q_and_a.what_this.question")}
 			/>
 			<Question
-				question={t("q_and_a.no_auto_remove.question")}
 				answer={t("q_and_a.no_auto_remove.answer")}
+				question={t("q_and_a.no_auto_remove.question")}
 			/>
 			<Question
-				question={t("q_and_a.sync_keep_doing.question")}
 				answer={t("q_and_a.sync_keep_doing.answer")}
+				question={t("q_and_a.sync_keep_doing.question")}
 			/>
 			<Question
-				question={t("q_and_a.wrong_calendar.question")}
 				answer={t("q_and_a.wrong_calendar.answer")}
+				question={t("q_and_a.wrong_calendar.question")}
 			/>
 			<Question
-				question={t("q_and_a.dont_show_calendar.question")}
 				answer={t("q_and_a.dont_show_calendar.answer")}
+				question={t("q_and_a.dont_show_calendar.question")}
 			/>
 		</Container>
 	);

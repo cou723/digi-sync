@@ -4,10 +4,12 @@ import { Control, Controller } from "react-hook-form";
 
 
 type Props = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<any, any>;
 	disabled?: boolean;
 	label: string;
 	name: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	rules?: any;
 };
 

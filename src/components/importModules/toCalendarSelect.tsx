@@ -11,6 +11,7 @@ import { CalendarListEntry } from "@/types/gapiCalendar";
 import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 	disabled: boolean;
 	errorMessage: string | undefined;

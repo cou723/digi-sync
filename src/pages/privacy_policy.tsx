@@ -4,10 +4,10 @@ export default function privacy_policy() {
 	return (
 		<>
 			<Container maxWidth='md'>
-				<Typography variant='h4' component='h1' gutterBottom>
+				<Typography component='h1' gutterBottom variant='h4'>
 					プライバシーポリシー
 				</Typography>
-				<Typography variant='h5' component='h2' gutterBottom>
+				<Typography component='h2' gutterBottom variant='h5'>
 					第1条 （個人情報取り扱いに関する基本方針）
 				</Typography>
 				<Typography variant='body1'>
@@ -16,7 +16,7 @@ export default function privacy_policy() {
 				<Typography variant='body1'>
 					また、メールアドレスは今現在あなたがどのアカウントでログインしているかを示すために表示されているだけで、そのほかの目的では一切利用していません。
 				</Typography>
-				<Typography variant='h5' component='h2' gutterBottom>
+				<Typography component='h2' gutterBottom variant='h5'>
 					第2条（プライバシーポリシーの変更）
 				</Typography>
 				<Typography variant='body1'>

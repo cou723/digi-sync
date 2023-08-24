@@ -9,7 +9,7 @@ export default function Home() {
 	return (
 		<>
 			<HEAD />
-			<Container sx={{ pt: 2 }} maxWidth='sm'>
+			<Container maxWidth='sm' sx={{ pt: 2 }}>
 				<ImportIcalForm />
 			</Container>
 		</>

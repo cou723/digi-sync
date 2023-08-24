@@ -1,6 +1,6 @@
-// eslint-disable-next-line unused-imports/no-unused-imports
+// eslint-disable-next-line unused-imports/no-unused-imports, @typescript-eslint/no-unused-vars
 import NextAuth from "next-auth";
-// eslint-disable-next-line unused-imports/no-unused-imports
+// eslint-disable-next-line unused-imports/no-unused-imports, @typescript-eslint/no-unused-vars
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {

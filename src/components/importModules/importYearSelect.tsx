@@ -9,6 +9,7 @@ import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
 	appState: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 };
 

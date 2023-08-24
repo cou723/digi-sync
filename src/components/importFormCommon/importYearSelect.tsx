@@ -6,17 +6,13 @@ import RhfMuiSelect from "@/components/utils/rhfMuiSelect";
 import { getSelectableYearList } from "@/libs/importFormCommons";
 import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 
-
 type Props = {
 	appState: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 };
 
-const ImportYear = React.memo(function ImportYearSelect({
-	appState,
-	control,
-}: Props) {
+const ImportYear = React.memo(function ImportYearSelect({ appState, control }: Props) {
 	const { t } = useTranslation("components");
 	const selectableYears = React.useMemo(() => getSelectableYearList(), []);
 	return (
@@ -25,7 +21,7 @@ const ImportYear = React.memo(function ImportYearSelect({
 			disabled={appState !== "ready"}
 			label={t("importModules.ImportYearSelect.label")}
 			name='importYear'
-			options={selectableYears}
+			options={selectableYears.map((year) => ({ label: year, value: year }))}
 		/>
 	);
 });

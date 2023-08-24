@@ -5,22 +5,19 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
+import AllDeleteButton from "@/components/importFormCommon/allDeleteButton";
+import ImportOptions from "@/components/importFormCommon/importOptions";
+import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
+import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
+import RhfTextField from "@/components/utils/rhfTextField";
 import useBeforeUnload from "@/hooks/importHook";
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { Digican } from "@/libs/digican";
 import { GoogleCalendar } from "@/libs/googleCalendar";
-import {
-	FORM_SCHEMA_SHAPE,
-} from "@/libs/importFormCommons";
+import { FORM_SCHEMA_SHAPE } from "@/libs/importFormCommons";
 import { getNowAcademicYear } from "@/libs/utils";
 import { GoogleFormInputs } from "@/types/formInputsTypes";
 import { RawClassEvent } from "@/types/types";
-
-import AllDeleteButton from "../importFormCommon/allDeleteButton";
-import ImportOptions from "../importFormCommon/importOptions";
-import ImportRangeSelect from "../importFormCommon/importRangeSelect";
-import ImportYearSelect from "../importFormCommon/importYearSelect";
-import RhfTextField from "../utils/rhfTextField";
 
 import ToCalendarSelect from "./toCalendarSelect";
 
@@ -71,8 +68,9 @@ export default function ImportForm() {
 				t("components.importModules.cannot_connect_digican"),
 			);
 		} catch (e) {
-			alert(t("ImportForm.cannot_connect_digican"));
 			console.log(e);
+			// ユーザー名、パスワードが違い接続に失敗したのかデジキャンが落ちているのか判別できないため、同じエラー文を出す
+			alert(t("ImportForm.cannot_connect_digican"));
 			setAppState("ready");
 			return;
 		}
@@ -99,14 +97,8 @@ export default function ImportForm() {
 
 	return (
 		<Stack action='/import' component='form' spacing={2}>
-			<ImportYearSelect
-				appState={appState}
-				control={control}
-			/>
-			<ImportRangeSelect
-				control={control}
-				disabled={appState != "ready"}
-			/>
+			<ImportYearSelect appState={appState} control={control} />
+			<ImportRangeSelect control={control} disabled={appState != "ready"} />
 			<ToCalendarSelect
 				control={control}
 				disabled={appState != "ready"}

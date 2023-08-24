@@ -1,10 +1,10 @@
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import React from "react";
-import { Controller} from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 
 
 type Props = {
-	control: any;
+	control: Control<any, any>;
 	disabled: boolean;
 	label: string;
 	name: string;

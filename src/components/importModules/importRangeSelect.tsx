@@ -1,11 +1,13 @@
 import { useTranslation } from "next-i18next";
 import React from "react";
+import { Control } from "react-hook-form";
 
+import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 
 import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
-	control: any;
+	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 	disabled?: boolean;
 };
 

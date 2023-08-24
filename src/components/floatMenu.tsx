@@ -37,18 +37,18 @@ export default React.memo(function FloatMenu({ pages }: Props) {
 	return (
 		<>
 			<Fab
-				sx={{ position: "fixed" }}
-				style={style}
-				onClick={onClick}
-				color='primary'
 				aria-label='add'
+				color='primary'
+				onClick={onClick}
+				style={style}
+				sx={{ position: "fixed" }}
 			>
 				<LunchDiningIcon />
 			</Fab>
-			<Drawer anchor='bottom' open={isOpenDrawer} onClose={toggleDrawer(false)}>
+			<Drawer anchor='bottom' onClose={toggleDrawer(false)} open={isOpenDrawer}>
 				<List>
 					{pages.map((page) => (
-						<ListItem key={page.display} disablePadding>
+						<ListItem disablePadding key={page.display}>
 							<ListItemButton
 								key={page.display}
 								onClick={() => router.push(page.link)}

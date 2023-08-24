@@ -31,10 +31,10 @@ export default React.memo(function Header() {
 						<Box sx={{ display: { md: "flex" }, flexGrow: 1 }}>
 							{pages.map((page) => (
 								<Button
-									variant='text'
 									key={page.display}
 									onClick={() => router.push(page.link)}
 									sx={{ color: "white", my: 1, textTransform: "none" }}
+									variant='text'
 								>
 									{page.display}
 								</Button>

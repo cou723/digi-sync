@@ -23,13 +23,13 @@ export default React.memo(function LoginBtn() {
 	const { authStatus } = useCustomSession();
 	if (authStatus == "authenticated") {
 		return (
-			<ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signOut()} size='large'>
+			<ColorButton color='inherit' onClick={() => signOut()} size='large' sx={{ my: 1 }}>
 				{t("HeaderModules.sign_out")}
 			</ColorButton>
 		);
 	}
 	return (
-		<ColorButton sx={{ my: 1 }} color='inherit' onClick={() => signIn("google")} size='large'>
+		<ColorButton color='inherit' onClick={() => signIn("google")} size='large' sx={{ my: 1 }}>
 			{t("HeaderModules.sign_in_with_google")}
 		</ColorButton>
 	);

@@ -1,9 +1,10 @@
 import { FormControlLabel, Checkbox } from "@mui/material";
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
+
 
 type Props = {
-	control: any;
+	control: Control<any, any>;
 	disabled?: boolean;
 	label: string;
 	name: string;
@@ -23,7 +24,7 @@ export const RhfMuiCheckbox = React.memo(function RhfMuiCheckbox({
 			name={name}
 			render={({ field }) => (
 				<FormControlLabel
-					control={<Checkbox {...field} checked={field.value} />}
+					control={<Checkbox {...field} checked={!!field.value} />}
 					disabled={disabled}
 					label={label}
 				/>

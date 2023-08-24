@@ -81,10 +81,10 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 	return (
 		<>
 			<Button
-				style={{ textTransform: "none" }}
-				disabled={deleteStatus != "ready" || disabled}
 				color='error'
+				disabled={deleteStatus != "ready" || disabled}
 				onClick={onAllDeleteClick}
+				style={{ textTransform: "none" }}
 			>
 				{
 					{
@@ -102,13 +102,13 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 			</Button>
 			<LinearProgress
 				style={{ display: deleteStatus == "deleting" ? "inline" : "none" }}
-				variant='determinate'
 				value={(deleteCount / deleteEventCout) * 100}
+				variant='determinate'
 			/>
 			<Dialog
-				open={isShowDialog}
-				aria-labelledby='alert-dialog-title'
 				aria-describedby='alert-dialog-description'
+				aria-labelledby='alert-dialog-title'
+				open={isShowDialog}
 			>
 				<DialogTitle id='alert-dialog-title'>
 					{t("importModules.AllDeleteButton.title")}
@@ -123,7 +123,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} autoFocus>
+					<Button autoFocus onClick={handleClose}>
 						{cc("no")}
 					</Button>
 					<Button onClick={allDelete}>

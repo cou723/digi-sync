@@ -7,11 +7,11 @@ type Props = {
 
 const QAndA = ({ question, answer }: Props) => {
 	return (
-		<Container sx={{ py: 2 }} maxWidth='md'>
-			<Typography variant='h5' component='h2' gutterBottom>
+		<Container maxWidth='md' sx={{ py: 2 }}>
+			<Typography component='h2' gutterBottom variant='h5'>
 				Q. {question}
 			</Typography>
-			<Typography sx={{ px: 2 }} variant='body1' style={{ whiteSpace: "pre-line" }}>
+			<Typography style={{ whiteSpace: "pre-line" }} sx={{ px: 2 }} variant='body1'>
 				A.{answer}
 			</Typography>
 		</Container>

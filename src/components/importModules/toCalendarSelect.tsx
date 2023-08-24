@@ -1,15 +1,17 @@
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
+import { Control } from "react-hook-form";
 
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { GoogleCalendar } from "@/libs/googleCalendar";
+import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 import { CalendarListEntry } from "@/types/gapiCalendar";
 
 import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
-	control:any;
+	control: Control<FormInputs, any> | Control<GoogleFormInputs, any>;
 	disabled: boolean;
 	errorMessage: string | undefined;
 };

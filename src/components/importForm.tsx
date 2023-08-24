@@ -1,7 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SelectChangeEvent, Stack, Button, LinearProgress } from "@mui/material";
+import { Stack, Button, LinearProgress } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -10,10 +10,9 @@ import { useCustomSession } from "@/hooks/useCustomSession";
 import { Digican } from "@/libs/digican";
 import { GoogleCalendar } from "@/libs/googleCalendar";
 import {
-	FORM_STATE_DEFAULT_VALUE,
-	getSelectableYearList,
 	FORM_SCHEMA_SHAPE,
 } from "@/libs/importFormCommons";
+import { getNowAcademicYear } from "@/libs/utils";
 import { GoogleFormInputs } from "@/types/formInputsTypes";
 import { RawClassEvent } from "@/types/types";
 
@@ -26,11 +25,6 @@ import ToCalendarSelect from "./importModules/toCalendarSelect";
 
 export type ImportFormState = "unauthenticated" | "ready" | "connect portal" | "import";
 
-const FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE: GoogleFormInputs = {
-	...FORM_STATE_DEFAULT_VALUE,
-	toCalendar: "",
-} as GoogleFormInputs;
-
 export default function ImportForm() {
 	const { t } = useTranslation("components");
 	const { t: ct } = useTranslation("common");
@@ -38,26 +32,26 @@ export default function ImportForm() {
 		...FORM_SCHEMA_SHAPE,
 		toCalendar: yup.string().required(t("ImportForm.choose_calendar")),
 	});
-	const [formState, setFormState] = useState<GoogleFormInputs>(
-		FORM_STATE_DEFAULT_VALUE_FOR_GOOGLE,
-	);
-	const [accessToken, setAccessToken] = useState<string>("");
+
 	const [importCount, setImportCount] = useState<number>(0);
 	const [totalImportCount, setTotalImportCount] = useState<number>(0);
 
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm<GoogleFormInputs>({
+		defaultValues: {
+			ignoreOtherEvents: true,
+			importYear: getNowAcademicYear().toString(),
+		},
 		resolver: yupResolver<GoogleFormInputs>(schema),
 	});
 
 	const [appState, setAppState] = useState<ImportFormState>("unauthenticated");
 
 	useBeforeUnload(appState);
-
-	const selectableYears: Array<number> = getSelectableYearList();
 
 	const { session, authStatus } = useCustomSession();
 
@@ -66,34 +60,11 @@ export default function ImportForm() {
 		else setAppState("ready");
 	}, [authStatus]);
 
-	const handleSelectChange = (event: SelectChangeEvent<string>) => {
-		const value = event.target.value;
-		setFormState({
-			...formState,
-			[event.target.name]: value,
-		});
-	};
-
-	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		if (event.target.name == "ignoreOtherEvents") {
-			setFormState({
-				...formState,
-				[event.target.name]: event.target.checked,
-			});
-		} else {
-			setFormState({
-				...formState,
-				[event.target.name]: event.target.value,
-			});
-		}
-	};
-
-	const onSubmit = async (inputs: GoogleFormInputs) => {
+	const onSubmit = async (inputs: GoogleFormInputs): Promise<void> => {
 		setAppState("connect portal");
 
 		let class_event_list: RawClassEvent[];
 		try {
-			inputs.importYear = formState.importYear;
 			class_event_list = await Digican.fetchClassEvents(
 				inputs,
 				t("components.importModules.cannot_connect_digican"),
@@ -126,64 +97,52 @@ export default function ImportForm() {
 	};
 
 	return (
-		<Stack spacing={2} component='form' action='/import'>
+		<Stack action='/import' component='form' spacing={2}>
 			<ImportYearSelect
-				register={register}
-				value={formState.importYear}
 				appState={appState}
-				selectableYears={selectableYears}
-				onChange={handleSelectChange}
+				control={control}
 			/>
 			<ImportRangeSelect
-				register={register}
+				control={control}
 				disabled={appState != "ready"}
-				errorMessage={errors.importRange?.message}
-				value={formState.importRange}
-				onChange={handleSelectChange}
 			/>
 			<ToCalendarSelect
-				register={register}
+				control={control}
 				disabled={appState != "ready"}
 				errorMessage={errors.toCalendar?.message}
-				value={formState.toCalendar}
-				onChange={handleSelectChange}
-				setAccessToken={setAccessToken}
 			/>
 			<Stack spacing={1}>
 				<RhfTextField
-					name='username'
 					disabled={appState != "ready"}
-					register={register}
 					error_message={errors.username?.message}
-					onChange={handleInputChange}
-					value={formState.username}
 					label={ct("digican_username")}
+					name='username'
+					register={register}
 				/>
 				<RhfTextField
-					name='password'
-					type='password'
 					disabled={appState != "ready"}
-					register={register}
 					error_message={errors.password?.message}
-					onChange={handleInputChange}
-					value={formState.password}
 					label={ct("digican_password")}
+					name='password'
+					register={register}
+					type='password'
 				/>
 			</Stack>
-			<ImportOptions
-				register={register}
-				disabled={appState != "ready"}
-				value={formState.ignoreOtherEvents}
-				onChange={handleInputChange}
+			<ImportOptions control={control} disabled={appState != "ready"} register={register} />
+			<input
+				name='accessToken'
+				type='hidden'
+				value={authStatus === "authenticated" ? session.accessToken : undefined}
 			/>
-			<input type='hidden' name='accessToken' value={accessToken} />
 			<br />
 			<Button
-				sx={{ textTransform: "none" }}
 				disabled={appState !== "ready"}
-				variant='contained'
+				onClick={handleSubmit(onSubmit, (errors: any) => {
+					console.log(errors);
+				})}
+				sx={{ textTransform: "none" }}
 				type='submit'
-				onClick={handleSubmit(onSubmit)}
+				variant='contained'
 			>
 				{appState == "connect portal" ? `${t("ImportForm.loading_from_digican")}...` : ""}
 				{appState == "import"
@@ -196,8 +155,8 @@ export default function ImportForm() {
 
 			<LinearProgress
 				style={{ display: appState == "import" ? "inline" : "none" }}
-				variant='determinate'
 				value={appState == "import" ? (importCount / totalImportCount) * 100 : 0}
+				variant='determinate'
 			/>
 			{appState == "import" ? `${t("ImportForm.importing")}...` : ""}
 			<AllDeleteButton disabled={appState == "unauthenticated"} />

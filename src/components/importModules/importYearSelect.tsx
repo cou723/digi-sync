@@ -1,48 +1,29 @@
-import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import React from "react";
-import { UseFormRegister } from "react-hook-form";
 
-import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
+import { getSelectableYearList } from "@/libs/importFormCommons";
+
+import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
 	appState: string;
-	onChange: (event: SelectChangeEvent<string>) => void;
-	register: UseFormRegister<FormInputs> | UseFormRegister<GoogleFormInputs>;
-	selectableYears: number[];
-	value: string;
+	control: any;
 };
 
 const ImportYear = React.memo(function ImportYearSelect({
-	register,
 	appState,
-	value,
-	onChange,
-	selectableYears,
+	control,
 }: Props) {
 	const { t } = useTranslation("components");
+	const selectableYears = React.useMemo(() => getSelectableYearList(), []);
 	return (
-		<FormControl margin='normal'>
-			<InputLabel id='import-year-label'>
-				{t("importModules.ImportYearSelect.label")}
-			</InputLabel>
-			<Select
-				{...register("importYear", { required: true, valueAsNumber: true })}
-				disabled={appState != "ready"}
-				value={value}
-				onChange={onChange}
-				name='importYear'
-				labelId='import-year-label'
-				label={t("importModules.ImportYearSelect.label")}
-				margin='dense'
-			>
-				{selectableYears.map((selectableYear: number, i: number) => (
-					<MenuItem value={selectableYear} key={i}>
-						{selectableYear}
-					</MenuItem>
-				))}
-			</Select>
-		</FormControl>
+		<RhfMuiSelect
+			control={control}
+			disabled={appState !== "ready"}
+			label={t("importModules.ImportYearSelect.label")}
+			name='importYear'
+			options={selectableYears}
+		/>
 	);
 });
 export default ImportYear;

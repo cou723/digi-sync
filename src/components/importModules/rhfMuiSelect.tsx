@@ -1,20 +1,17 @@
-import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import React from "react";
-import { Controller, UseFormRegister } from "react-hook-form";
+import { Controller} from "react-hook-form";
 
-import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
-import { getNowAcademicYear } from "@/libs/utils";
 
 type Props = {
-	disabled: boolean;
-	options: string[];
 	control: any;
+	disabled: boolean;
 	label: string;
 	name: string;
+	options: string[];
 };
 
-const ImportYear = React.memo(function ImportYearSelect({
+const RhfMuiSelect = React.memo(function RhfMuiSelect({
 	disabled,
 	control,
 	options,
@@ -23,27 +20,29 @@ const ImportYear = React.memo(function ImportYearSelect({
 }: Props) {
 	return (
 		<Controller
-			name={name}
 			control={control}
+			name={name}
 			render={({ field, fieldState }) => (
 				<FormControl margin='normal'>
 					<InputLabel id={label}>{label}</InputLabel>
 					<Select
 						disabled={disabled}
-						labelId={label}
+						error={!!fieldState.error?.message}
 						label={label}
+						labelId={label}
 						margin='dense'
 						{...field}
 					>
 						{options.map((option: string, i: number) => (
-							<MenuItem value={option} key={i}>
+							<MenuItem key={i} value={option}>
 								{option}
 							</MenuItem>
 						))}
 					</Select>
+					<FormHelperText>{fieldState.error?.message}</FormHelperText>
 				</FormControl>
 			)}
 		/>
 	);
 });
-export default ImportYear;
+export default RhfMuiSelect;

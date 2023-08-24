@@ -1,15 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SelectChangeEvent, Stack, Button } from "@mui/material";
+import { Stack, Button } from "@mui/material";
 import { useTranslation } from "next-i18next";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
 import { Digican } from "../libs/digican";
 import {
 	FORM_SCHEMA_SHAPE,
-	FORM_STATE_DEFAULT_VALUE,
-	getSelectableYearList,
 } from "../libs/importFormCommons";
 import { ConvertToIcalMap } from "../libs/table-to-ical/ConvertToIcal";
 import { DownloadBrowser } from "../libs/table-to-ical/DownloadBrowser";
@@ -30,11 +28,11 @@ const schema = yup.object().shape(FORM_SCHEMA_SHAPE);
 export function ImportIcalForm() {
 	const { t } = useTranslation("components");
 	const { t: cc } = useTranslation("common");
-	const [formState, setFormState] = useState<FormInputs>(FORM_STATE_DEFAULT_VALUE);
 
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm<FormInputs>({
 		resolver: yupResolver(schema),
@@ -42,23 +40,6 @@ export function ImportIcalForm() {
 
 	const [appState, setAppState] = useState<"ready" | "connect portal">("ready");
 
-	const selectableYears: Array<number> = getSelectableYearList();
-
-	const handleSelectChange = (event: SelectChangeEvent<string>) => {
-		const value = event.target.value;
-		setFormState({
-			...formState,
-			[event.target.name]: value,
-		});
-	};
-
-	const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-		const value = event.target.value;
-		setFormState({
-			...formState,
-			[event.target.name]: value,
-		});
-	};
 
 	const onSubmit = async (inputs: FormInputs) => {
 		setAppState("connect portal");
@@ -83,52 +64,39 @@ export function ImportIcalForm() {
 	};
 
 	return (
-		<Stack spacing={2} component='form' autoComplete='off' action='/import'>
+		<Stack action='/import' autoComplete='off' component='form' spacing={2}>
 			<ImportYearSelect
-				register={register}
-				value={formState.importYear}
 				appState={appState}
-				selectableYears={selectableYears}
-				onChange={handleSelectChange}
+				control={control}
 			/>
 			<ImportRangeSelect
-				register={register}
-				errorMessage={errors.importRange?.message}
-				value={formState.importRange}
-				onChange={handleSelectChange}
+				control={control}
+				disabled={appState != "ready"}
 			/>
 			<Stack spacing={1}>
 				<RhfTextField
-					name='username'
 					disabled={appState != "ready"}
-					register={register}
 					error_message={errors.username?.message}
-					onChange={handleInputChange}
-					value={formState.username}
 					label={cc("digican_username")}
+					name='username'
+					register={register}
 				/>
 				<RhfTextField
-					name='password'
-					type='password'
 					disabled={appState != "ready"}
-					register={register}
 					error_message={errors.password?.message}
-					onChange={handleInputChange}
-					value={formState.password}
 					label={cc("digican_password")}
+					name='password'
+					register={register}
+					type='password'
 				/>
 			</Stack>
-			<ImportOptions
-				register={register}
-				value={formState.ignoreOtherEvents}
-				onChange={handleInputChange}
-			/>
+			<ImportOptions control={control} disabled={appState != "ready"} register={register} />
 			<br />
 			<Button
-				sx={{ textTransform: "none" }}
 				disabled={appState == "connect portal"}
-				variant='contained'
 				onClick={handleSubmit(onSubmit)}
+				sx={{ textTransform: "none" }}
+				variant='contained'
 			>
 				{appState == "connect portal"
 					? t("ImportForm.importing") + "..."

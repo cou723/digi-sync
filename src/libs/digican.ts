@@ -18,7 +18,7 @@ export async function fetchClassEvents(
 	const query_param_str = new URLSearchParams(query_param_obj).toString();
 
 	try {
-		res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/class_events?" + query_param_str, {
+		res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents?" + query_param_str, {
 			method: "GET",
 		});
 

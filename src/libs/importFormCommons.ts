@@ -34,8 +34,10 @@ export function excludeOutOfImportRange(
 	});
 }
 
-export const getSelectableYearList = (): number[] => {
-	return new Array<number>(dayjs().year() - 1, dayjs().year(), dayjs().year() + 1);
+export const getSelectableYearList = (): string[] => {
+	return new Array<number>(dayjs().year() - 1, dayjs().year(), dayjs().year() + 1).map((year) =>
+		year.toString(),
+	);
 };
 
 export const FORM_SCHEMA_SHAPE = {

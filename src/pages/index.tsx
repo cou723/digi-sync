@@ -20,7 +20,7 @@ export default function Home() {
 						<Link href='/ical'>{t("index.here")}</Link>
 					</Alert>
 				)}
-				<Alert sx={{ mt: 2 }} severity='info'>
+				<Alert sx={{ my: 2 }} severity='info'>
 					このプロジェクトでは現在翻訳者を募集中です。
 					もし留学生の方で母国語に翻訳してくださる方がいたら
 					<Link href='https://twitter.com/coffeec91065940'>開発者のTwitter</Link>

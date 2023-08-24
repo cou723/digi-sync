@@ -2,14 +2,13 @@ import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/
 import React from "react";
 import { Control, Controller } from "react-hook-form";
 
-
 type Props = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<any, any>;
 	disabled: boolean;
 	label: string;
 	name: string;
-	options: string[];
+	options: { label: string; value: string }[];
 };
 
 const RhfMuiSelect = React.memo(function RhfMuiSelect({
@@ -34,9 +33,9 @@ const RhfMuiSelect = React.memo(function RhfMuiSelect({
 						margin='dense'
 						{...field}
 					>
-						{options.map((option: string, i: number) => (
-							<MenuItem key={i} value={option}>
-								{option}
+						{options.map((option,i) => (
+							<MenuItem key={i} value={option.value}>
+								{option.label}
 							</MenuItem>
 						))}
 					</Select>

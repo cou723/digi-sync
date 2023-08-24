@@ -5,19 +5,20 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import { Digican } from "../libs/digican";
+import ImportOptions from "@/components/importFormCommon/importOptions";
+import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
+import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
+import RhfTextField from "@/components/utils/rhfTextField";
+import { Digican } from "@/libs/digican";
 import {
 	FORM_SCHEMA_SHAPE,
-} from "../libs/importFormCommons";
-import { ConvertToIcalMap } from "../libs/table-to-ical/ConvertToIcal";
-import { DownloadBrowser } from "../libs/table-to-ical/DownloadBrowser";
-import { FormInputs } from "../types/formInputsTypes";
-import { RawClassEvent } from "../types/types";
+} from "@/libs/importFormCommons";
+import { ConvertToIcalMap } from "@/libs/table-to-ical/ConvertToIcal";
+import { DownloadBrowser } from "@/libs/table-to-ical/DownloadBrowser";
+import { FormInputs } from "@/types/formInputsTypes";
+import { RawClassEvent } from "@/types/types";
 
-import ImportOptions from "./importModules/importOptions";
-import ImportRangeSelect from "./importModules/importRangeSelect";
-import ImportYearSelect from "./importModules/importYearSelect";
-import RhfTextField from "./importModules/rhfTextField";
+
 
 export interface API_RETURN_EventList {
 	events: RawClassEvent[];

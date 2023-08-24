@@ -15,7 +15,7 @@ const style = {
 	top: "auto",
 };
 
-export default React.memo(function FloatMenu({ pages }: Props) {
+export const FloatMenu = React.memo(function FloatMenu({ pages }: Props) {
 	const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 	const router = useRouter();
 	const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {

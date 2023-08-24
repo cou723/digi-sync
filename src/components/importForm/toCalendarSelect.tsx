@@ -3,12 +3,11 @@ import { useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
 import { Control } from "react-hook-form";
 
+import RhfMuiSelect from "@/components/utils/rhfMuiSelect";
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { GoogleCalendar } from "@/libs/googleCalendar";
 import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 import { CalendarListEntry } from "@/types/gapiCalendar";
-
-import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,21 +16,16 @@ type Props = {
 	errorMessage: string | undefined;
 };
 
-const ToCalendarSelect = React.memo(function ToCalendarSelect({
-	control,
-	disabled,
-}: Props) {
+const ToCalendarSelect = React.memo(function ToCalendarSelect({ control, disabled }: Props) {
 	const { t } = useTranslation("components");
 	const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
 	const { session, authStatus } = useCustomSession();
 	const router = useRouter();
 
 	useEffect(() => {
-		(async () => {
-			if (authStatus === "authenticated")
-				setCalendars(await GoogleCalendar.getMyCalendarList(session, router));
-		})();
-	}, [router, session, authStatus]);
+		if (authStatus === "authenticated")
+			GoogleCalendar.getMyCalendarList(session, router).then((res) => setCalendars(res));
+	}, [session, authStatus, router]);
 
 	return (
 		<>
@@ -40,7 +34,10 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({
 				disabled={disabled}
 				label={t("importModules.ToCalendarSelect.label")}
 				name='toCalendar'
-				options={calendars.map((calendar) => calendar.id)}
+				options={calendars.map((calendar) => ({
+					label: calendar.summary,
+					value: calendar.id,
+				}))}
 			/>
 		</>
 	);

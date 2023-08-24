@@ -12,59 +12,64 @@ const jsdom = new JSDOM();
 const html_parser = new jsdom.window.DOMParser();
 const xml_parser = new XMLParser();
 
-class SessionData {
+type SessionData = {
 	j_session_id: string;
+	javax_faces_view_state: string;
 	rx_login_key: string;
 	rx_token: string;
-	javax_faces_view_state: string;
-	constructor() {
-		this.j_session_id = "";
-		this.rx_login_key = "";
-		this.rx_token = "";
-		this.javax_faces_view_state = "";
-	}
-}
+};
 
 const LOGIN_URL = "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml";
 const API_URL = "https://portal.dhw.ac.jp/uprx/up/bs/bsa001/Bsa00101.xhtml";
 
 type QueryParams = {
-	importRange: ImportRange;
-	importYear: number;
+	importRange: string;
+	importYear: string;
 	password: string;
 	username: string;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	if (req.method !== "GET") return res.status(405).json({ error: "Method Not Allowed" });
+	if (req.method != "POST") return res.status(405).json({ error: "Method Not Allowed" });
+	if (req.body == null) return res.status(400).json({ error: "Empty Body" });
+	if (req.headers["content-type"] != "application/json")
+		return res.status(400).json({ error: "Invalid Content-Type" });
+	if (!isQueryParams(req.body)) return res.status(400).json({ error: "Invalid Body" });
 
-	const queryParameters = urlToQueryParameter(res, req);
-	if (queryParameters === undefined) return;
-	const { username, password, importYear, importRange } = queryParameters;
+	const { username, password, importYear, importRange } = parseBody(req.body);
 
-	// eslint-disable-next-line prefer-const
-	const import_month_list = importRange.getMonthList();
+	const importMonthList = importRange.getMonthList();
 
 	console.log("username", username);
-	console.log("password", "*".repeat(password.length));
+	console.log("password", "******");
 	console.log("year", importYear);
 	console.log("range", importRange);
 
-	const session_data = await getSessionData(username, password);
+	const sessionData = await getSessionData(username, password);
+
 	const class_events: ClassEvent[] = [];
-	for (const month of import_month_list) {
-		try {
-			class_events.push(...(await fetchClassEventsOneMonth(month, session_data)));
-		} catch (e: unknown) {
-			console.log(e);
-			if (e instanceof Error) return res.status(500).json({ error: e.message });
-			else return res.status(500).json({ error: "Unknown error" });
-		}
+	try {
+		for (const month of importMonthList)
+			class_events.push(...(await fetchClassEventsPerOneMonth(month, sessionData)));
+	} catch (e: unknown) {
+		console.log(e);
+		if (e instanceof Error) return res.status(500).json({ error: e.message });
+		else return res.status(500).json({ error: "Unknown error" });
 	}
+
 	return res.status(200).json(class_events);
 }
 
-async function fetchClassEventsOneMonth(
+function parseBody(body: QueryParams) {
+	return {
+		importRange: new ImportRange(body.importRange),
+		importYear: body.importYear,
+		password: body.password,
+		username: body.username,
+	};
+}
+
+async function fetchClassEventsPerOneMonth(
 	month: number,
 	session_data: SessionData,
 ): Promise<ClassEvent[]> {
@@ -83,45 +88,36 @@ async function fetchClassEventsOneMonth(
 		class_events = (await parseClassEvents(dhuPortalRes)).events;
 	} catch (e) {
 		console.log(e);
-
 		throw Error("Failed to parse class events from DHU Portal. Maybe your login is failing.");
 	}
 	console.log(month, class_events.length);
 	return class_events;
 }
 
-function urlToQueryParameter(res: NextApiResponse, req: NextApiRequest): QueryParams | undefined {
-	const { username, password, importRange, importYear } = req.query;
+function isQueryParams(obj: unknown): obj is QueryParams {
+	return (
+		typeof obj === "object" &&
+		obj !== null &&
+		"importRange" in obj &&
+		"importYear" in obj &&
+		"password" in obj &&
+		"username" in obj &&
+		isImportRange(obj.importRange) &&
+		typeof obj.importYear === "string" &&
+		typeof obj.password === "string" &&
+		typeof obj.username === "string"
+	);
+}
 
-	if (
-		typeof username !== "string" ||
-		typeof password !== "string" ||
-		typeof importRange !== "string" ||
-		typeof importYear !== "string"
-	) {
-		res.status(400).json({
-			error: `Not enough parameters. Your request is missing ${
-				!username ? "'username' " : ""
-			}${!password ? "'password' " : ""}${!importRange ? "'importRange' " : ""}${
-				!importYear ? "'importYear' " : ""
-			}.`,
-		});
-		return;
-	}
-
-	if (isNaN(Number(importYear))) res.status(400).json({ error: "ImportYear must be numeric." });
-
-	try {
-		new ImportRange(importRange);
-	} catch (e) {
-		res.status(400).json({ error: `Invalid importRange '${importRange}'` });
-	}
-	return {
-		importRange: new ImportRange(importRange),
-		importYear: Number(importYear),
-		password,
-		username,
-	};
+function isImportRange(obj: unknown): obj is ImportRange {
+	return (
+		obj === "1q" ||
+		obj === "2q" ||
+		obj === "3q" ||
+		obj === "4q" ||
+		obj === "1q_and_2q" ||
+		obj === "3q_and_4q"
+	);
 }
 
 async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }> {
@@ -139,7 +135,7 @@ async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }
 	}
 
 	const class_events: ClassEvent[] = [];
-	for (const ev of non_typed_class_events) class_events.push(new ClassEvent(ev));
+	for (const event of non_typed_class_events) class_events.push(new ClassEvent(event));
 	return { events: class_events };
 }
 
@@ -208,18 +204,17 @@ function generateCookie(param: { j_session_id: string }): string {
 	return `HttpOnly; JSESSIONID = ${param.j_session_id}; _ga = GA1.1.1861578561.1676779041; _ga_CNQG4KE1EB = GS1.1.1676779040.1.1.1676779053.47.0.0`;
 }
 
-// for debug
-// function formatBody(body: string): string {
-//     return body.replace(/[a-zA-Z0-9<>=":_/()?.;,%'&{}$#\- \n]/g, '')
-// }
-
 async function getSessionData(username: string, password: string): Promise<SessionData> {
-	const session_data = new SessionData();
 	const res = await getLoginResponse(username, password);
 	if (res.status != 200) throw new Error("Login failed");
 	const document_after_login = html_parser.parseFromString(await res.text(), "text/html");
 
-	session_data.j_session_id = extractJSessionId(res.headers.get("set-cookie"));
+	const session_data: SessionData = {
+		j_session_id: extractJSessionId(res.headers.get("set-cookie")),
+		javax_faces_view_state: "",
+		rx_login_key: "",
+		rx_token: "",
+	};
 	for (const input of document_after_login.querySelectorAll("input")) {
 		if (input.name == "rx-token") session_data.rx_token = input.value;
 		if (input.name == "rx-loginKey") session_data.rx_login_key = input.value;

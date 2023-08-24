@@ -5,24 +5,23 @@ export async function fetchClassEvents(
 	formState: FormInputs,
 	error_message: string,
 ): Promise<RawClassEvent[]> {
-	let res: Response;
 	let event_list: RawClassEvent[];
 
-	const query_param_obj = {
-		importRange: formState.importRange,
-		importYear: formState.importYear,
-		password: formState.password,
-		username: formState.username,
-	};
-
-	const query_param_str = new URLSearchParams(query_param_obj).toString();
-
 	try {
-		res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents?" + query_param_str, {
-			method: "GET",
+		const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents" , {
+			body:JSON.stringify({
+				importRange: formState.importRange,
+				importYear: formState.importYear,
+				password: formState.password,
+				username: formState.username,
+			}),
+			headers: {
+				"Content-Type": "application/json",
+			},
+			method: "POST"
 		});
 
-		if (!res.ok) throw new Error();
+		if (!res.ok) throw new Error(res.status.toString());
 		event_list = await res.json();
 	} catch {
 		throw new Error(error_message);

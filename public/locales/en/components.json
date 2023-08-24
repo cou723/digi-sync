@@ -1,0 +1,54 @@
+{
+	"Head": {
+		"description": "'DigiSync' is a simple tool to add class schedules from DigiCan to Google Calendar. It adds your exact class schedule to Google Calendar at the touch of a button, saving you the trouble of manually entering it. It makes time management easier and is a great tool for your student life."
+	},
+	"Header": {
+		"to_google_calendar": "To Google Calendar",
+		"to_ical": "Download .ical"
+	},
+	"HeaderModules": {
+		"sign_out": "Sign out",
+		"sign_in_with_google": "Sign in with Google"
+	},
+	"ImportForm": {
+		"year_of_import": "Import Year",
+		"destination_calendar": "To Calendar",
+		"loading_from_digican": "Loading from Digican",
+		"download_with_ical": "Download with .ical",
+		"choose_calendar": "Select Calendar to Import",
+		"importing": "Importing",
+		"please_log_in_with_google": "Please Sign in with Google",
+		"sync_google_calendar": "Sync Google Calendar",
+		"cannot_connect_digican": "Faild connect to digican (Please check your username and password)",
+		"please_choose_range": "Select Import Range(1q, 2q, first semester, etc...)",
+		"pease_input": "Please input"
+	},
+	"importModules": {
+		"AllDeleteButton": {
+			"unauthenticated": "Please Sign in with Google",
+			"label": "Delete all schedules in Google Calendar by DigiSync",
+			"searching": "Searching for schedules added by DigiSync from the calendar (takes about 30 seconds)",
+			"title": "Do you want to delete the appointment?",
+			"yes_delete": "Yes, I'll remove it.",
+			"events_added_by_digisync": "Schedule added by Digisync",
+			"delete": "delete",
+			"deleted": "Deleted"
+		},
+		"ToCalendarSelect": {
+			"label": "Import Destination Calendar"
+		},
+		"ImportYearSelect": {
+			"label": "Import Year"
+		},
+		"ImportRangeSelect": {
+			"label": "Import Quarter",
+			"first_quarter": "1 quarter (April-May)",
+			"second_quarter": "2 quarter (June-July)",
+			"third_quarter": "3 quarter (September-November)",
+			"fourth_quarter": "4 quarter (December-March)"
+		},
+		"ImportOptions": {
+			"label": "Do not import non-class"
+		}
+	}
+}

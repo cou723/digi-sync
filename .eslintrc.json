@@ -1,0 +1,50 @@
+{
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier",
+		"next/core-web-vitals"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"project": "tsconfig.json",
+		"tslintRootDir": "."
+	},
+	"plugins": [
+		"unused-imports",
+		"@typescript-eslint/eslint-plugin",
+		"typescript-sort-keys",
+		"sort-keys-fix",
+		"import"
+	],
+	"rules": {
+		"react/jsx-sort-props": "warn",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/interface-name-prefix": "off",
+		"@typescript-eslint/no-explicit-any": "warn",
+		"import/no-duplicates": "error",
+		"import/order": [
+			"warn",
+			{
+				"alphabetize": {
+					"order": "asc"
+				},
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index",
+					"object",
+					"type"
+				],
+				"newlines-between": "always"
+			}
+		],
+		"sort-keys-fix/sort-keys-fix": "error",
+		"typescript-sort-keys/interface": "error",
+		"unused-imports/no-unused-imports": "error"
+	}
+}

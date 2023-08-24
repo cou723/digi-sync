@@ -7,48 +7,48 @@
 		"to_ical": "Download .ical"
 	},
 	"HeaderModules": {
-		"sign_out": "Sign out",
-		"sign_in_with_google": "Sign in with Google"
+		"sign_in_with_google": "Sign in with Google",
+		"sign_out": "Sign out"
 	},
 	"ImportForm": {
-		"year_of_import": "Import Year",
-		"destination_calendar": "To Calendar",
-		"loading_from_digican": "Loading from Digican",
-		"download_with_ical": "Download with .ical",
+		"cannot_connect_digican": "Faild connect to digican (Please check your username and password)",
 		"choose_calendar": "Select Calendar to Import",
+		"destination_calendar": "To Calendar",
+		"download_with_ical": "Download with .ical",
 		"importing": "Importing",
+		"loading_from_digican": "Loading from Digican",
+		"pease_input": "Please input",
+		"please_choose_range": "Select Import Range(1q, 2q, first semester, etc...)",
 		"please_log_in_with_google": "Please Sign in with Google",
 		"sync_google_calendar": "Sync Google Calendar",
-		"cannot_connect_digican": "Faild connect to digican (Please check your username and password)",
-		"please_choose_range": "Select Import Range(1q, 2q, first semester, etc...)",
-		"pease_input": "Please input"
+		"year_of_import": "Import Year"
 	},
 	"importModules": {
 		"AllDeleteButton": {
-			"unauthenticated": "Please Sign in with Google",
+			"delete": "delete",
+			"deleted": "Deleted",
+			"events_added_by_digisync": "Schedule added by Digisync",
 			"label": "Delete all schedules in Google Calendar by DigiSync",
 			"searching": "Searching for schedules added by DigiSync from the calendar (takes about 30 seconds)",
 			"title": "Do you want to delete the appointment?",
-			"yes_delete": "Yes, I'll remove it.",
-			"events_added_by_digisync": "Schedule added by Digisync",
-			"delete": "delete",
-			"deleted": "Deleted"
+			"unauthenticated": "Please Sign in with Google",
+			"yes_delete": "Yes, I'll remove it."
 		},
-		"ToCalendarSelect": {
-			"label": "Import Destination Calendar"
+		"ImportOptions": {
+			"label": "Do not import non-class"
+		},
+		"ImportRangeSelect": {
+			"first_quarter": "1 quarter (April-May)",
+			"fourth_quarter": "4 quarter (December-March)",
+			"label": "Import Quarter",
+			"second_quarter": "2 quarter (June-July)",
+			"third_quarter": "3 quarter (September-November)"
 		},
 		"ImportYearSelect": {
 			"label": "Import Year"
 		},
-		"ImportRangeSelect": {
-			"label": "Import Quarter",
-			"first_quarter": "1 quarter (April-May)",
-			"second_quarter": "2 quarter (June-July)",
-			"third_quarter": "3 quarter (September-November)",
-			"fourth_quarter": "4 quarter (December-March)"
-		},
-		"ImportOptions": {
-			"label": "Do not import non-class"
+		"ToCalendarSelect": {
+			"label": "Import Destination Calendar"
 		}
 	}
 }

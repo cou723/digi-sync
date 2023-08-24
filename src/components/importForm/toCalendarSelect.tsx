@@ -8,7 +8,7 @@ import { GoogleCalendar } from "@/libs/googleCalendar";
 import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 import { CalendarListEntry } from "@/types/gapiCalendar";
 
-import RhfMuiSelect from "./rhfMuiSelect";
+import RhfMuiSelect from "../importFormCommon/rhfMuiSelect";
 
 type Props = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

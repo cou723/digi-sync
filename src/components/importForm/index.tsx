@@ -16,12 +16,13 @@ import { getNowAcademicYear } from "@/libs/utils";
 import { GoogleFormInputs } from "@/types/formInputsTypes";
 import { RawClassEvent } from "@/types/types";
 
-import AllDeleteButton from "./importModules/allDeleteButton";
-import ImportOptions from "./importModules/importOptions";
-import ImportRangeSelect from "./importModules/importRangeSelect";
-import ImportYearSelect from "./importModules/importYearSelect";
-import RhfTextField from "./importModules/rhfTextField";
-import ToCalendarSelect from "./importModules/toCalendarSelect";
+import AllDeleteButton from "../importFormCommon/allDeleteButton";
+import ImportOptions from "../importFormCommon/importOptions";
+import ImportRangeSelect from "../importFormCommon/importRangeSelect";
+import ImportYearSelect from "../importFormCommon/importYearSelect";
+import RhfTextField from "../utils/rhfTextField";
+
+import ToCalendarSelect from "./toCalendarSelect";
 
 export type ImportFormState = "unauthenticated" | "ready" | "connect portal" | "import";
 

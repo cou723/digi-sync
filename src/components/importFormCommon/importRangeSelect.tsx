@@ -2,9 +2,9 @@ import { useTranslation } from "next-i18next";
 import React from "react";
 import { Control } from "react-hook-form";
 
+import RhfMuiSelect from "@/components/utils/rhfMuiSelect";
 import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
 
-import RhfMuiSelect from "./rhfMuiSelect";
 
 type Props = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

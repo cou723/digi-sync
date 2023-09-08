@@ -7,7 +7,7 @@ const GOOGLE_CLIENT_SECRET = process.env.NEXT_PUBLIC_GOOGLE_SECRET || "";
 
 if (GOOGLE_CLIENT_ID == "" || GOOGLE_CLIENT_SECRET == "") {
 	throw new Error(
-		"Google OAuth2.0のクライアントIDまたはクライアントシークレットが設定されていません",
+		"Google OAuth2.0のクライアントID(NEXT_PUBLIC_GOOGLE_ID)またはクライアントシークレット(NEXT_PUBLIC_GOOGLE_SECRET)が設定されていません",
 	);
 }
 

@@ -24,15 +24,15 @@ export default class ImportRange {
 	getMonthList(): number[] {
 		const _1q_list = [4, 5, 6];
 		const _2q_list = [6, 7, 8];
-		const _3q_list = [8, 9, 10];
-		const _4q_list = [10, 11, 12, 1, 2, 3];
+		const _3q_list = [9, 10, 11];
+		const _4q_list = [11, 12, 1, 2, 3];
 
 		if (this.range == "1q") return _1q_list;
 		else if (this.range == "2q") return _2q_list;
 		else if (this.range == "3q") return _3q_list;
 		else if (this.range == "4q") return _4q_list;
-		else if (this.range == "1q_and_2q") return _1q_list.concat(_2q_list);
-		else if (this.range == "3q_and_4q") return _3q_list.concat(_4q_list);
+		else if (this.range == "1q_and_2q") return [...new Set(_1q_list.concat(_2q_list))];
+		else if (this.range == "3q_and_4q") return [...new Set(_3q_list.concat(_4q_list))];
 		throw new Error("Invalid range");
 	}
 

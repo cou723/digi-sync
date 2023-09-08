@@ -7,6 +7,7 @@ export async function fetchClassEvents(
 ): Promise<RawClassEvent[]> {
 	let event_list: RawClassEvent[];
 
+	console.log(formState.importRange)
 	try {
 		const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents" , {
 			body:JSON.stringify({

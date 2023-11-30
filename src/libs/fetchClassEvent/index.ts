@@ -15,6 +15,7 @@ import { generateBody, generateHeaders, generateLoginBody } from "./generatePara
 const jsdom = new JSDOM();
 const htmlParser = new jsdom.window.DOMParser();
 
+// api
 export async function fetchClassEvents(req: NextApiRequest) {
 	const { username, password, importYear, importRange } = parseBody(req.body);
 
@@ -28,6 +29,7 @@ export async function fetchClassEvents(req: NextApiRequest) {
 	const sessionData = await getSessionData(username, password);
 
 	const classEvents: ClassEvent[] = [];
+	console.log("yearMonthList :", importYearMonthList);
 	for (const yearMonth of importYearMonthList)
 		classEvents.push(...(await fetchClassEventsPerOneMonth(yearMonth, sessionData)));
 	return classEvents;

@@ -1,7 +1,8 @@
 import { FormInputs } from "@/types/formInputsTypes";
 import { RawClassEvent } from "@/types/types";
 
-export async function fetchClassEvents(
+// client
+async function fetchClassEvents(
 	formState: FormInputs,
 	errorMessage: string,
 ): Promise<RawClassEvent[]> {

@@ -20,48 +20,48 @@ export type CalendarId = string;
 
 // DigisyncEventsとは詳細欄に #created_by_dp2gc が含まれているイベントを指す
 async function getAllDigisyncEvents(session: Session): Promise<Map<CalendarId, Event[]>> {
-	const all_calendar_list: Calendar[] = await getAllCalendars(session);
-	const all_events: Map<CalendarId, Event[]> = new Map();
+	const allCalendarList: Calendar[] = await getAllCalendars(session);
+	const allEvents: Map<CalendarId, Event[]> = new Map();
 
-	for (const calendar of all_calendar_list) {
-		const query_param: { [key: string]: string | number | boolean } = {
+	for (const calendar of allCalendarList) {
+		const queryParam: { [key: string]: string | number | boolean } = {
 			maxResults: 2000,
 			orderBy: "startTime",
 			singleEvents: true,
 		};
 
-		const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
+		const googleApiUrl = `https://www.googleapis.com/calendar/v3/calendars/${
 			calendar.id
-		}/events?${encodeQueryData(query_param)}`;
-		const raw_response = await fetch(google_api_url, {
+		}/events?${encodeQueryData(queryParam)}`;
+		const rawResponse = await fetch(googleApiUrl, {
 			headers: {
 				Authorization: `Bearer ${session.accessToken}`,
 				"Content-Type": "application/json",
 			},
 			method: "GET",
 		});
-		const res: Events | GetEventsErrorObject = await raw_response.json();
+		const res: Events | GetEventsErrorObject = await rawResponse.json();
 		if (isGetEventErrorObject(res)) {
 			console.error(res);
 			continue;
 		}
-		all_events.set(
+		allEvents.set(
 			calendar.id,
 			res.items.filter(
 				(event) => event.description && event.description.includes("#created_by_dp2gc"),
 			),
 		);
 	}
-	return all_events;
+	return allEvents;
 }
 
 async function deleteEvents(
-	delete_event_url_list: string[],
+	deleteEventUrlList: string[],
 	session: Session,
 	progressSetter: Dispatch<SetStateAction<number>>,
 ) {
-	for (const delete_url of delete_event_url_list) {
-		fetch(delete_url, {
+	for (const DeleteUrl of deleteEventUrlList) {
+		fetch(DeleteUrl, {
 			headers: {
 				Authorization: `Bearer ${session.accessToken}`,
 				"Content-Type": "application/json",
@@ -86,7 +86,10 @@ async function getAllCalendars(session: Session) {
 	return (await res.json()).items;
 }
 
-async function getMyCalendarList(session: Session, router:NextRouter): Promise<CalendarListEntry[]> {
+async function getMyCalendarList(
+	session: Session,
+	router: NextRouter,
+): Promise<CalendarListEntry[]> {
 	if (!(session && session.user)) {
 		router.push("/login");
 		return [];
@@ -102,9 +105,9 @@ async function getMyCalendarList(session: Session, router:NextRouter): Promise<C
 			router.push("/login");
 			return [];
 		}
-		const calendar_list_entry: CalendarList = data;
+		const calendarListEntry: CalendarList = data;
 
-		return calendar_list_entry.items.filter((calendar) => calendar.accessRole === "owner");
+		return calendarListEntry.items.filter((calendar) => calendar.accessRole === "owner");
 	} catch (e: unknown) {
 		alert("カレンダーの取得に失敗しました。ページをリロードしてもう一度やり直してください。");
 		return [];
@@ -113,7 +116,7 @@ async function getMyCalendarList(session: Session, router:NextRouter): Promise<C
 
 export async function post(
 	session: Session,
-	raw_class_events: RawClassEvent[],
+	rawClassEvents: RawClassEvent[],
 	setCount: Dispatch<SetStateAction<number>>,
 	setTotalCount: Dispatch<SetStateAction<number>>,
 	inputs: FormInputs,
@@ -121,14 +124,14 @@ export async function post(
 	setCount(0);
 	if (!session) return;
 
-	let class_events = raw_class_events.map((raw_class_event) => new ClassEvent(raw_class_event));
+	let classEvents = rawClassEvents.map((raw_class_event) => new ClassEvent(raw_class_event));
 
-	let already_posted_event_list: Event[];
+	let alreadyPostedEventList: Event[];
 	try {
-		already_posted_event_list = await getAlreadyPostedEvents(session.accessToken, inputs);
+		alreadyPostedEventList = await getAlreadyPostedEvents(session.accessToken, inputs);
 
-		class_events = class_events.filter(
-			(class_event) => !isEventDuplicated(already_posted_event_list, class_event),
+		classEvents = classEvents.filter(
+			(class_event) => !isEventDuplicated(alreadyPostedEventList, class_event),
 		);
 	} catch (e) {
 		console.log(e);
@@ -136,38 +139,38 @@ export async function post(
 		return;
 	}
 
-	setTotalCount(class_events.length);
-	for (const class_event of class_events) {
-		addEvent(class_event.start, class_event.title, session, inputs);
+	setTotalCount(classEvents.length);
+	for (const classEvent of classEvents) {
+		addEvent(classEvent.start, classEvent.title, session, inputs);
 		setCount((prev) => prev + 1);
 		await new Promise(function (resolve) {
 			setTimeout(resolve, 400);
 		});
 	}
 
-	if (class_events.length == 0) {
+	if (classEvents.length == 0) {
 		alert(`すべての予定がGoogle Calendarに追加されていたので、インポートしませんでした`);
 	} else {
 		// プログレスバーのアニメーションのために待機
 		await new Promise(function (resolve) {
 			setTimeout(resolve, 1000);
 		});
-		alert(`${class_events.length}件のインポートに成功しました`);
+		alert(`${classEvents.length}件のインポートに成功しました`);
 	}
 }
 
 export async function getAlreadyPostedEvents(accessToken: string, inputs: FormInputs) {
 	let res: Events | GetEventsErrorObject;
-	let next_page_token = "";
-	const already_posted_events: Array<Event> = [];
+	let nextPageToken = "";
+	const alreadyPostedEvents: Array<Event> = [];
 	const { start, end } = new ImportRange(inputs.importRange).getQuarterRange(
 		parseInt(inputs.importYear),
 	);
 	do {
-		let query_param: { [key: string]: string | number | boolean };
-		if (next_page_token != "") query_param = { pageToken: next_page_token };
+		let queryParam: { [key: string]: string | number | boolean };
+		if (nextPageToken != "") queryParam = { pageToken: nextPageToken };
 		else {
-			query_param = {
+			queryParam = {
 				maxResults: 2000,
 				orderBy: "startTime",
 				singleEvents: true,
@@ -176,11 +179,11 @@ export async function getAlreadyPostedEvents(accessToken: string, inputs: FormIn
 			};
 		}
 
-		const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${
+		const googleApiUrl = `https://www.googleapis.com/calendar/v3/calendars/${
 			inputs.toCalendar
-		}/events?${encodeQueryData(query_param)}`;
+		}/events?${encodeQueryData(queryParam)}`;
 
-		const raw_response = await fetch(google_api_url, {
+		const rawResponse = await fetch(googleApiUrl, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 				"Content-Type": "application/json",
@@ -188,19 +191,19 @@ export async function getAlreadyPostedEvents(accessToken: string, inputs: FormIn
 			method: "GET",
 		});
 
-		res = await raw_response.json();
+		res = await rawResponse.json();
 
 		if (isGetEventErrorObject(res)) {
 			console.error(res);
 			throw Error(`status ${res.error.code}`);
 		}
 
-		already_posted_events.push(...res.items);
+		alreadyPostedEvents.push(...res.items);
 
-		if (res.nextPageToken) next_page_token = res.nextPageToken;
+		if (res.nextPageToken) nextPageToken = res.nextPageToken;
 	} while (res.nextPageToken !== undefined);
 
-	return already_posted_events;
+	return alreadyPostedEvents;
 }
 
 async function addEvent(
@@ -211,8 +214,8 @@ async function addEvent(
 ): Promise<void> {
 	if (!(session && session.user)) return;
 	// console.log(`add ${start} ${title}`)
-	const google_api_url = `https://www.googleapis.com/calendar/v3/calendars/${inputs.toCalendar}/events`;
-	const res = await fetch(google_api_url, {
+	const googleApiUrl = `https://www.googleapis.com/calendar/v3/calendars/${inputs.toCalendar}/events`;
+	const res = await fetch(googleApiUrl, {
 		body: JSON.stringify({
 			description: "#created_by_dp2gc",
 			end: { dateTime: getClassEndTime(start) },
@@ -236,19 +239,19 @@ async function addEvent(
 }
 
 // If we sort Event, we can bisect the search by date.
-function isEventDuplicated(already_posted_event_list: Event[], class_event: ClassEvent): boolean {
-	for (const already_posted_event of already_posted_event_list) {
-		if (!already_posted_event.start.dateTime) {
+function isEventDuplicated(alreadyPostedEventList: Event[], classEvent: ClassEvent): boolean {
+	for (const alreadyPostedEvent of alreadyPostedEventList) {
+		if (!alreadyPostedEvent.start.dateTime) {
 			continue;
 		}
 
-		const is_class_title_same =
-			class_event.title.trim() ==
-			(already_posted_event.summary ? already_posted_event.summary.trim() : false);
-		const is_start_time_same =
-			dayjs(class_event.start).toString() ==
-			dayjs(already_posted_event.start.dateTime).toString();
-		if (is_class_title_same && is_start_time_same) {
+		const isClassTitleSame =
+			classEvent.title.trim() ==
+			(alreadyPostedEvent.summary ? alreadyPostedEvent.summary.trim() : false);
+		const isStartTimeSame =
+			dayjs(classEvent.start).toString() ==
+			dayjs(alreadyPostedEvent.start.dateTime).toString();
+		if (isClassTitleSame && isStartTimeSame) {
 			return true;
 		}
 	}

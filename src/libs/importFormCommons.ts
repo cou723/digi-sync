@@ -19,18 +19,18 @@ export const FORM_STATE_DEFAULT_VALUE: FormInputs = {
 
 export function excludeOutOfImportRange(
 	formState: FormInputs,
-	class_events: RawClassEvent[],
+	classEvents: RawClassEvent[],
 ): RawClassEvent[] {
 	const { start, end } = new ImportRange(formState.importRange).getQuarterRange(
 		parseInt(formState.importYear),
 	);
 
-	const start_unix = start.unix();
-	const end_unix = end.unix();
+	const startUnix = start.unix();
+	const endUnix = end.unix();
 
-	return class_events.filter((class_event) => {
-		const start_date = dayjs(class_event.start).unix();
-		return start_date > start_unix && start_date < end_unix;
+	return classEvents.filter((classEvent) => {
+		const startDate = dayjs(classEvent.start).unix();
+		return startDate > startUnix && startDate < endUnix;
 	});
 }
 

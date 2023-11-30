@@ -61,9 +61,9 @@ export default function ImportForm() {
 	const onSubmit = async (inputs: GoogleFormInputs): Promise<void> => {
 		setAppState("connect portal");
 
-		let class_event_list: RawClassEvent[];
+		let classEventList: RawClassEvent[];
 		try {
-			class_event_list = await Digican.fetchClassEvents(
+			classEventList = await Digican.fetchClassEvents(
 				inputs,
 				t("components.importModules.cannot_connect_digican"),
 			);
@@ -76,17 +76,17 @@ export default function ImportForm() {
 		}
 
 		setAppState("import");
-		let class_events: RawClassEvent[] = class_event_list;
+		let classEvents: RawClassEvent[] = classEventList;
 		if (inputs.ignoreOtherEvents) {
-			class_events = class_events.filter((class_event) =>
-				class_event.className.includes("eventJugyo"),
+			classEvents = classEvents.filter((classEvent) =>
+				classEvent.className.includes("eventJugyo"),
 			);
 		}
 
 		// class_events = excludeOutOfImportRange(inputs, class_events)
 		await GoogleCalendar.post(
 			session,
-			class_events,
+			classEvents,
 			setImportCount,
 			setTotalImportCount,
 			inputs,

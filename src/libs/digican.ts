@@ -3,14 +3,14 @@ import { RawClassEvent } from "@/types/types";
 
 export async function fetchClassEvents(
 	formState: FormInputs,
-	error_message: string,
+	errorMessage: string,
 ): Promise<RawClassEvent[]> {
-	let event_list: RawClassEvent[];
+	let eventList: RawClassEvent[];
 
-	console.log(formState.importRange)
+	console.log(formState.importRange);
 	try {
-		const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents" , {
-			body:JSON.stringify({
+		const res = await fetch(process.env.NEXT_PUBLIC_API_DOMAIN + "/classEvents", {
+			body: JSON.stringify({
 				importRange: formState.importRange,
 				importYear: formState.importYear,
 				password: formState.password,
@@ -19,15 +19,15 @@ export async function fetchClassEvents(
 			headers: {
 				"Content-Type": "application/json",
 			},
-			method: "POST"
+			method: "POST",
 		});
 
 		if (!res.ok) throw new Error(res.status.toString());
-		event_list = await res.json();
+		eventList = await res.json();
 	} catch {
-		throw new Error(error_message);
+		throw new Error(errorMessage);
 	}
-	return event_list;
+	return eventList;
 }
 
 export const Digican = {

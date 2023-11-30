@@ -12,14 +12,14 @@ export function generateLoginBody(username: string, password: string): string {
 	return data.toString();
 }
 
-export function generateHeaders(j_session_id: string): Record<string, string> {
+export function generateHeaders(jSessionId: string): Record<string, string> {
 	return {
 		Accept: "application/xml, text/xml, */*; q=0.01",
 		"Accept-Encoding": "gzip, deflate, br",
 		"Accept-Language": "ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7",
 		"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 		Cookie: generateCookie({
-			j_session_id,
+			jSessionId: jSessionId,
 		}),
 		"Faces-Request": "partial/ajax",
 		Origin: "https://portal.dhw.ac.jp",
@@ -73,6 +73,6 @@ export function generateBody(year: number, month: number, sessionData: SessionDa
 	return data.toString();
 }
 
-export function generateCookie(param: { j_session_id: string }): string {
-	return `HttpOnly; JSESSIONID = ${param.j_session_id}; _ga = GA1.1.1861578561.1676779041; _ga_CNQG4KE1EB = GS1.1.1676779040.1.1.1676779053.47.0.0`;
+export function generateCookie(param: { jSessionId: string }): string {
+	return `HttpOnly; JSESSIONID = ${param.jSessionId}; _ga = GA1.1.1861578561.1676779041; _ga_CNQG4KE1EB = GS1.1.1676779040.1.1.1676779053.47.0.0`;
 }

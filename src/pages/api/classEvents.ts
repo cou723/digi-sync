@@ -9,7 +9,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import "dayjs/locale/ja";
 
-const xml_parser = new XMLParser();
+const xmlParser = new XMLParser();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method != "POST") return res.status(405).json({ error: "Method Not Allowed" });
@@ -33,21 +33,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 export async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }> {
-	const xml_response_body = xml_parser.parse(await res.text());
+	const xmlResponseBody = xmlParser.parse(await res.text());
 
-	const json_class_events = xml_response_body["partial-response"]["changes"]["update"].filter(
+	const jsonClassEvents = xmlResponseBody["partial-response"]["changes"]["update"].filter(
 		(x: string) => x.includes("events"),
 	)[0];
 
-	let non_typed_class_events: RawClassEvent[];
+	let rawClassEvents: RawClassEvent[];
 	try {
-		non_typed_class_events = JSON.parse(json_class_events).events;
+		rawClassEvents = JSON.parse(jsonClassEvents).events;
 	} catch (e) {
-		console.log(json_class_events);
+		console.log(jsonClassEvents);
 		throw new Error("Failed to parse json_class_events");
 	}
 
-	const class_events: ClassEvent[] = [];
-	for (const event of non_typed_class_events) class_events.push(new ClassEvent(event));
-	return { events: class_events };
+	const classEvents: ClassEvent[] = rawClassEvents.map(
+		(raw_class_event) => new ClassEvent(raw_class_event),
+	);
+	return { events: classEvents };
 }

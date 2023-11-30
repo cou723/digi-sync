@@ -23,21 +23,21 @@ export class ClassEvent {
 	editable: boolean;
 	className: ClassType[];
 
-	constructor(class_event: RawClassEvent) {
-		if (!isRawClassEvent(class_event)) {
-			console.log(class_event);
+	constructor(classEvent: RawClassEvent) {
+		if (!isRawClassEvent(classEvent)) {
+			console.log(classEvent);
 			throw new Error("Invalid class_event");
 		}
-		this.id = class_event.id;
-		this.title = class_event.title;
-		this.start = dayjs(class_event.start);
-		this.end = dayjs(class_event.end);
-		this.allDay = class_event.allDay;
-		this.editable = class_event.editable;
+		this.id = classEvent.id;
+		this.title = classEvent.title;
+		this.start = dayjs(classEvent.start);
+		this.end = dayjs(classEvent.end);
+		this.allDay = classEvent.allDay;
+		this.editable = classEvent.editable;
 		let classNameList;
-		if (typeof class_event.className == "string")
-			classNameList = classNameList = class_event.className.split(" ");
-		else classNameList = class_event.className;
+		if (typeof classEvent.className == "string")
+			classNameList = classNameList = classEvent.className.split(" ");
+		else classNameList = classEvent.className;
 		this.className = classNameList.map((className) => className as ClassType);
 	}
 

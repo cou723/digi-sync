@@ -17,7 +17,7 @@ import { GoogleCalendar, CalendarId } from "@/libs/googleCalendar";
 
 import type { Event } from "../../types/gapiCalendar";
 
-let delete_event_url_list: string[];
+let deleteEventUrlList: string[];
 
 type Props = {
 	disabled: boolean;
@@ -41,21 +41,21 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 
 	const onAllDeleteClick = async () => {
 		setDeleteStatus("getting_calendar");
-		delete_event_url_list = [];
+		deleteEventUrlList = [];
 
 		if (!(session && session.user)) return;
-		const delete_events: Map<CalendarId, Event[]> = await GoogleCalendar.getAllDigisyncEvents(
+		const deleteEvents: Map<CalendarId, Event[]> = await GoogleCalendar.getAllDigisyncEvents(
 			session,
 		);
-		let delete_count = 0;
-		delete_events.forEach((events) => {
-			delete_count += events.length;
+		let deleteCount = 0;
+		deleteEvents.forEach((events) => {
+			deleteCount += events.length;
 		});
-		setDeleteEventCout(delete_count);
-		delete_events.forEach((events, calendar_id) => {
-			for (const delete_event of events) {
-				delete_event_url_list.push(
-					`https://www.googleapis.com/calendar/v3/calendars/${calendar_id}/events/${delete_event.id}`,
+		setDeleteEventCout(deleteCount);
+		deleteEvents.forEach((events, calendarId) => {
+			for (const deleteEvent of events) {
+				deleteEventUrlList.push(
+					`https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${deleteEvent.id}`,
 				);
 			}
 		});
@@ -74,7 +74,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 		setDeleteStatus("deleting");
 		setDeleteCount(0);
 		if (!session) return;
-		await GoogleCalendar.deleteEvents(delete_event_url_list, session, setDeleteCount);
+		await GoogleCalendar.deleteEvents(deleteEventUrlList, session, setDeleteCount);
 		setDeleteStatus("ready");
 	};
 

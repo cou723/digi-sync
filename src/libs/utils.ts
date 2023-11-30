@@ -13,9 +13,9 @@ export function encodeQueryData(data: { [key: string]: string | number | boolean
 	return searchParams.toString();
 }
 
-export function getClassEndTime(class_start_time: Dayjs): string {
-	class_start_time.add(90, "minute");
-	return class_start_time.add(90, "minute").utc().format("YYYY-MM-DDTHH:mm:ssZZ");
+export function getClassEndTime(classStartTime: Dayjs): string {
+	classStartTime.add(90, "minute");
+	return classStartTime.add(90, "minute").utc().format("YYYY-MM-DDTHH:mm:ssZZ");
 }
 
 export interface GetEventsErrorObject {

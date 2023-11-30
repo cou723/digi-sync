@@ -1,16 +1,11 @@
 import dayjs, { Dayjs } from "dayjs";
 
+import { ImportRangeString, isImportRangeString } from "./importRangeString";
+import { Month } from "./month";
 import { Range } from "./types";
-export type ImportRangeString = "1q" | "2q" | "3q" | "4q" | "1q_and_2q" | "3q_and_4q";
-
-export type Month = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+import { YearMonth } from "./yearMonth";
 
 const PERIOD_START_MONTH = 4;
-
-export type YearMonth = {
-	month: Month;
-	year: number;
-};
 
 export default class ImportRange {
 	range: ImportRangeString;
@@ -20,19 +15,8 @@ export default class ImportRange {
 	static _4q_list: Month[] = [11, 12, 1, 2, 3];
 
 	constructor(range: string) {
-		if (!this.isImportRangeString(range)) throw new Error("Invalid range");
+		if (!isImportRangeString(range)) throw new Error("Invalid range");
 		this.range = range;
-	}
-
-	isImportRangeString(value: string): value is ImportRangeString {
-		return (
-			value === "1q" ||
-			value === "2q" ||
-			value === "3q" ||
-			value === "4q" ||
-			value === "1q_and_2q" ||
-			value === "3q_and_4q"
-		);
 	}
 
 	getYearMonthList(year: number): YearMonth[] {

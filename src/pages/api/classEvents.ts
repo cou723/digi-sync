@@ -1,12 +1,13 @@
 import { XMLParser } from "fast-xml-parser";
 
-import ImportRange from "../../types/importRange";
+import { fetchClassEvents } from "@/libs/fetchClassEvent";
+import { isQueryParams } from "@/types/queryParams";
+
 import { ClassEvent, RawClassEvent } from "../../types/types";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import "dayjs/locale/ja";
-import { fetchClassEvents, isQueryParams } from "@/libs/fetchClassEvent";
 
 const xml_parser = new XMLParser();
 
@@ -29,17 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	return res.status(200).json(class_events);
-}
-
-export function isImportRangeString(obj: unknown): obj is ImportRange {
-	return (
-		obj === "1q" ||
-		obj === "2q" ||
-		obj === "3q" ||
-		obj === "4q" ||
-		obj === "1q_and_2q" ||
-		obj === "3q_and_4q"
-	);
 }
 
 export async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }> {

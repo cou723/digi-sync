@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import ImportRange from "@/types/importRange";
+import ImportRange from "../types/importRange";
 
 import * as utils from "./utils";
 

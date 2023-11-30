@@ -2,10 +2,11 @@ import dayjs from "dayjs";
 import { XMLParser } from "fast-xml-parser";
 import { JSDOM } from "jsdom";
 
-import ImportRange from "../../types/importRange";
+import ImportRange, { YearMonth } from "../../types/importRange";
 import { ClassEvent, RawClassEvent } from "../../types/types";
 
 import type { NextApiRequest, NextApiResponse } from "next";
+
 import "dayjs/locale/ja";
 
 const jsdom = new JSDOM();
@@ -36,21 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(400).json({ error: "Invalid Content-Type" });
 	if (!isQueryParams(req.body)) return res.status(400).json({ error: "Invalid Body" });
 
-	const { username, password, importYear, importRange } = parseBody(req.body);
-
-	const importMonthList = importRange.getMonthList();
-
-	console.log("username", username);
-	console.log("password", "******");
-	console.log("year", importYear);
-	console.log("range", importRange);
-
-	const sessionData = await getSessionData(username, password);
+	fetchClassEvents(req);
 
 	const class_events: ClassEvent[] = [];
 	try {
-		for (const month of importMonthList)
-			class_events.push(...(await fetchClassEventsPerOneMonth(month, sessionData)));
+		class_events.push(...(await fetchClassEvents(req)));
 	} catch (e: unknown) {
 		console.log(e);
 		if (e instanceof Error) return res.status(500).json({ error: e.message });
@@ -60,7 +51,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	return res.status(200).json(class_events);
 }
 
-function parseBody(body: QueryParams) {
+export async function fetchClassEvents(req: NextApiRequest) {
+	const { username, password, importYear, importRange } = parseBody(req.body);
+
+	const importYearMonthList = importRange.getYearMonthList(new Date().getFullYear());
+
+	console.log("username", username);
+	console.log("password", "******");
+	console.log("year", importYear);
+	console.log("range", importRange);
+
+	const sessionData = await getSessionData(username, password);
+
+	const class_events: ClassEvent[] = [];
+	for (const yearMonth of importYearMonthList)
+		class_events.push(...(await fetchClassEventsPerOneMonth(yearMonth, sessionData)));
+	return class_events;
+}
+
+export function parseBody(body: QueryParams) {
 	return {
 		importRange: new ImportRange(body.importRange),
 		importYear: body.importYear,
@@ -69,14 +78,13 @@ function parseBody(body: QueryParams) {
 	};
 }
 
-async function fetchClassEventsPerOneMonth(
-	month: number,
+export async function fetchClassEventsPerOneMonth(
+	yearMonth: YearMonth,
 	session_data: SessionData,
 ): Promise<ClassEvent[]> {
-	if (month < 1 || month > 12) throw Error("Invalid month");
-	const this_year = dayjs().year();
+	console.log("get :", yearMonth);
 	const dhuPortalRes = await fetch(API_URL, {
-		body: generateBody(this_year, month, session_data),
+		body: generateBody(yearMonth.year, yearMonth.month, session_data),
 		headers: generateHeaders(session_data.j_session_id),
 		method: "POST",
 	});
@@ -90,11 +98,11 @@ async function fetchClassEventsPerOneMonth(
 		console.log(e);
 		throw Error("Failed to parse class events from DHU Portal. Maybe your login is failing.");
 	}
-	console.log(month, class_events.length);
+	console.log(yearMonth, class_events.length);
 	return class_events;
 }
 
-function isQueryParams(obj: unknown): obj is QueryParams {
+export function isQueryParams(obj: unknown): obj is QueryParams {
 	return (
 		typeof obj === "object" &&
 		obj !== null &&
@@ -109,7 +117,7 @@ function isQueryParams(obj: unknown): obj is QueryParams {
 	);
 }
 
-function isImportRange(obj: unknown): obj is ImportRange {
+export function isImportRange(obj: unknown): obj is ImportRange {
 	return (
 		obj === "1q" ||
 		obj === "2q" ||
@@ -120,7 +128,7 @@ function isImportRange(obj: unknown): obj is ImportRange {
 	);
 }
 
-async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }> {
+export async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }> {
 	const xml_response_body = xml_parser.parse(await res.text());
 
 	const json_class_events = xml_response_body["partial-response"]["changes"]["update"].filter(
@@ -131,6 +139,7 @@ async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }
 	try {
 		non_typed_class_events = JSON.parse(json_class_events).events;
 	} catch (e) {
+		console.log(json_class_events);
 		throw new Error("Failed to parse json_class_events");
 	}
 
@@ -139,7 +148,7 @@ async function parseClassEvents(res: Response): Promise<{ events: ClassEvent[] }
 	return { events: class_events };
 }
 
-function generateHeaders(j_session_id: string): Record<string, string> {
+export function generateHeaders(j_session_id: string): Record<string, string> {
 	return {
 		Accept: "application/xml, text/xml, */*; q=0.01",
 		"Accept-Encoding": "gzip, deflate, br",

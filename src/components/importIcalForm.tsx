@@ -10,15 +10,11 @@ import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
 import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
 import RhfTextField from "@/components/utils/rhfTextField";
 import { Digican } from "@/libs/digican";
-import {
-	FORM_SCHEMA_SHAPE,
-} from "@/libs/importFormCommons";
-import { ConvertToIcalMap } from "@/libs/table-to-ical/ConvertToIcal";
-import { DownloadBrowser } from "@/libs/table-to-ical/DownloadBrowser";
+import { FORM_SCHEMA_SHAPE } from "@/libs/importFormCommons";
+import { convertToIcalMap } from "@/libs/table-to-ical/convertToIcal";
+import { downloadBrowser } from "@/libs/table-to-ical/downloadBrowser";
 import { FormInputs } from "@/types/formInputsTypes";
 import { RawClassEvent } from "@/types/types";
-
-
 
 export interface API_RETURN_EventList {
 	events: RawClassEvent[];
@@ -41,7 +37,6 @@ export function ImportIcalForm() {
 
 	const [appState, setAppState] = useState<"ready" | "connect portal">("ready");
 
-
 	const onSubmit = async (inputs: FormInputs) => {
 		setAppState("connect portal");
 		let class_event_list: RawClassEvent[];
@@ -57,8 +52,8 @@ export function ImportIcalForm() {
 			return;
 		}
 		try {
-			const IcalTimeTable = ConvertToIcalMap(class_event_list);
-			DownloadBrowser(IcalTimeTable);
+			const IcalTimeTable = convertToIcalMap(class_event_list);
+			downloadBrowser(IcalTimeTable);
 		} finally {
 			setAppState("ready");
 		}
@@ -66,14 +61,8 @@ export function ImportIcalForm() {
 
 	return (
 		<Stack action='/import' autoComplete='off' component='form' spacing={2}>
-			<ImportYearSelect
-				appState={appState}
-				control={control}
-			/>
-			<ImportRangeSelect
-				control={control}
-				disabled={appState != "ready"}
-			/>
+			<ImportYearSelect appState={appState} control={control} />
+			<ImportRangeSelect control={control} disabled={appState != "ready"} />
 			<Stack spacing={1}>
 				<RhfTextField
 					disabled={appState != "ready"}

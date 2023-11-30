@@ -1,4 +1,6 @@
-import GetNextDayOfWeek, { GetNextDayOfWeekArgsType } from "./GetNextDayOfWeek";
+import dayjs from "dayjs";
+
+import getNextDayOfWeek, { GetNextDayOfWeekArgsType } from "./getNextDayOfWeek";
 
 describe("GetNextDayOfWeek", () => {
 	it("should return the next day of the week correctly", () => {
@@ -8,7 +10,7 @@ describe("GetNextDayOfWeek", () => {
 			includeToday: false,
 		};
 
-		expect(GetNextDayOfWeek(args)).toEqual(new Date("2022-01-02")); // Next Sunday
+		expect(getNextDayOfWeek(args)).toEqual(dayjs("2022-01-02").toDate()); // Next Sunday
 	});
 
 	it("should include today if includeToday is true", () => {
@@ -18,6 +20,6 @@ describe("GetNextDayOfWeek", () => {
 			includeToday: true,
 		};
 
-		expect(GetNextDayOfWeek(args)).toEqual(new Date("2022-01-01")); // Same Saturday
+		expect(getNextDayOfWeek(args)).toEqual(dayjs("2022-01-01").toDate());
 	});
 });

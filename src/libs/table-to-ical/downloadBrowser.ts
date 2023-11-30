@@ -2,7 +2,7 @@ import ical from "ical-generator";
 
 import { useClassTableIcalProps } from "../../hooks/icalHook";
 
-export const DownloadBrowser = (event: useClassTableIcalProps["init"]): string => {
+export const downloadBrowser = (event: useClassTableIcalProps["init"]): string => {
 	const calendar = ical({ name: "授業の時間" });
 
 	calendar.description("大学の授業のカレンダー");

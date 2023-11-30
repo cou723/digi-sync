@@ -4,7 +4,7 @@ export type AddClassStartTimeArgsType = {
 };
 export type AddClassStartTimeReturnType = number;
 
-const AddClassStartTime = ({
+const addClassStartTime = ({
 	lessonTimes,
 	periodIndex,
 }: AddClassStartTimeArgsType): AddClassStartTimeReturnType => {
@@ -20,4 +20,4 @@ const AddClassStartTime = ({
 	return timeList[periodIndex];
 };
 
-export default AddClassStartTime;
+export default addClassStartTime;

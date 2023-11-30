@@ -1,4 +1,4 @@
-import ConvertDateToDayOfWeek from "./ConvertDateToDayofWeek";
+import convertDateToDayOfWeek from "./convertDateToDayofWeek";
 
 describe("convertDateToDayOfWeek", () => {
 	it("should return the correct day of the week for a given date", () => {
@@ -13,7 +13,7 @@ describe("convertDateToDayOfWeek", () => {
 		// Run the tests
 		testCases.forEach((testCase) => {
 			const { date, expected } = testCase;
-			const result = ConvertDateToDayOfWeek(date);
+			const result = convertDateToDayOfWeek(date);
 			expect(result).toBe(expected);
 		});
 	});

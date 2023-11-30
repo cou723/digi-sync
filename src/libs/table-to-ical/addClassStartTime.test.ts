@@ -1,4 +1,4 @@
-import AddClassStartTime, { AddClassStartTimeArgsType } from "./AddClassStartTime";
+import addClassStartTime, { AddClassStartTimeArgsType } from "./addClassStartTime";
 
 describe("AddClassStartTime", () => {
 	it("should return the correct start time for the given period index", () => {
@@ -14,6 +14,6 @@ describe("AddClassStartTime", () => {
 			periodIndex: 2,
 		};
 
-		expect(AddClassStartTime(args)).toEqual(660);
+		expect(addClassStartTime(args)).toEqual(660);
 	});
 });

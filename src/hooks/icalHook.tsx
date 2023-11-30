@@ -1,7 +1,7 @@
 import { ICalEvent, ICalEventData } from "ical-generator";
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { DownloadBrowser } from "@/libs/table-to-ical/DownloadBrowser";
+import { downloadBrowser } from "@/libs/table-to-ical/downloadBrowser";
 
 export type useClassTableIcalProps = {
 	init: Array<ICalEvent | ICalEventData>;
@@ -27,7 +27,7 @@ export const useClassTableIcal = (props?: useClassTableIcalProps): useClassTable
 	// ファイルをダウンロード
 	const DownloadFile = async (event: useClassTableIcalProps["init"]): Promise<string> => {
 		try {
-			return DownloadBrowser(event);
+			return downloadBrowser(event);
 		} catch (error) {
 			console.error(" can not download", error);
 			return "/";

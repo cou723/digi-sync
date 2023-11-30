@@ -8,11 +8,15 @@ export type GetNextDayOfWeekArgsType = {
 };
 export type GetNextDayOfWeekReturnType = Date;
 
-const GetNextDayOfWeek = (args: GetNextDayOfWeekArgsType): GetNextDayOfWeekReturnType => {
-	const now = dayjsWrapper(args.date).tz("Asia/Tokyo").toDate();
-	now.setDate(now.getDate() + ((args.dayOfWeek + (7 - now.getDay())) % 7));
+const getNextDayOfWeek = ({
+	date,
+	dayOfWeek,
+	includeToday: _includeToday,
+}: GetNextDayOfWeekArgsType): Date => {
+	const now = dayjsWrapper(date).tz("Asia/Tokyo").toDate();
+	now.setDate(now.getDate() + ((dayOfWeek + (7 - now.getDay())) % 7));
 
 	return dayjsWrapper(now).tz("Asia/Tokyo").toDate();
 };
 
-export default GetNextDayOfWeek;
+export default getNextDayOfWeek;

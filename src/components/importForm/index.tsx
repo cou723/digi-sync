@@ -44,7 +44,7 @@ export default function ImportForm() {
 			ignoreOtherEvents: true,
 			importYear: getNowAcademicYear().toString(),
 		},
-		resolver: yupResolver<GoogleFormInputs>(schema),
+		resolver: yupResolver(schema),
 	});
 
 	const [appState, setAppState] = useState<ImportFormState>("unauthenticated");

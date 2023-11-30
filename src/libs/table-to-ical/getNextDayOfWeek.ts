@@ -11,7 +11,6 @@ export type GetNextDayOfWeekReturnType = Date;
 const getNextDayOfWeek = ({
 	date,
 	dayOfWeek,
-	includeToday: _includeToday,
 }: GetNextDayOfWeekArgsType): Date => {
 	const now = dayjsWrapper(date).tz("Asia/Tokyo").toDate();
 	now.setDate(now.getDate() + ((dayOfWeek + (7 - now.getDay())) % 7));

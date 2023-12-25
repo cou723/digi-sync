@@ -1,4 +1,3 @@
-import { useTranslation } from "next-i18next";
 import React from "react";
 import { Control } from "react-hook-form";
 
@@ -13,13 +12,12 @@ type Props = {
 };
 
 const ImportYear = React.memo(function ImportYearSelect({ appState, control }: Props) {
-	const { t } = useTranslation("components");
 	const selectableYears = React.useMemo(() => getSelectableYearList(), []);
 	return (
 		<RhfMuiSelect
 			control={control}
 			disabled={appState !== "ready"}
-			label={t("importModules.ImportYearSelect.label")}
+			label='インポートする年度を選択してください'
 			name='importYear'
 			options={selectableYears.map((year) => ({ label: year, value: year }))}
 		/>

@@ -1,22 +1,18 @@
 import { AppBar, Button, Container, Box, Toolbar, useMediaQuery } from "@mui/material";
 import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
 import React from "react";
 
-import {FloatMenu} from "@/components/floatMenu";
+import { FloatMenu } from "@/components/floatMenu";
 
 import theme from "../../libs/colorTheme";
 
 import LoginBtn from "./loginBtn";
 import Logo from "./logo";
 
-
 export default React.memo(function Header() {
-	const { t } = useTranslation("components");
-
 	const pages = [
-		{ display: t("Header.to_google_calendar"), link: "/" },
-		{ display: t("Header.to_ical"), link: "/ical" },
+		{ display: "Googleカレンダーへインポート", link: "/" },
+		{ display: ".ical形式でダウンロード", link: "/ical" },
 		{ display: "FAQ", link: "/q_and_a" },
 	];
 	const matches = useMediaQuery(theme.breakpoints.up("sm"));

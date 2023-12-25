@@ -1,18 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Stack } from "@mui/material";
+import { Stack, Button, LinearProgress } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
-import DigicanPasswordInput from "@/components/importForm/DigicanPasswordInput";
-import DigicanUsernameInput from "@/components/importForm/DigicanUsernameInput";
-import ImportingModal from "@/components/importForm/ImportingModal";
-import TokenInput from "@/components/importForm/TokenInput";
-import ExecuteButton from "@/components/importFormCommon/ExecuteButton";
 import AllDeleteButton from "@/components/importFormCommon/allDeleteButton";
 import ImportOptions from "@/components/importFormCommon/importOptions";
 import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
 import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
+import RhfTextField from "@/components/utils/rhfTextField";
 import useBeforeUnload from "@/hooks/importHook";
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { Digican } from "@/libs/digican";
@@ -24,7 +20,7 @@ import { RawClassEvent } from "@/types/types";
 
 import ToCalendarSelect from "./toCalendarSelect";
 
-export type ImportFormState = "unauthenticated" | "ready" | "connect portal" | "import";
+import { ImportFormState } from ".";
 
 export default function ImportForm() {
 	const schema = yup.object().shape({
@@ -108,28 +104,57 @@ export default function ImportForm() {
 				errorMessage={errors.toCalendar?.message}
 			/>
 			<Stack spacing={1}>
-				<DigicanUsernameInput appState={appState} errors={errors} register={register} />
-				<DigicanPasswordInput appState={appState} errors={errors} register={register} />
+				<RhfTextField
+					disabled={appState != "ready"}
+					error_message={errors.username?.message}
+					label='デジキャンのユーザーネーム(学籍番号)'
+					name='username'
+					register={register}
+				/>
+				<RhfTextField
+					disabled={appState != "ready"}
+					error_message={errors.password?.message}
+					label='デジキャンのパスワード'
+					name='password'
+					register={register}
+					type='password'
+				/>
 			</Stack>
 			<ImportOptions control={control} disabled={appState != "ready"} register={register} />
-
-			<TokenInput />
+			<input
+				name='accessToken'
+				type='hidden'
+				value={authStatus === "authenticated" ? session.accessToken : undefined}
+			/>
 			<br />
-
-			<ExecuteButton
-				appState={appState}
+			<Button
+				disabled={appState !== "ready"}
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				onClick={handleSubmit(onSubmit, (errors: any) => {
 					console.log(errors);
 				})}
-			/>
+				sx={{ textTransform: "none" }}
+				type='submit'
+				variant='contained'
+			>
+				{appState == "connect portal" ? "インポート中" : ""}
+				{appState == "import" ? `(${importCount} 件/${totalImportCount} 件)` : ""}
+				{appState == "unauthenticated"
+					? "グーグルアカウントにログインしてください"
+					: "Googleカレンダーへインポート"}
+			</Button>
 
+			{appState == "import" ? (
+				<LinearProgress
+					value={(importCount / totalImportCount) * 100}
+					variant='determinate'
+				/>
+			) : (
+				""
+			)}
+
+			{appState == "import" ? "インポート中" : ""}
 			<AllDeleteButton disabled={appState == "unauthenticated"} />
-			<ImportingModal
-				imported={importCount}
-				isOpen={appState == "connect portal" || appState == "import"}
-				label={appState == "connect portal" ? "デジキャンに接続中です..." : undefined}
-				total={totalImportCount}
-			/>
 		</Stack>
 	);
 }

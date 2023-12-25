@@ -35,6 +35,9 @@ export const authOptions: NextAuthOptions = {
 		}),
 	],
 	secret: GOOGLE_CLIENT_SECRET,
+	pages:{
+		signIn:"/"
+	}
 };
 
 export default NextAuth(authOptions);

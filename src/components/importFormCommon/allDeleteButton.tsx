@@ -9,7 +9,6 @@ import {
 	LinearProgress,
 	Fade,
 } from "@mui/material";
-import { useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
 
 import { useCustomSession } from "@/hooks/useCustomSession";
@@ -24,8 +23,6 @@ type Props = {
 };
 
 export default React.memo(function AllDeleteButton({ disabled }: Props) {
-	const { t } = useTranslation("components");
-	const { t: cc } = useTranslation("common");
 	const [isShowDialog, setIsShowDialog] = useState(false);
 	const [deleteEventCout, setDeleteEventCout] = useState(0);
 	const [deleteStatus, setDeleteStatus] = useState<
@@ -44,9 +41,8 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 		deleteEventUrlList = [];
 
 		if (!(session && session.user)) return;
-		const deleteEvents: Map<CalendarId, Event[]> = await GoogleCalendar.getAllDigisyncEvents(
-			session,
-		);
+		const deleteEvents: Map<CalendarId, Event[]> =
+			await GoogleCalendar.getAllDigisyncEvents(session);
 		let deleteCount = 0;
 		deleteEvents.forEach((events) => {
 			deleteCount += events.length;
@@ -88,12 +84,11 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 			>
 				{
 					{
-						deleting: `${deleteCount}${cc("unit")}${t(
-							"importModules.AllDeleteButton.deleted",
-						)}`,
-						getting_calendar: t("importModules.AllDeleteButton.searching"),
-						ready: t("importModules.AllDeleteButton.label"),
-						unauthenticated: t("importModules.AllDeleteButton.unauthenticated"),
+						deleting: `${deleteCount}件削除済み`,
+						getting_calendar:
+							"カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)",
+						ready: "デジシンクによって追加した予定をすべて消す",
+						unauthenticated: "Googleアカウントにログインしてください",
 					}[deleteStatus]
 				}
 				<Fade in={deleteStatus == "getting_calendar"}>
@@ -110,25 +105,17 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 				aria-labelledby='alert-dialog-title'
 				open={isShowDialog}
 			>
-				<DialogTitle id='alert-dialog-title'>
-					{t("importModules.AllDeleteButton.title")}
-				</DialogTitle>
+				<DialogTitle id='alert-dialog-title'>予定を削除しますか？</DialogTitle>
 				<DialogContent>
 					<DialogContentText id='alert-dialog-description'>
-						{`${t(
-							"importModules.AllDeleteButton.events_added_by_digisync",
-						)}(${deleteEventCout} ${cc("unit")})${t(
-							"importModules.AllDeleteButton.delete",
-						)}`}
+						デジシンクによって追加された予定({deleteEventCout}件)を削除します
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 					<Button autoFocus onClick={handleClose}>
-						{cc("no")}
+						いいえ
 					</Button>
-					<Button onClick={allDelete}>
-						{t("importModules.AllDeleteButton.yes_delete")}
-					</Button>
+					<Button onClick={allDelete}>はい。削除します。</Button>
 				</DialogActions>
 			</Dialog>
 		</>

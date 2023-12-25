@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
 import React, { useEffect, useState } from "react";
 import { Control } from "react-hook-form";
 
@@ -17,7 +16,6 @@ type Props = {
 };
 
 const ToCalendarSelect = React.memo(function ToCalendarSelect({ control, disabled }: Props) {
-	const { t } = useTranslation("components");
 	const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
 	const { session, authStatus } = useCustomSession();
 	const router = useRouter();
@@ -32,7 +30,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({ control, disable
 			<RhfMuiSelect
 				control={control}
 				disabled={disabled}
-				label={t("importModules.ToCalendarSelect.label")}
+				label='インポート先のカレンダーを選択してください'
 				name='toCalendar'
 				options={calendars.map((calendar) => ({
 					label: calendar.summary,

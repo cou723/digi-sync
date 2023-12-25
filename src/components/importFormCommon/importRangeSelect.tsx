@@ -1,4 +1,3 @@
-import { useTranslation } from "next-i18next";
 import React from "react";
 import { Control } from "react-hook-form";
 
@@ -15,21 +14,19 @@ const ImportRangeSelect = React.memo(function ImportRangeSelect({
 	disabled = false,
 	control,
 }: Props) {
-	const { t } = useTranslation("components");
-	const { t: cc } = useTranslation("common");
 	return (
 		<RhfMuiSelect
 			control={control}
 			disabled={disabled}
-			label={t("importModules.ImportRangeSelect.label")}
+			label='インポートする範囲を選択してください'
 			name='importRange'
 			options={[
-				[t("importModules.ImportRangeSelect.first_quarter"), "1q"],
-				[t("importModules.ImportRangeSelect.second_quarter"), "2q"],
-				[t("importModules.ImportRangeSelect.third_quarter"), "3q"],
-				[t("importModules.ImportRangeSelect.fourth_quarter"), "4q"],
-				[cc("first_semester"), "1q_and_2q"],
-				[cc("second_semester"), "3q_and_4q"],
+				["1クオーター", "1q"],
+				["2クオーター", "2q"],
+				["3クオーター", "3q"],
+				["4クオーター", "4q"],
+				["前期", "1q_and_2q"],
+				["後期", "3q_and_4q"],
 			].map(([label, value]) => ({ label, value }))}
 		/>
 	);

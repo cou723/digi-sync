@@ -34,7 +34,8 @@
 		"../next-env.d.ts",
 		"**/*.ts",
 		"**/*.tsx",
-		"next-i18next.config.js"
+		"next-i18next.config.js",
+		"src/components/importForm/ImportingModaltsx"
 	],
 	"exclude": [
 		"node_modules"

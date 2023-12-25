@@ -2,7 +2,6 @@ import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { Analytics } from "@vercel/analytics/react";
 import { SessionProvider } from "next-auth/react";
-import { appWithTranslation } from "next-i18next";
 
 import Header from "@/components/header";
 import theme from "@/libs/colorTheme";
@@ -22,4 +21,4 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 	);
 };
 
-export default appWithTranslation(App);
+export default App;

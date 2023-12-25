@@ -1,44 +1,33 @@
 import { Typography, Container } from "@mui/material";
-import { GetStaticProps } from "next";
-import { useTranslation } from "next-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import Question from "@/components/qAndA";
 
 export default function QAndA() {
-	const { t } = useTranslation("pages");
 	return (
 		<Container maxWidth='sm' sx={{ py: 2 }}>
 			<Typography component='h1' gutterBottom variant='h4'>
 				Q&A
 			</Typography>
 			<Question
-				answer={t("q_and_a.what_this.answer")}
-				question={t("q_and_a.what_this.question")}
+				answer='自分で編集できるGoogle Calendarしか表示させていないので、自分で編集できるカレンダーに変更してください。'
+				question='カレンダー一覧に同期させたいカレンダーが表示されない'
 			/>
 			<Question
-				answer={t("q_and_a.no_auto_remove.answer")}
-				question={t("q_and_a.no_auto_remove.question")}
+				answer='Google Calendarと常に同期しているわけではないので、休講になった授業を削除するには、再度同期を実行してください。\nなおその場合、Google Calendarに同期させた予定を削除する必要はありません。'
+				question='休講になった授業があるのですが、自動で削除されません'
 			/>
 			<Question
-				answer={t("q_and_a.sync_keep_doing.answer")}
-				question={t("q_and_a.sync_keep_doing.question")}
+				answer='いいえ。\nインポートしたその瞬間の授業予定を同期するので、\nその都度インポートしてください。また、すでに予定が追加されている\nカレンダーに対して予定を追加すると追加されていない予定のみを追加します。(Google Calendarへのインポートのみ)\nそのため、Google カレンダーにある予定を更新したい場合は再び同期を実行してもらえば、不足分を追加したり、休講になった授業を自動的に削除します。'
+				question='一度同期すれば同期し続けてくれるんですか？'
 			/>
 			<Question
-				answer={t("q_and_a.wrong_calendar.answer")}
-				question={t("q_and_a.wrong_calendar.question")}
+				answer='デジキャンで表示される授業一覧を、Google Calendarに同期させたり、.ical形式でダウンロードすることができるサイトです。'
+				question='このサイトは何ですか？'
 			/>
 			<Question
-				answer={t("q_and_a.dont_show_calendar.answer")}
-				question={t("q_and_a.dont_show_calendar.question")}
+				answer='一括削除機能を使って予定を一括削除した後に、本来インポートしたかったカレンダーを選択したインポートしてください。'
+				question='まちがえて別のカレンダーに予定を追加してしまいました'
 			/>
 		</Container>
 	);
 }
-
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-	props: {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		...(await serverSideTranslations(locale!, ["common", "components", "pages"])),
-	},
-});

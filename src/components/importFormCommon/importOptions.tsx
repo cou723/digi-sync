@@ -1,10 +1,8 @@
-import { useTranslation } from "next-i18next";
 import React from "react";
 import { Control, UseFormRegister } from "react-hook-form";
 
 import { RhfMuiCheckbox } from "@/components/utils/rhfMuiCheckbox";
 import { FormInputs, GoogleFormInputs } from "@/types/formInputsTypes";
-
 
 type Props = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,12 +12,11 @@ type Props = {
 };
 
 const ImportOptions = React.memo(function ImportOptions({ control, disabled = false }: Props) {
-	const { t } = useTranslation("components");
 	return (
 		<RhfMuiCheckbox
 			control={control}
 			disabled={disabled}
-			label={t("importModules.ImportOptions.label")}
+			label='授業のみインポートする'
 			name='ignoreOtherEvents'
 		/>
 	);

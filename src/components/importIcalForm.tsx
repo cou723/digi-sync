@@ -1,14 +1,15 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Stack, Button } from "@mui/material";
-import { useTranslation } from "next-i18next";
+import { Stack } from "@mui/material";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
+import DigicanPasswordInput from "@/components/importForm/DigicanPasswordInput";
+import DigicanUsernameInput from "@/components/importForm/DigicanUsernameInput";
+import ExecuteButton from "@/components/importFormCommon/ExecuteButton";
 import ImportOptions from "@/components/importFormCommon/importOptions";
 import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
 import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
-import RhfTextField from "@/components/utils/rhfTextField";
 import { Digican } from "@/libs/digican";
 import { FORM_SCHEMA_SHAPE } from "@/libs/importFormCommons";
 import { convertToIcalMap } from "@/libs/table-to-ical/convertToIcal";
@@ -23,9 +24,6 @@ export interface API_RETURN_EventList {
 const schema = yup.object().shape(FORM_SCHEMA_SHAPE);
 
 export function ImportIcalForm() {
-	const { t } = useTranslation("components");
-	const { t: cc } = useTranslation("common");
-
 	const {
 		register,
 		handleSubmit,
@@ -39,11 +37,11 @@ export function ImportIcalForm() {
 
 	const onSubmit = async (inputs: FormInputs) => {
 		setAppState("connect portal");
-		let class_event_list: RawClassEvent[];
+		let classEventList: RawClassEvent[];
 		try {
-			class_event_list = await Digican.fetchClassEvents(
+			classEventList = await Digican.fetchClassEvents(
 				inputs,
-				t("ImportForm.cannot_connect_digican"),
+				"デジキャンに接続できませんでした(ユーザーネーム、パスワードがあっているか今一度お確かめください)",
 			);
 		} catch (e: unknown) {
 			if (e instanceof Error) alert(e.message);
@@ -52,7 +50,7 @@ export function ImportIcalForm() {
 			return;
 		}
 		try {
-			const IcalTimeTable = convertToIcalMap(class_event_list);
+			const IcalTimeTable = convertToIcalMap(classEventList);
 			downloadBrowser(IcalTimeTable);
 		} finally {
 			setAppState("ready");
@@ -64,34 +62,12 @@ export function ImportIcalForm() {
 			<ImportYearSelect appState={appState} control={control} />
 			<ImportRangeSelect control={control} disabled={appState != "ready"} />
 			<Stack spacing={1}>
-				<RhfTextField
-					disabled={appState != "ready"}
-					error_message={errors.username?.message}
-					label={cc("digican_username")}
-					name='username'
-					register={register}
-				/>
-				<RhfTextField
-					disabled={appState != "ready"}
-					error_message={errors.password?.message}
-					label={cc("digican_password")}
-					name='password'
-					register={register}
-					type='password'
-				/>
+				<DigicanUsernameInput appState={appState} errors={errors} register={register} />
+				<DigicanPasswordInput appState={appState} errors={errors} register={register} />
 			</Stack>
 			<ImportOptions control={control} disabled={appState != "ready"} register={register} />
 			<br />
-			<Button
-				disabled={appState == "connect portal"}
-				onClick={handleSubmit(onSubmit)}
-				sx={{ textTransform: "none" }}
-				variant='contained'
-			>
-				{appState == "connect portal"
-					? t("ImportForm.importing") + "..."
-					: t("ImportForm.download_with_ical")}
-			</Button>
+			<ExecuteButton appState={appState} onClick={handleSubmit(onSubmit)} />
 		</Stack>
 	);
 }

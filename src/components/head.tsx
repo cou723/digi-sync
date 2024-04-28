@@ -1,12 +1,12 @@
 import Head from "next/head";
 
 const CommonMeta = () => {
-	const title = "デジシンク - Digi Sync. -";
+	const title = "DigiSync";
 	const url = "https://dp2gc.vercel.app";
 	const type = "website";
 	const imageUrl = "https://dp2gc.vercel.app/ogp_image.png";
 	const description =
-		"「デジシンク」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。";
+		"「DigiSync」は、デジキャンからグーグルカレンダーに授業の予定を追加する簡単なツールです。ボタンひとつで正確な授業スケジュールをグーグルカレンダーに追加し、手動で入力する手間を省けます。時間管理がしやすくなるので、学生ライフに役立ててみてください。";
 
 	return (
 		<Head>

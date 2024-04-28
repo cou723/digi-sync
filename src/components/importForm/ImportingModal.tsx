@@ -33,7 +33,7 @@ const ImportingModal = ({ total, imported, onClose, isOpen, label }: Props) => {
 					インポート中...
 				</Typography>
 				<Typography id='modal-modal-description' sx={{ mt: 2 }}>
-					{label ?? `デジシンクから${total}件の授業をインポート中です。`}
+					{label ?? `DigiSyncから${total}件の授業をインポート中です。`}
 				</Typography>
 				<LinearProgress
 					sx={{ mt: 2 }}

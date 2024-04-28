@@ -1,4 +1,4 @@
-# デジシンク
+# DigiSync
 ## How to run dev server
 
 1. set `./front/.env.development.local`

@@ -86,8 +86,8 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 					{
 						deleting: `${deleteCount}件削除済み`,
 						getting_calendar:
-							"カレンダーからデジシンクによって追加された予定を検索中\n(30秒ほどかかります)",
-						ready: "デジシンクによって追加した予定をすべて消す",
+							"カレンダーからDigiSyncによって追加された予定を検索中\n(30秒ほどかかります)",
+						ready: "DigiSyncによって追加した予定をすべて消す",
 						unauthenticated: "Googleアカウントにログインしてください",
 					}[deleteStatus]
 				}
@@ -108,7 +108,7 @@ export default React.memo(function AllDeleteButton({ disabled }: Props) {
 				<DialogTitle id='alert-dialog-title'>予定を削除しますか？</DialogTitle>
 				<DialogContent>
 					<DialogContentText id='alert-dialog-description'>
-						デジシンクによって追加された予定({deleteEventCout}件)を削除します
+						DigiSyncによって追加された予定({deleteEventCout}件)を削除します
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

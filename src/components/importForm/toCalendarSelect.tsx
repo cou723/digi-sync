@@ -30,7 +30,7 @@ const ToCalendarSelect = React.memo(function ToCalendarSelect({ control, disable
 			<RhfMuiSelect
 				control={control}
 				disabled={disabled}
-				label='インポート先のカレンダーを選択してください'
+				label='インポート先のカレンダーを選択してください(普段使いしていないカレンダーを推奨します)'
 				name='toCalendar'
 				options={calendars.map((calendar) => ({
 					label: calendar.summary,

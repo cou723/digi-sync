@@ -3,7 +3,7 @@ import React from "react";
 
 import { ImportFormState } from "@/components/importForm";
 
-function getLabel(appState: ImportFormState): string {
+function getLabel(appState: ImportFormState, IsIcal?: boolean): string {
 	switch (appState) {
 		case "unauthenticated":
 			return "グーグルアカウントにログインしてください";
@@ -11,13 +11,17 @@ function getLabel(appState: ImportFormState): string {
 		case "connect portal":
 			return "インポート中";
 		default:
-			return "Googleカレンダーへインポート";
+			return IsIcal ? "Icalファイルをダウンロード" : "Googleカレンダーへインポート";
 	}
 }
 
-type Props = { appState: ImportFormState; onClick: () => void };
+type Props = {
+	appState: ImportFormState;
+	onClick: () => void;
+	IsIcal?: boolean;
+};
 
-const ExecuteButton = ({ appState, onClick }: Props) => {
+const ExecuteButton = ({ appState, onClick, IsIcal }: Props) => {
 	return (
 		<Button
 			disabled={appState !== "ready"}
@@ -27,7 +31,7 @@ const ExecuteButton = ({ appState, onClick }: Props) => {
 			type='submit'
 			variant='contained'
 		>
-			{getLabel(appState)}
+			{getLabel(appState, IsIcal)}
 		</Button>
 	);
 };

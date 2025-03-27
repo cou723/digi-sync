@@ -39,16 +39,16 @@ export function generateHeaders(jSessionId: string): Record<string, string> {
 export function generateBody(year: number, month: number, sessionData: SessionData): string {
 	const data = new URLSearchParams();
 	data.append("javax.faces.partial.ajax", "true");
-	data.append("javax.faces.source", "funcForm:j_idt361:content");
-	data.append("javax.faces.partial.execute", "funcForm:j_idt361:content");
-	data.append("javax.faces.partial.render", "funcForm:j_idt361:content");
-	data.append("funcForm:j_idt361:content", "funcForm:j_idt361:content");
+	data.append("javax.faces.source", "funcForm:j_idt387:content");
+	data.append("javax.faces.partial.execute", "funcForm:j_idt387:content");
+	data.append("javax.faces.partial.render", "funcForm:j_idt387:content");
+	data.append("funcForm:j_idt387:content", "funcForm:j_idt361:content");
 	data.append(
-		"funcForm:j_idt361:content_start",
+		"funcForm:j_idt387:content_start",
 		(dayjs(`${year}-${month}-1`).unix() * 1000).toString(),
 	);
 	data.append(
-		"funcForm:j_idt361:content_end",
+		"funcForm:j_idt387:content_end",
 		(dayjs(`${year}-${month}-1`).add(1, "month").add(-1, "day").unix() * 1000).toString(),
 	);
 	data.append("funcForm", "funcForm");
@@ -57,18 +57,18 @@ export function generateBody(year: number, month: number, sessionData: SessionDa
 	data.append("rx-deviceKbn", "1");
 	data.append("rx-loginType", "Gakuen");
 	data.append("funcForm:j_idt162_activeIndex", "0");
-	data.append("funcForm:j_idt361:j_idt1767:j_idt1767_input", dayjs().format("YYYY/MM/DD"));
-	data.append("funcForm:j_idt361:content_view", "month");
-	data.append("funcForm:j_idt361:j_idt2402:0:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:1:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:2:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:3:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:4:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:5:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:6:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:7:jugyoMemo", "");
-	data.append("funcForm:j_idt361:j_idt2402:8:jugyoMemo", "");
-	data.append("funcForm:j_idt361_activeIndex", "1");
+	data.append("funcForm:j_idt387:j_idt1767:j_idt1767_input", dayjs().format("YYYY/MM/DD"));
+	data.append("funcForm:j_idt387:content_view", "month");
+	data.append("funcForm:j_idt387:j_idt2402:0:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:1:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:2:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:3:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:4:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:5:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:6:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:7:jugyoMemo", "");
+	data.append("funcForm:j_idt387:j_idt2402:8:jugyoMemo", "");
+	data.append("funcForm:j_idt387_activeIndex", "1");
 	data.append("javax.faces.ViewState", sessionData.javax_faces_view_state);
 	return data.toString();
 }

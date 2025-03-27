@@ -65,8 +65,8 @@ export async function fetchClassEventsPerOneMonth(
 async function fetchSessionData(username: string, password: string): Promise<SessionData> {
 	const res = await extractLoginResponse(username, password);
 	if (res.status != 200) throw new Error("Login failed");
-
 	const documentAfterLogin = htmlParser.parseFromString(await res.text(), "text/html");
+
 	const inputListInLoginForm = Array.from(documentAfterLogin.querySelectorAll("input"));
 	console.log(
 		"inputListInLoginForm :",
@@ -75,11 +75,12 @@ async function fetchSessionData(username: string, password: string): Promise<Ses
 
 	return {
 		j_session_id: extractJSessionId(res.headers.get("set-cookie")),
-		javax_faces_view_state: inputListInLoginForm.find((input) => input.name == "rx-token")!
-			.value,
-		rx_login_key: inputListInLoginForm.find((input) => input.name == "rx-loginKey")!.value,
-		rx_token: inputListInLoginForm.find((input) => input.name == "javax.faces.ViewState")!
-			.value,
+		javax_faces_view_state:
+			inputListInLoginForm.find((input) => input.name == "javax.faces.ViewState")?.value ||
+			"",
+		rx_login_key:
+			inputListInLoginForm.find((input) => input.name == "rx-loginKey")?.value || "",
+		rx_token: inputListInLoginForm.find((input) => input.name == "rx-token")?.value || "",
 	};
 }
 

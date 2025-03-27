@@ -19,7 +19,7 @@ export async function fetchClassEvents(req: NextApiRequest) {
 	const { username, password, importYear, importRange } = {
 		...req.body,
 		importRange: new ImportRange(req.body.importRange),
-	};
+	} as { importRange: ImportRange; importYear: string; password: string; username: string };
 
 	const importYearMonthList = importRange.getYearMonthList(new Date().getFullYear());
 

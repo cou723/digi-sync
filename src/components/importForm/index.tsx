@@ -13,7 +13,7 @@ import AllDeleteButton from "@/components/importFormCommon/allDeleteButton";
 import ImportOptions from "@/components/importFormCommon/importOptions";
 import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
 import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
-import useBeforeUnload from "@/hooks/importHook";
+import useBeforeUnload from "@/hooks/useBeforeUnload";
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { Digican } from "@/libs/digican";
 import { GoogleCalendar } from "@/libs/googleCalendar";
@@ -86,7 +86,6 @@ export default function ImportForm() {
 			);
 		}
 
-		// class_events = excludeOutOfImportRange(inputs, class_events)
 		await GoogleCalendar.post(
 			session,
 			classEvents,

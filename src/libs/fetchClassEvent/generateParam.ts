@@ -18,9 +18,7 @@ export function generateHeaders(jSessionId: string): Record<string, string> {
 		"Accept-Encoding": "gzip, deflate, br",
 		"Accept-Language": "ja-JP,ja;q=0.9,en-US;q=0.8,en;q=0.7",
 		"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-		Cookie: generateCookie({
-			jSessionId: jSessionId,
-		}),
+		Cookie: generateCookie({ jSessionId }),
 		"Faces-Request": "partial/ajax",
 		Origin: "https://portal.dhw.ac.jp",
 		Referer: "https://portal.dhw.ac.jp/uprx/up/pk/pky001/Pky00101.xhtml",

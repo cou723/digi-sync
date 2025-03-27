@@ -10,14 +10,14 @@ export default function Home() {
 		<>
 			<HEAD />
 			<Container maxWidth='sm' sx={{ pt: 2 }}>
-				{authStatus == "unauthenticated" && (
+				{authStatus == "unauthenticated" ? (
 					<Alert severity='error' sx={{ my: 2 }}>
 						GoogleアカウントでログインしないとGoogleカレンダーにインポートする機能は使えません。icalでダウンロードしたい方は
 						<Link href='/ical'>ここ</Link>
 					</Alert>
+				) : (
+					<ImportForm />
 				)}
-
-				<ImportForm />
 			</Container>
 		</>
 	);

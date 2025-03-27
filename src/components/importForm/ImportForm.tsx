@@ -9,7 +9,7 @@ import ImportOptions from "@/components/importFormCommon/importOptions";
 import ImportRangeSelect from "@/components/importFormCommon/importRangeSelect";
 import ImportYearSelect from "@/components/importFormCommon/importYearSelect";
 import RhfTextField from "@/components/utils/rhfTextField";
-import useBeforeUnload from "@/hooks/importHook";
+import useBeforeUnload from "@/hooks/useBeforeUnload";
 import { useCustomSession } from "@/hooks/useCustomSession";
 import { Digican } from "@/libs/digican";
 import { GoogleCalendar } from "@/libs/googleCalendar";
@@ -73,6 +73,7 @@ export default function ImportForm() {
 			setAppState("ready");
 			return;
 		}
+		console.log(classEventList);
 
 		setAppState("import");
 		let classEvents: RawClassEvent[] = classEventList;

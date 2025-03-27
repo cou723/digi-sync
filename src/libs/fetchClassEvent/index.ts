@@ -3,7 +3,6 @@ import { NextApiRequest } from "next";
 
 import { parseClassEvents } from "@/pages/api/classEvents";
 import ImportRange from "@/types/importRange";
-import { QueryParams } from "@/types/queryParams";
 import { SessionData } from "@/types/sessionData";
 import { ClassEvent } from "@/types/types";
 import { YearMonth } from "@/types/yearMonth";
@@ -17,7 +16,10 @@ const htmlParser = new jsdom.window.DOMParser();
 
 // api
 export async function fetchClassEvents(req: NextApiRequest) {
-	const { username, password, importYear, importRange } = parseBody(req.body);
+	const { username, password, importYear, importRange } = {
+		...req.body,
+		importRange: new ImportRange(req.body.importRange),
+	};
 
 	const importYearMonthList = importRange.getYearMonthList(new Date().getFullYear());
 
@@ -26,7 +28,7 @@ export async function fetchClassEvents(req: NextApiRequest) {
 	console.log("year", importYear);
 	console.log("range", importRange);
 
-	const sessionData = await getSessionData(username, password);
+	const sessionData = await fetchSessionData(username, password);
 
 	const classEvents: ClassEvent[] = [];
 	console.log("yearMonthList :", importYearMonthList);
@@ -35,27 +37,20 @@ export async function fetchClassEvents(req: NextApiRequest) {
 	return classEvents;
 }
 
-export function parseBody(body: QueryParams) {
-	return {
-		importRange: new ImportRange(body.importRange),
-		importYear: body.importYear,
-		password: body.password,
-		username: body.username,
-	};
-}
-
 export async function fetchClassEventsPerOneMonth(
-	yearMonth: YearMonth,
+	targetMonth: YearMonth,
 	sessionData: SessionData,
 ): Promise<ClassEvent[]> {
-	console.log("get :", yearMonth);
+	console.log("get :", targetMonth);
+	console.log("body :", generateBody(targetMonth.year, targetMonth.month, sessionData));
 	const dhuPortalRes = await fetch(API_URL, {
-		body: generateBody(yearMonth.year, yearMonth.month, sessionData),
+		body: generateBody(targetMonth.year, targetMonth.month, sessionData),
 		headers: generateHeaders(sessionData.j_session_id),
 		method: "POST",
 	});
 
 	if (!dhuPortalRes.ok) throw Error("Failed to fetch class events from DHU Portal.");
+	console.log(dhuPortalRes);
 
 	let classEvents: ClassEvent[];
 	try {
@@ -64,30 +59,31 @@ export async function fetchClassEventsPerOneMonth(
 		console.log(e);
 		throw Error("Failed to parse class events from DHU Portal. Maybe your login is failing.");
 	}
-	console.log(yearMonth, classEvents.length);
+	console.log(targetMonth, classEvents.length);
 	return classEvents;
 }
-async function getSessionData(username: string, password: string): Promise<SessionData> {
-	const res = await getLoginResponse(username, password);
+async function fetchSessionData(username: string, password: string): Promise<SessionData> {
+	const res = await extractLoginResponse(username, password);
 	if (res.status != 200) throw new Error("Login failed");
+
 	const documentAfterLogin = htmlParser.parseFromString(await res.text(), "text/html");
+	const inputListInLoginForm = Array.from(documentAfterLogin.querySelectorAll("input"));
+	console.log(
+		"inputListInLoginForm :",
+		inputListInLoginForm.map((i) => i.name),
+	);
 
-	const sessionData: SessionData = {
+	return {
 		j_session_id: extractJSessionId(res.headers.get("set-cookie")),
-		javax_faces_view_state: "",
-		rx_login_key: "",
-		rx_token: "",
+		javax_faces_view_state: inputListInLoginForm.find((input) => input.name == "rx-token")!
+			.value,
+		rx_login_key: inputListInLoginForm.find((input) => input.name == "rx-loginKey")!.value,
+		rx_token: inputListInLoginForm.find((input) => input.name == "javax.faces.ViewState")!
+			.value,
 	};
-	for (const input of documentAfterLogin.querySelectorAll("input")) {
-		if (input.name == "rx-token") sessionData.rx_token = input.value;
-		if (input.name == "rx-loginKey") sessionData.rx_login_key = input.value;
-		if (input.name == "javax.faces.ViewState") sessionData.javax_faces_view_state = input.value;
-	}
-
-	return sessionData;
 }
 
-async function getLoginResponse(username: string, password: string): Promise<Response> {
+async function extractLoginResponse(username: string, password: string): Promise<Response> {
 	const res = await fetch(LOGIN_URL, {
 		body: generateLoginBody(username, password),
 		headers: {
@@ -100,11 +96,6 @@ async function getLoginResponse(username: string, password: string): Promise<Res
 
 function extractJSessionId(cookie: string | null): string {
 	if (cookie === null) return "";
-	const regex = /JSESSIONID=([^;]+)/;
-	const match = cookie.match(regex);
-	if (match) {
-		const jsessionid = match[1];
-		return jsessionid;
-	}
-	return "";
+	const match = cookie.match(/JSESSIONID=([^;]+)/);
+	return match ? match[1] : "";
 }

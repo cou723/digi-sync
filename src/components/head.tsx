@@ -19,7 +19,7 @@ const CommonMeta = () => {
 			<meta content={title} property='og:site_name' />
 			<meta content={type} property='og:type' />
 			<meta content={imageUrl} property='og:image' />
-			<meta name="google-site-verification" content="YRVBxjKFSCa5gYxDgaLk0sjJFCDBkJ0z7IcFereoi1w" />
+			<meta content="YRVBxjKFSCa5gYxDgaLk0sjJFCDBkJ0z7IcFereoi1w" name="google-site-verification" />
 		</Head>
 	);
 };

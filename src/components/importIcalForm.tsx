@@ -67,7 +67,7 @@ export function ImportIcalForm() {
 			</Stack>
 			<ImportOptions control={control} disabled={appState != "ready"} register={register} />
 			<br />
-			<ExecuteButton appState={appState} IsIcal={true} onClick={handleSubmit(onSubmit)} />
+			<ExecuteButton IsIcal={true} appState={appState} onClick={handleSubmit(onSubmit)} />
 		</Stack>
 	);
 }

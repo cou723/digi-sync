@@ -16,9 +16,9 @@ function getLabel(appState: ImportFormState, IsIcal?: boolean): string {
 }
 
 type Props = {
+	IsIcal?: boolean;
 	appState: ImportFormState;
 	onClick: () => void;
-	IsIcal?: boolean;
 };
 
 const ExecuteButton = ({ appState, onClick, IsIcal }: Props) => {

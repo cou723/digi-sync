@@ -1,3 +1,5 @@
+// TODO: このファイル自体結構謎、ImportForm/index.tsxが別にあるため、このファイルはいったい何・・・？なんか、どこでも使われてなさそう
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Stack, Button, LinearProgress } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -23,6 +25,7 @@ import ToCalendarSelect from "./toCalendarSelect";
 import { ImportFormState } from ".";
 
 export default function ImportForm() {
+	// TODO: custom hookしたい -----------------------------ここから
 	const schema = yup.object().shape({
 		...FORM_SCHEMA_SHAPE,
 		toCalendar: yup.string().required("インポート先のカレンダーを選択してください"),
@@ -55,6 +58,7 @@ export default function ImportForm() {
 		else setAppState("ready");
 	}, [authStatus]);
 
+	// TODO: result追加してもうちょっと分かりやすくエラーハンドリングしたい気持ち
 	const onSubmit = async (inputs: GoogleFormInputs): Promise<void> => {
 		setAppState("connect portal");
 
@@ -94,6 +98,8 @@ export default function ImportForm() {
 
 		setAppState("ready");
 	};
+
+	// ---------------------------------------------------ここまで
 
 	return (
 		<Stack action='/import' component='form' spacing={2}>

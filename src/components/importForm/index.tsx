@@ -27,6 +27,7 @@ import ToCalendarSelect from "./toCalendarSelect";
 export type ImportFormState = "unauthenticated" | "ready" | "connect portal" | "import";
 
 export default function ImportForm() {
+	// TODO: custom hookしたい -----------------------------ここから
 	const schema = yup.object().shape({
 		...FORM_SCHEMA_SHAPE,
 		toCalendar: yup.string().required("インポート先のカレンダーを選択してください"),
@@ -63,6 +64,7 @@ export default function ImportForm() {
 		setAppState("connect portal");
 
 		let classEventList: RawClassEvent[];
+		// TODO: resultの導入によってもっとわかりやすくしたい
 		try {
 			classEventList = await Digican.fetchClassEvents(
 				inputs,
@@ -96,9 +98,11 @@ export default function ImportForm() {
 
 		setAppState("ready");
 	};
+	// -----------------------------ここまで
 
 	return (
 		<Stack action='/import' component='form' spacing={2}>
+			{/* ここちょっと分割しすぎ、たぶん、custom hookがうまく使えなくて、仕方なくここから先を分割したんだと思うけど、custom hook使った方がいいと思う。 */}
 			<ImportYearSelect appState={appState} control={control} />
 			<ImportRangeSelect control={control} disabled={appState != "ready"} />
 			<ToCalendarSelect

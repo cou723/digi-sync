@@ -4,12 +4,14 @@ import React from "react";
 
 import { FloatMenu } from "@/components/floatMenu";
 
+// TODO: @lib使ってほしい
 import theme from "../../libs/colorTheme";
 
 import LoginBtn from "./loginBtn";
 import Logo from "./logo";
 
 export default React.memo(function Header() {
+	// TODO: pages外だししたい
 	const pages = [
 		{ display: "Googleカレンダーへインポート", link: "/" },
 		{ display: ".ical形式でダウンロード", link: "/ical" },

@@ -1,3 +1,4 @@
+// TODO: これ自体のセッションじゃなくて、デジキャンとのセッションデータなので、名前変えたい
 export type SessionData = {
 	j_session_id: string;
 	javax_faces_view_state: string;

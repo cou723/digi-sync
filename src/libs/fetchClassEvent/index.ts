@@ -15,7 +15,9 @@ const jsdom = new JSDOM();
 const htmlParser = new jsdom.window.DOMParser();
 
 // api
+// TODO: NextApiRequestが型安全でないので、型安全にしたい。
 export async function fetchClassEvents(req: NextApiRequest) {
+	// TODO: asを使いたくない
 	const { username, password, importYear, importRange } = {
 		...req.body,
 		importRange: new ImportRange(req.body.importRange),
@@ -53,6 +55,7 @@ export async function fetchClassEventsPerOneMonth(
 	console.log(dhuPortalRes);
 
 	let classEvents: ClassEvent[];
+	// TODO: try-catchを使いたくない
 	try {
 		classEvents = (await parseClassEvents(dhuPortalRes)).events;
 	} catch (e) {
@@ -64,10 +67,12 @@ export async function fetchClassEventsPerOneMonth(
 }
 async function fetchSessionData(username: string, password: string): Promise<SessionData> {
 	const res = await extractLoginResponse(username, password);
+	// TODO: throwをしたくない
 	if (res.status != 200) throw new Error("Login failed");
 	const documentAfterLogin = htmlParser.parseFromString(await res.text(), "text/html");
 
 	const inputListInLoginForm = Array.from(documentAfterLogin.querySelectorAll("input"));
+	// TODO: 消したい
 	console.log(
 		"inputListInLoginForm :",
 		inputListInLoginForm.map((i) => i.name),
@@ -84,6 +89,7 @@ async function fetchSessionData(username: string, password: string): Promise<Ses
 	};
 }
 
+// TODO: Login ResponseからextractするんじゃなくてそもそもSessionDataをfetchしている関数なので、名前を変えたい
 async function extractLoginResponse(username: string, password: string): Promise<Response> {
 	const res = await fetch(LOGIN_URL, {
 		body: generateLoginBody(username, password),

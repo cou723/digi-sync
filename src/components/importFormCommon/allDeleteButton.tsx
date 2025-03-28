@@ -22,6 +22,7 @@ type Props = {
 	disabled: boolean;
 };
 
+// これとか特にUI以外の部分が多いので、その部分をカスタムフックにまとめたい
 export default React.memo(function AllDeleteButton({ disabled }: Props) {
 	const [isShowDialog, setIsShowDialog] = useState(false);
 	const [deleteEventCout, setDeleteEventCout] = useState(0);

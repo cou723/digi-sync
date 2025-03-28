@@ -24,6 +24,7 @@ export interface API_RETURN_EventList {
 const schema = yup.object().shape(FORM_SCHEMA_SHAPE);
 
 export function ImportIcalForm() {
+	// TODO: ./importForm/index.tsxと共通同じくカスタムフックにした方がいい
 	const {
 		register,
 		handleSubmit,
@@ -35,9 +36,11 @@ export function ImportIcalForm() {
 
 	const [appState, setAppState] = useState<"ready" | "connect portal">("ready");
 
+	// 特にここのロジックはかなり再利用したい
 	const onSubmit = async (inputs: FormInputs) => {
 		setAppState("connect portal");
 		let classEventList: RawClassEvent[];
+		// TODO: resultの導入によってもっとわかりやすくしたい
 		try {
 			classEventList = await Digican.fetchClassEvents(
 				inputs,

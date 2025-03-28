@@ -15,6 +15,7 @@ const style = {
 	top: "auto",
 };
 
+// TODO: FloatMenuってなんの？=>スマホで、右下にあるボタンを押したときに表示されるやつみたい。それに合った名前がありそう
 export const FloatMenu = React.memo(function FloatMenu({ pages }: Props) {
 	const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 	const router = useRouter();

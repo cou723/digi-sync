@@ -19,6 +19,8 @@ const ColorButton = styled(Button)<ButtonProps>(() => ({
 
 export default React.memo(function LoginBtn() {
 	const { authStatus } = useCustomSession();
+
+	// TODO: 三項演算子で条件分岐したい
 	if (authStatus == "authenticated") {
 		return (
 			<ColorButton color='inherit' onClick={() => signOut()} size='large' sx={{ my: 1 }}>

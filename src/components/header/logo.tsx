@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import LogoImage from "@public/logo.svg";
 
+// TODO: これ外だしする必要あるかな
 export default function Logo() {
 	return (
 		<Box sx={{ display: "block", flexGrow: 1, mr: 2, mt: 1 }}>

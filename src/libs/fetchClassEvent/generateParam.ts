@@ -1,3 +1,5 @@
+// TODO: 全体的にテストがないので、最低限でいいのでちゃんとテストを書きたい
+// TODO: そもそもexportが多すぎて、ここにファイルを分けている理由がよくわからない => たぶん無駄なexportがついてるんじゃないのかな
 import dayjs from "dayjs";
 
 import { SessionData } from "@/types/sessionData";

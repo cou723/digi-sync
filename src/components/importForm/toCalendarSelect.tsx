@@ -16,6 +16,7 @@ type Props = {
 };
 
 const ToCalendarSelect = React.memo(function ToCalendarSelect({ control, disabled }: Props) {
+	// TODO: ここらへんもuseStateとuseEffectをカスタムフックにまとめたい
 	const [calendars, setCalendars] = useState<Array<CalendarListEntry>>([]);
 	const { session, authStatus } = useCustomSession();
 	const router = useRouter();

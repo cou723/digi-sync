@@ -13,6 +13,8 @@ export type useClassTableIcalTypes = {
 	setCalenderEvents: Dispatch<SetStateAction<(ICalEvent | ICalEventData)[]>>;
 };
 
+// TODO: 名前の修正
+// classTableってなに？
 export const useClassTableIcal = (props?: useClassTableIcalProps): useClassTableIcalTypes => {
 	const [CalenderEvents, setCalenderEvents] = useState<useClassTableIcalProps["init"]>(
 		props?.init || [],

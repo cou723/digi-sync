@@ -1,3 +1,5 @@
+// TODO: これも分けすぎ？
+// TODO: でもgoogle calendarでもical出も使っているので、共通化は正解なのかな。たぶんgoogle calendarとicalに関してはもうちょっと設計を見直した方がいい気がする
 import React from "react";
 import { Control, UseFormRegister } from "react-hook-form";
 

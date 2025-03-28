@@ -25,7 +25,6 @@ const ExecuteButton = ({ appState, onClick, IsIcal }: Props) => {
 	return (
 		<Button
 			disabled={appState !== "ready"}
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			onClick={onClick}
 			sx={{ textTransform: "none" }}
 			type='submit'

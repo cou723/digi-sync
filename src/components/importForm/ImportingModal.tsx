@@ -9,6 +9,7 @@ type Props = {
 	total: number;
 };
 
+// TODO:何だこの外だしスタイル
 const style = {
 	bgcolor: "background.paper",
 	boxShadow: 24,

@@ -12,7 +12,7 @@ const QAndA = ({ question, answer }: Props) => {
 				Q. {question}
 			</Typography>
 			<Typography style={{ whiteSpace: "pre-line" }} sx={{ px: 2 }} variant='body1'>
-				A.{answer}
+				A. {answer.replace(/\\n/g, "\n")}
 			</Typography>
 		</Container>
 	);
